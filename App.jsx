@@ -2,19 +2,22 @@ import { useState, useEffect, useRef } from "react";
 
 const ADMIN_PASS = "annie2024";
 const OWNER = {
-  phone: "063 964 4388",
+  phone: "0639644388",
+  phoneDisplay: "063 964 4388",
   email: "bangkokcondo.th@gmail.com",
   ig: "realestate_ann",
   igUrl: "https://www.instagram.com/realestate_ann",
+  lineId: "97b2blaq",
+  whatsapp: "66639644388",
 };
 
 const SEED = [
-  { id:1, title:"Rhythm Sukhumvit 42", location:"Sukhumvit, Bangkok", type:"Condo", status:"For Sale", price:"฿5,200,000", beds:1, baths:1, sqm:34, img:"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80", tag:"New" },
-  { id:2, title:"Pool Villa Rawai", location:"Rawai, Phuket", type:"House", status:"For Rent", price:"฿85,000/mo", beds:4, baths:3, sqm:320, img:"https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80", tag:"Hot" },
-  { id:3, title:"Nimman Studio", location:"Nimmanhaemin, Chiang Mai", type:"Apartment", status:"For Rent", price:"฿18,000/mo", beds:1, baths:1, sqm:42, img:"https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80", tag:"Popular" },
-  { id:4, title:"Thonglor Townhouse", location:"Thonglor, Bangkok", type:"House", status:"For Sale", price:"฿12,900,000", beds:3, baths:3, sqm:220, img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80", tag:"New" },
-  { id:5, title:"Oceanview Penthouse", location:"Patong, Phuket", type:"Condo", status:"For Sale", price:"฿28,000,000", beds:3, baths:3, sqm:145, img:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80", tag:"Luxury" },
-  { id:6, title:"Lanna Heritage Villa", location:"Old City, Chiang Mai", type:"House", status:"For Rent", price:"฿45,000/mo", beds:3, baths:2, sqm:210, img:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80", tag:"Featured" },
+  { id:1, title:"Rhythm Sukhumvit 42", location:"Sukhumvit, Bangkok", type:"Condo", status:"For Sale", price:"฿5,200,000", beds:1, baths:1, sqm:34, floor:"12", totalFloors:"35", furnished:"Fully Furnished", available:"Now", maintenance:"฿3,500/mo", parking:"1 slot", pets:"Not allowed", facilities:"Pool, Gym, Security, Lobby", bts:"Ekkamai BTS — 5 min walk", imgs:["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"], tag:"New" },
+  { id:2, title:"Pool Villa Rawai", location:"Rawai, Phuket", type:"House", status:"For Rent", price:"฿85,000/mo", beds:4, baths:3, sqm:320, floor:"1", totalFloors:"2", furnished:"Fully Furnished", available:"Now", maintenance:"Included", parking:"2 slots", pets:"Allowed", facilities:"Private Pool, Garden, Security", bts:"5 min to Rawai Beach", imgs:["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80","https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80"], tag:"Hot" },
+  { id:3, title:"Nimman Studio", location:"Nimmanhaemin, Chiang Mai", type:"Apartment", status:"For Rent", price:"฿18,000/mo", beds:1, baths:1, sqm:42, floor:"4", totalFloors:"8", furnished:"Fully Furnished", available:"Now", maintenance:"฿800/mo", parking:"1 slot", pets:"Not allowed", facilities:"Pool, Gym, Co-working space", bts:"Walk to Maya Mall — 3 min", imgs:["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80","https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"], tag:"Popular" },
+  { id:4, title:"Thonglor Townhouse", location:"Thonglor, Bangkok", type:"House", status:"For Sale", price:"฿12,900,000", beds:3, baths:3, sqm:220, floor:"1-3", totalFloors:"3", furnished:"Partially Furnished", available:"Now", maintenance:"฿2,000/mo", parking:"2 slots", pets:"Allowed", facilities:"Rooftop, Garden, Security", bts:"Thonglor BTS — 8 min walk", imgs:["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80","https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80","https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80"], tag:"New" },
+  { id:5, title:"Oceanview Penthouse", location:"Patong, Phuket", type:"Condo", status:"For Sale", price:"฿28,000,000", beds:3, baths:3, sqm:145, floor:"18", totalFloors:"18", furnished:"Fully Furnished", available:"Now", maintenance:"฿8,500/mo", parking:"2 slots", pets:"Not allowed", facilities:"Infinity Pool, Gym, Concierge, Sky Lounge", bts:"Patong Beach — 3 min drive", imgs:["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80","https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"], tag:"Luxury" },
+  { id:6, title:"Lanna Heritage Villa", location:"Old City, Chiang Mai", type:"House", status:"For Rent", price:"฿45,000/mo", beds:3, baths:2, sqm:210, floor:"1-2", totalFloors:"2", furnished:"Fully Furnished", available:"Now", maintenance:"Included", parking:"2 slots", pets:"Allowed", facilities:"Garden, Pool, Traditional Design", bts:"Inside Old City Moat — walk everywhere", imgs:["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"], tag:"Featured" },
 ];
 
 const TAG_COLORS = { New:"#2563EB", Hot:"#DC2626", Popular:"#16A34A", Luxury:"#7C3AED", Featured:"#D97706", Reduced:"#EA580C" };
@@ -30,10 +33,141 @@ const S = {
 function onFG(e){ e.target.style.borderColor="#C9A96E"; }
 function onBG(e){ e.target.style.borderColor="#E5DDD3"; }
 
+/* ── Property Detail Modal ── */
+function PropDetail({ p, onClose }) {
+  const [imgIdx, setImgIdx] = useState(0);
+  const imgs = p.imgs || [p.img];
+  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(p.location+", Thailand")}`;
+  const waUrl = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(`Hi Annie! I'm interested in ${p.title} at ${p.location} (${p.price}). Can you give me more details?`)}`;
+  const lineUrl = `https://line.me/ti/p/~${OWNER.lineId}`;
+
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:400, display:"flex", alignItems:"center", justifyContent:"center", padding:16, backdropFilter:"blur(6px)" }}>
+      <div style={{ background:"#fff", borderRadius:22, width:"100%", maxWidth:620, maxHeight:"92vh", overflowY:"auto" }}>
+        {/* photo gallery */}
+        <div style={{ position:"relative", height:280, overflow:"hidden", borderRadius:"22px 22px 0 0" }}>
+          <img src={imgs[imgIdx]} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.5) 100%)" }}/>
+          {/* close */}
+          <button onClick={onClose} style={{ position:"absolute", top:14, right:14, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:18, cursor:"pointer" }}>✕</button>
+          {/* tag */}
+          <span style={{ position:"absolute", top:14, left:14, background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, textTransform:"uppercase", letterSpacing:"0.08em" }}>{p.tag}</span>
+          {/* photo thumbnails */}
+          {imgs.length > 1 && (
+            <div style={{ position:"absolute", bottom:14, left:"50%", transform:"translateX(-50%)", display:"flex", gap:6 }}>
+              {imgs.map((im, i) => (
+                <div key={i} onClick={()=>setImgIdx(i)} style={{ width: i===imgIdx?28:8, height:8, borderRadius:4, background: i===imgIdx?"#fff":"rgba(255,255,255,0.5)", cursor:"pointer", transition:"all 0.2s" }}/>
+              ))}
+            </div>
+          )}
+          {/* arrow buttons */}
+          {imgs.length > 1 && <>
+            <button onClick={()=>setImgIdx((imgIdx-1+imgs.length)%imgs.length)} style={{ position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(0,0,0,0.4)", color:"#fff", fontSize:16, cursor:"pointer" }}>‹</button>
+            <button onClick={()=>setImgIdx((imgIdx+1)%imgs.length)} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(0,0,0,0.4)", color:"#fff", fontSize:16, cursor:"pointer" }}>›</button>
+          </>}
+          {/* photo count */}
+          <div style={{ position:"absolute", bottom:14, right:14, background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:11, fontWeight:600, padding:"3px 8px", borderRadius:10 }}>
+            📷 {imgIdx+1}/{imgs.length}
+          </div>
+        </div>
+
+        <div style={{ padding:"22px 24px" }}>
+          {/* title + price */}
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6, flexWrap:"wrap", gap:8 }}>
+            <div>
+              <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>{p.type} · {p.status}</div>
+              <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, fontWeight:700, color:"#1C1410", lineHeight:1.2 }}>{p.title}</h2>
+            </div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#B8893A" }}>{p.price}</div>
+          </div>
+
+          {/* location + maps */}
+          <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16, flexWrap:"wrap" }}>
+            <span style={{ fontSize:13, color:"#7B6A5A" }}>📍 {p.location}</span>
+            <a href={mapsUrl} target="_blank" rel="noreferrer"
+              style={{ display:"inline-flex", alignItems:"center", gap:5, background:"#EFF6FF", color:"#2563EB", fontSize:12, fontWeight:700, padding:"5px 12px", borderRadius:20, textDecoration:"none", border:"1px solid #BFDBFE" }}>
+              🗺 Open Google Maps
+            </a>
+          </div>
+
+          {/* BTS / transport */}
+          {p.bts && <div style={{ background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:10, padding:"8px 12px", fontSize:12, color:"#166534", fontWeight:600, marginBottom:14 }}>
+            🚇 {p.bts}
+          </div>}
+
+          {/* key stats */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(80px,1fr))", gap:10, marginBottom:16 }}>
+            {[
+              {e:"🛏", l:"Beds", v:p.beds},
+              {e:"🚿", l:"Baths", v:p.baths},
+              {e:"📐", l:"Area", v:`${p.sqm}m²`},
+              {e:"🏢", l:"Floor", v:p.floor||"–"},
+              {e:"🏗", l:"Total", v:`${p.totalFloors||"–"} fl`},
+            ].map((x,i)=>(
+              <div key={i} style={{ background:"#FDFAF6", border:"1px solid #EDE8E0", borderRadius:12, padding:"10px 8px", textAlign:"center" }}>
+                <div style={{ fontSize:20, marginBottom:4 }}>{x.e}</div>
+                <div style={{ fontWeight:700, color:"#1C1410", fontSize:14 }}>{x.v}</div>
+                <div style={{ fontSize:10, color:"#A89580", textTransform:"uppercase", letterSpacing:"0.06em" }}>{x.l}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* details grid */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:16 }}>
+            {[
+              {l:"Furnished", v:p.furnished||"–"},
+              {l:"Available", v:p.available||"Now"},
+              {l:"Maintenance", v:p.maintenance||"–"},
+              {l:"Parking", v:p.parking||"–"},
+              {l:"Pets", v:p.pets||"–"},
+            ].map((x,i)=>(
+              <div key={i} style={{ background:"#F7F3EE", borderRadius:10, padding:"10px 12px" }}>
+                <div style={{ fontSize:10, color:"#A89580", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>{x.l}</div>
+                <div style={{ fontSize:13, color:"#1C1410", fontWeight:600 }}>{x.v}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* facilities */}
+          {p.facilities && (
+            <div style={{ marginBottom:16 }}>
+              <div style={{ fontSize:11, color:"#A89580", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:8 }}>Facilities</div>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                {p.facilities.split(",").map((f,i)=>(
+                  <span key={i} style={{ background:"#EFF6FF", color:"#2563EB", fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:20, border:"1px solid #BFDBFE" }}>✓ {f.trim()}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* contact buttons */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginTop:8 }}>
+            <a href={waUrl} target="_blank" rel="noreferrer"
+              style={{ textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
+              💬 WhatsApp
+            </a>
+            <a href={lineUrl} target="_blank" rel="noreferrer"
+              style={{ textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
+              💚 Line
+            </a>
+            <a href={mapsUrl} target="_blank" rel="noreferrer"
+              style={{ textDecoration:"none", background:"#2563EB", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
+              🗺 Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Card ── */
 function Card({ p, idx, isAdmin, onEdit, onDel }) {
   const [liked, setLiked] = useState(false);
   const [vis, setVis] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const ref = useRef(null);
+  const imgs = p.imgs || [p.img];
 
   useEffect(() => {
     const el = ref.current;
@@ -44,47 +178,98 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
   }, []);
 
   return (
-    <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(32px)", transition:`opacity 0.5s ease ${idx*0.07}s, transform 0.5s ease ${idx*0.07}s`, background:"#fff", borderRadius:18, overflow:"hidden", border:"1px solid #EDE8E0", boxShadow:"0 2px 14px rgba(0,0,0,0.06)" }}
-      onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 14px 40px rgba(0,0,0,0.13)"; e.currentTarget.style.transform="translateY(-4px)"; }}
-      onMouseLeave={e=>{ e.currentTarget.style.boxShadow="0 2px 14px rgba(0,0,0,0.06)"; e.currentTarget.style.transform="translateY(0)"; }}>
-      <div style={{ position:"relative", height:210, overflow:"hidden" }}>
-        <img src={p.img} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-        <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55) 100%)" }} />
-        <span style={{ position:"absolute", top:12, left:12, background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, letterSpacing:"0.08em", textTransform:"uppercase" }}>{p.tag}</span>
-        <div style={{ position:"absolute", top:10, right:10, display:"flex", gap:6 }}>
-          {isAdmin ? (
-            <>
-              <button onClick={e=>{ e.stopPropagation(); onEdit(p); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:14 }}>✏️</button>
-              <button onClick={e=>{ e.stopPropagation(); onDel(p.id); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:14 }}>🗑️</button>
-            </>
-          ) : (
-            <button onClick={()=>setLiked(!liked)} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:16 }}>{liked?"❤️":"🤍"}</button>
+    <>
+      {showDetail && <PropDetail p={p} onClose={()=>setShowDetail(false)}/>}
+      <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(32px)", transition:`opacity 0.5s ease ${idx*0.07}s, transform 0.5s ease ${idx*0.07}s`, background:"#fff", borderRadius:18, overflow:"hidden", border:"1px solid #EDE8E0", boxShadow:"0 2px 14px rgba(0,0,0,0.06)", cursor:"pointer" }}
+        onClick={()=>!isAdmin && setShowDetail(true)}
+        onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 14px 40px rgba(0,0,0,0.13)"; e.currentTarget.style.transform="translateY(-4px)"; }}
+        onMouseLeave={e=>{ e.currentTarget.style.boxShadow="0 2px 14px rgba(0,0,0,0.06)"; e.currentTarget.style.transform="translateY(0)"; }}>
+
+        {/* image */}
+        <div style={{ position:"relative", height:210, overflow:"hidden" }}>
+          <img src={imgs[0]} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55) 100%)" }} />
+          <span style={{ position:"absolute", top:12, left:12, background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, letterSpacing:"0.08em", textTransform:"uppercase" }}>{p.tag}</span>
+          {/* photo count badge */}
+          {imgs.length > 1 && (
+            <span style={{ position:"absolute", bottom:10, left:12, background:"rgba(0,0,0,0.55)", color:"#fff", fontSize:10, fontWeight:600, padding:"3px 8px", borderRadius:10 }}>
+              📷 {imgs.length} photos
+            </span>
           )}
-        </div>
-        <span style={{ position:"absolute", bottom:10, left:12, background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.28)", borderRadius:20, padding:"3px 10px", color:"#fff", fontSize:11, fontWeight:600 }}>{p.status}</span>
-      </div>
-      <div style={{ padding:"15px 17px 17px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", gap:8, marginBottom:5 }}>
-          <div>
-            <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:3 }}>{p.type}</div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", lineHeight:1.25 }}>{p.title}</div>
+          <div style={{ position:"absolute", top:10, right:10, display:"flex", gap:6 }}>
+            {isAdmin ? (
+              <>
+                <button onClick={e=>{ e.stopPropagation(); onEdit(p); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:14 }}>✏️</button>
+                <button onClick={e=>{ e.stopPropagation(); onDel(p.id); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:14 }}>🗑️</button>
+              </>
+            ) : (
+              <button onClick={e=>{e.stopPropagation();setLiked(!liked);}} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:16 }}>{liked?"❤️":"🤍"}</button>
+            )}
           </div>
-          <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{p.price}</div>
+          <span style={{ position:"absolute", top:10, right:isAdmin?80:52, background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.28)", borderRadius:20, padding:"3px 10px", color:"#fff", fontSize:11, fontWeight:600 }}>{p.status}</span>
         </div>
-        <div style={{ fontSize:12, color:"#A89580", marginBottom:12 }}>📍 {p.location}</div>
-        <div style={{ height:1, background:"#F3EEE8", marginBottom:12 }} />
-        <div style={{ display:"flex", gap:14 }}>
-          {[`${p.beds} Beds`, `${p.baths} Baths`, `${p.sqm} m²`].map((v,i)=>(
-            <span key={i} style={{ fontSize:12, color:"#6B5E52", fontWeight:500 }}>{v}</span>
-          ))}
+
+        {/* body */}
+        <div style={{ padding:"15px 17px 17px" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", gap:8, marginBottom:5 }}>
+            <div>
+              <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:3 }}>{p.type}</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", lineHeight:1.25 }}>{p.title}</div>
+            </div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{p.price}</div>
+          </div>
+
+          <div style={{ fontSize:12, color:"#A89580", marginBottom:6 }}>📍 {p.location}</div>
+
+          {/* BTS badge */}
+          {p.bts && <div style={{ fontSize:11, color:"#166534", background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:8, padding:"3px 8px", marginBottom:10, display:"inline-block", fontWeight:600 }}>
+            🚇 {p.bts}
+          </div>}
+
+          <div style={{ height:1, background:"#F3EEE8", marginBottom:10 }} />
+
+          <div style={{ display:"flex", gap:12, marginBottom:10 }}>
+            {[`🛏 ${p.beds}`, `🚿 ${p.baths}`, `📐 ${p.sqm}m²`].map((v,i)=>(
+              <span key={i} style={{ fontSize:12, color:"#6B5E52", fontWeight:500 }}>{v}</span>
+            ))}
+          </div>
+
+          {/* furnished + pets */}
+          <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:12 }}>
+            {p.furnished && <span style={{ fontSize:10, background:"#F3EEE8", color:"#7B6A5A", padding:"2px 8px", borderRadius:10, fontWeight:600 }}>{p.furnished}</span>}
+            {p.pets && <span style={{ fontSize:10, background: p.pets==="Allowed"?"#F0FDF4":"#FEF2F2", color: p.pets==="Allowed"?"#166534":"#DC2626", padding:"2px 8px", borderRadius:10, fontWeight:600 }}>{p.pets==="Allowed"?"🐾 Pet Friendly":"🚫 No Pets"}</span>}
+            {p.parking && <span style={{ fontSize:10, background:"#EFF6FF", color:"#2563EB", padding:"2px 8px", borderRadius:10, fontWeight:600 }}>🚗 {p.parking}</span>}
+          </div>
+
+          {/* action buttons */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:7 }}>
+            <a href={`https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent("Hi Annie! I'm interested in "+p.title+" ("+p.price+")")}`} target="_blank" rel="noreferrer"
+              onClick={e=>e.stopPropagation()}
+              style={{ textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
+              💬 WhatsApp
+            </a>
+            <a href={`https://line.me/ti/p/~${OWNER.lineId}`} target="_blank" rel="noreferrer"
+              onClick={e=>e.stopPropagation()}
+              style={{ textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
+              💚 Line
+            </a>
+            <a href={`https://www.google.com/maps/search/${encodeURIComponent(p.location+", Thailand")}`} target="_blank" rel="noreferrer"
+              onClick={e=>e.stopPropagation()}
+              style={{ textDecoration:"none", background:"#2563EB", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
+              🗺 Maps
+            </a>
+          </div>
+
+          {!isAdmin && <div style={{ textAlign:"center", marginTop:10, fontSize:12, color:"#C9A96E", fontWeight:600 }}>Tap card for full details & photos →</div>}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
+/* ── Property Form Modal ── */
 function PropForm({ init, onSave, onClose }) {
-  const empty = { title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, img:"", tag:"New" };
+  const empty = { title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"" };
   const [f, setF] = useState(init || empty);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
@@ -92,65 +277,96 @@ function PropForm({ init, onSave, onClose }) {
   const LBL = ({t}) => <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t}</label>;
 
   const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
     setUploading(true);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      set("img", ev.target.result);
-      setUploading(false);
-    };
-    reader.readAsDataURL(file);
+    let loaded = 0;
+    const newImgs = [...(f.imgs||[])];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        newImgs.push(ev.target.result);
+        loaded++;
+        if (loaded === files.length) {
+          set("imgs", newImgs);
+          set("img", newImgs[0]);
+          setUploading(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImg = (i) => {
+    const newImgs = (f.imgs||[]).filter((_,idx)=>idx!==i);
+    set("imgs", newImgs);
+    set("img", newImgs[0]||"");
   };
 
   return (
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", backdropFilter:"blur(6px)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
-      <div style={{ background:"#fff", borderRadius:22, padding:"28px 24px", width:"100%", maxWidth:520, maxHeight:"92vh", overflowY:"auto" }}>
+      <div style={{ background:"#fff", borderRadius:22, padding:"28px 24px", width:"100%", maxWidth:560, maxHeight:"94vh", overflowY:"auto" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
           <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#1C1410" }}>{init?"✏️ Edit Listing":"➕ New Listing"}</h3>
           <button onClick={onClose} style={{ background:"#F3EEE8", border:"none", borderRadius:8, padding:"6px 12px", cursor:"pointer", fontWeight:600, fontSize:13 }}>✕ Close</button>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-          {[{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"Price",k:"price",ph:"฿5,200,000 or ฿35,000/mo"}].map(field=>(
-            <div key={field.k} style={{ gridColumn:"1/-1" }}>
-              <LBL t={field.label}/>
-              <input value={f[field.k]} placeholder={field.ph} onChange={e=>set(field.k,e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
-            </div>
-          ))}
 
-          {/* PHOTO UPLOAD */}
+          {/* PHOTOS */}
           <div style={{ gridColumn:"1/-1" }}>
-            <LBL t="Property Photo"/>
-            <input ref={fileRef} type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display:"none" }}/>
-            <button onClick={()=>fileRef.current.click()} style={{ width:"100%", padding:"12px", border:"2px dashed #C9A96E", borderRadius:12, background:"#FFFBF5", color:"#9B6B2A", fontSize:14, fontWeight:600, cursor:"pointer", marginBottom:8 }}>
-              {uploading ? "⏳ Uploading..." : "📸 Upload Photo from Camera Roll"}
+            <LBL t="Property Photos (tap to upload multiple)"/>
+            <input ref={fileRef} type="file" accept="image/*" multiple onChange={handlePhotoUpload} style={{ display:"none" }}/>
+            <button onClick={()=>fileRef.current.click()} style={{ width:"100%", padding:"14px", border:"2px dashed #C9A96E", borderRadius:12, background:"#FFFBF5", color:"#9B6B2A", fontSize:14, fontWeight:600, cursor:"pointer", marginBottom:10 }}>
+              {uploading ? "⏳ Uploading..." : "📸 Upload Photos from Camera Roll"}
             </button>
-            {f.img && (
-              <div style={{ position:"relative" }}>
-                <img src={f.img} alt="preview" style={{ width:"100%", height:160, objectFit:"cover", borderRadius:12, border:"1.5px solid #E5DDD3" }} onError={e=>e.target.style.display="none"}/>
-                <button onClick={()=>set("img","")} style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.6)", color:"#fff", border:"none", borderRadius:"50%", width:28, height:28, cursor:"pointer", fontSize:14 }}>✕</button>
+            {(f.imgs||[]).length > 0 && (
+              <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                {(f.imgs||[]).map((img,i)=>(
+                  <div key={i} style={{ position:"relative" }}>
+                    <img src={img} alt="" style={{ width:80, height:60, objectFit:"cover", borderRadius:8, border:"1.5px solid #E5DDD3" }}/>
+                    <button onClick={()=>removeImg(i)} style={{ position:"absolute", top:-6, right:-6, width:20, height:20, borderRadius:"50%", border:"none", background:"#EF4444", color:"#fff", fontSize:11, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+                    {i===0 && <div style={{ position:"absolute", bottom:2, left:2, background:"#C9A96E", color:"#fff", fontSize:9, fontWeight:700, padding:"1px 5px", borderRadius:4 }}>MAIN</div>}
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
-          {[{label:"Type",k:"type",opts:["Condo","House","Apartment","Villa"]},{label:"Status",k:"status",opts:["For Sale","For Rent"]},{label:"Badge",k:"tag",opts:ALL_TAGS}].map(sel=>(
+          {/* text fields */}
+          {[{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"Price",k:"price",ph:"฿5,200,000 or ฿35,000/mo"},{label:"BTS / Transport",k:"bts",ph:"e.g. Ekkamai BTS — 5 min walk"},{label:"Facilities",k:"facilities",ph:"Pool, Gym, Security"}].map(field=>(
+            <div key={field.k} style={{ gridColumn:"1/-1" }}>
+              <LBL t={field.label}/>
+              <input value={f[field.k]||""} placeholder={field.ph} onChange={e=>set(field.k,e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+            </div>
+          ))}
+
+          {[{label:"Type",k:"type",opts:["Condo","House","Apartment","Villa"]},{label:"Status",k:"status",opts:["For Sale","For Rent"]},{label:"Furnished",k:"furnished",opts:["Fully Furnished","Partially Furnished","Unfurnished"]},{label:"Pets",k:"pets",opts:["Allowed","Not allowed"]},{label:"Badge",k:"tag",opts:ALL_TAGS}].map(sel=>(
             <div key={sel.k}>
               <LBL t={sel.label}/>
-              <select value={f[sel.k]} onChange={e=>set(sel.k,e.target.value)} style={S.inp({cursor:"pointer"})}>
+              <select value={f[sel.k]||""} onChange={e=>set(sel.k,e.target.value)} style={S.inp({cursor:"pointer"})}>
                 {sel.opts.map(o=><option key={o}>{o}</option>)}
               </select>
             </div>
           ))}
-          {[{label:"Beds",k:"beds"},{label:"Baths",k:"baths"},{label:"Area m²",k:"sqm"}].map(n=>(
+
+          {[{label:"Beds",k:"beds"},{label:"Baths",k:"baths"},{label:"Area m²",k:"sqm"},{label:"Floor",k:"floor"},{label:"Total Floors",k:"totalFloors"}].map(n=>(
             <div key={n.k}>
               <LBL t={n.label}/>
-              <input type="number" value={f[n.k]} onChange={e=>set(n.k,Number(e.target.value))} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+              <input type="text" value={f[n.k]||""} onChange={e=>set(n.k,e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
             </div>
           ))}
+
+          {[{label:"Maintenance Fee",k:"maintenance",ph:"e.g. ฿3,500/mo"},{label:"Parking",k:"parking",ph:"e.g. 1 slot"},{label:"Available Date",k:"available",ph:"e.g. Now or 1 Jun 2026"}].map(field=>(
+            <div key={field.k}>
+              <LBL t={field.label}/>
+              <input value={f[field.k]||""} placeholder={field.ph} onChange={e=>set(field.k,e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+            </div>
+          ))}
+
         </div>
         <div style={{ display:"flex", gap:10, marginTop:20 }}>
           <button onClick={onClose} style={{ flex:1, background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"11px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
-          <button onClick={()=>onSave(f)} style={{...S.gold,flex:2}}>{init?"Save Changes ✓":"Add Property ✓"}</button>
+          <button onClick={()=>onSave({...f, img:f.imgs&&f.imgs[0]?f.imgs[0]:f.img})} style={{...S.gold,flex:2}}>{init?"Save Changes ✓":"Add Property ✓"}</button>
         </div>
       </div>
     </div>
@@ -176,7 +392,6 @@ function AdminLogin({ onLogin }) {
           {err && <p style={{ color:"#EF4444", fontSize:12, marginTop:6 }}>❌ Wrong password. Try again.</p>}
         </div>
         <button onClick={tryLogin} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Sign In →</button>
-
       </div>
     </div>
   );
@@ -226,13 +441,18 @@ function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView }) {
               </thead>
               <tbody>
                 {props.length===0 && <tr><td colSpan={6} style={{ padding:"50px", textAlign:"center", color:"#A89580" }}><div style={{ fontSize:36, marginBottom:10 }}>📭</div><div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20 }}>No listings yet</div></td></tr>}
-                {props.map((p,i)=>(
+                {props.map((p,i)=>{
+                  const imgs = p.imgs||[p.img];
+                  return (
                   <tr key={p.id} style={{ borderBottom:"1px solid #F3EEE8", background:i%2===0?"#fff":"#FDFAF6" }}
                     onMouseEnter={e=>e.currentTarget.style.background="#FBF7F2"}
                     onMouseLeave={e=>e.currentTarget.style.background=i%2===0?"#fff":"#FDFAF6"}>
                     <td style={{ padding:"11px 15px" }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                        <img src={p.img} alt="" style={{ width:46, height:36, objectFit:"cover", borderRadius:8, flexShrink:0 }} onError={e=>e.target.src="https://placehold.co/46x36"}/>
+                        <div style={{ position:"relative" }}>
+                          <img src={imgs[0]} alt="" style={{ width:46, height:36, objectFit:"cover", borderRadius:8, flexShrink:0 }} onError={e=>e.target.src="https://placehold.co/46x36"}/>
+                          {imgs.length>1 && <span style={{ position:"absolute", bottom:-4, right:-4, background:"#C9A96E", color:"#fff", fontSize:8, fontWeight:700, padding:"1px 4px", borderRadius:6 }}>{imgs.length}</span>}
+                        </div>
                         <div>
                           <div style={{ fontSize:13, fontWeight:600, color:"#1C1410" }}>{p.title}</div>
                           <div style={{ fontSize:11, color:"#A89580" }}>{p.beds}bd · {p.baths}ba · {p.sqm}m²</div>
@@ -250,7 +470,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView }) {
                       </div>
                     </td>
                   </tr>
-                ))}
+                )})}
               </tbody>
             </table>
           </div>
@@ -263,8 +483,9 @@ function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView }) {
           </a>
           <div style={{ background:"#1C1410", borderRadius:14, padding:"18px 20px", border:"1px solid rgba(201,169,110,0.2)" }}>
             <div style={{ color:"#C9A96E", fontSize:10, fontWeight:700, textTransform:"uppercase", marginBottom:10 }}>Contact Info</div>
-            <div style={{ color:"#C0B0A0", fontSize:13, marginBottom:6 }}>📞 {OWNER.phone}</div>
-            <div style={{ color:"#C0B0A0", fontSize:13 }}>✉️ {OWNER.email}</div>
+            <div style={{ color:"#C0B0A0", fontSize:13, marginBottom:6 }}>📞 {OWNER.phoneDisplay}</div>
+            <div style={{ color:"#C0B0A0", fontSize:13, marginBottom:6 }}>✉️ {OWNER.email}</div>
+            <div style={{ color:"#C0B0A0", fontSize:13 }}>💚 Line: {OWNER.lineId}</div>
           </div>
         </div>
       </div>
@@ -315,7 +536,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
               <div style={{ fontSize:8, color:"#7B6A5A", letterSpacing:"0.22em", textTransform:"uppercase" }}>Bangkok Property</div>
             </div>
           </div>
-          <div style={{ display:"flex", alignItems:"center", gap:22 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:18 }}>
             {["Buy","Rent","Contact"].map(l=>(
               <a key={l} href={`#${l.toLowerCase()}`} style={{ color:"#C0B0A0", fontSize:13, fontWeight:500, textDecoration:"none" }}
                 onMouseEnter={e=>e.target.style.color="#C9A96E"} onMouseLeave={e=>e.target.style.color="#C0B0A0"}>{l}</a>
@@ -364,7 +585,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
                 {ALL_TYPES.map(t=><option key={t}>{t}</option>)}
               </select>
               <input value={q} onChange={e=>setQ(e.target.value)} placeholder="🔍 Search..." style={S.inp({ flex:2, minWidth:130 })} onFocus={onFG} onBlur={onBG}/>
-              <button style={{...S.gold, whiteSpace:"nowrap"}}>Search</button>
+              <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{...S.gold, whiteSpace:"nowrap"}}>Search</button>
             </div>
           </div>
         </div>
@@ -401,7 +622,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
             <div style={{ fontSize:13 }}>Try adjusting your filters</div>
           </div>
         ) : (
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))", gap:22 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:22 }}>
             {shown.map((p,i)=><Card key={p.id} p={p} idx={i} isAdmin={isAdmin} onEdit={onEditProp} onDel={onDelProp}/>)}
           </div>
         )}
@@ -419,10 +640,19 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
               Professional agent specialising in Bangkok condos, Phuket villas and Chiang Mai homes. Helping buyers, renters and investors — in Thai and English.
             </p>
             <div style={{ display:"flex", flexDirection:"column", gap:11 }}>
-              <div style={{ color:"#C0B0A0", fontSize:14 }}>📞 {OWNER.phone}</div>
+              <div style={{ color:"#C0B0A0", fontSize:14 }}>📞 {OWNER.phoneDisplay}</div>
               <div style={{ color:"#C0B0A0", fontSize:14 }}>✉️ {OWNER.email}</div>
-              <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#C0B0A0", fontSize:14, textDecoration:"none" }}
-                onMouseEnter={e=>e.target.style.color="#C9A96E"} onMouseLeave={e=>e.target.style.color="#C0B0A0"}>📸 @{OWNER.ig}</a>
+              <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#C0B0A0", fontSize:14, textDecoration:"none" }}>📸 @{OWNER.ig}</a>
+              <div style={{ display:"flex", gap:10, marginTop:4 }}>
+                <a href={`https://wa.me/${OWNER.whatsapp}`} target="_blank" rel="noreferrer"
+                  style={{ textDecoration:"none", background:"#25D366", color:"#fff", padding:"9px 18px", borderRadius:11, fontSize:13, fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
+                  💬 WhatsApp
+                </a>
+                <a href={`https://line.me/ti/p/~${OWNER.lineId}`} target="_blank" rel="noreferrer"
+                  style={{ textDecoration:"none", background:"#06C755", color:"#fff", padding:"9px 18px", borderRadius:11, fontSize:13, fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
+                  💚 Line
+                </a>
+              </div>
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:13 }}>
@@ -447,7 +677,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(148px,1fr))", gap:13 }}>
           {[{c:"Bangkok",img:"https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=80",n:"8,200+"},{c:"Phuket",img:"https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?w=400&q=80",n:"3,400+"},{c:"Chiang Mai",img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=80",n:"2,100+"},{c:"Pattaya",img:"https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80",n:"1,800+"},{c:"Hua Hin",img:"https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=400&q=80",n:"900+"},{c:"Koh Samui",img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",n:"600+"}].map((x,i)=>(
-            <div key={i} onClick={()=>setCity(x.c)} style={{ position:"relative", borderRadius:14, overflow:"hidden", cursor:"pointer", aspectRatio:"3/4", border:city===x.c?"3px solid #C9A96E":"3px solid transparent", transition:"all 0.22s" }}
+            <div key={i} onClick={()=>{ setCity(x.c); document.getElementById("buy")?.scrollIntoView({behavior:"smooth"}); }} style={{ position:"relative", borderRadius:14, overflow:"hidden", cursor:"pointer", aspectRatio:"3/4", border:city===x.c?"3px solid #C9A96E":"3px solid transparent", transition:"all 0.22s" }}
               onMouseEnter={e=>e.currentTarget.style.transform="translateY(-4px)"}
               onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
               <img src={x.img} alt={x.c} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
@@ -471,7 +701,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))", gap:26, alignItems:"start" }}>
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-              {[{e:"📞",l:"Phone",v:OWNER.phone},{e:"✉️",l:"Email",v:OWNER.email}].map((r,i)=>(
+              {[{e:"📞",l:"Phone",v:OWNER.phoneDisplay},{e:"✉️",l:"Email",v:OWNER.email}].map((r,i)=>(
                 <div key={i} style={{ background:"#fff", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13, boxShadow:"0 2px 10px rgba(0,0,0,0.04)" }}>
                   <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{r.e}</div>
                   <div>
@@ -480,12 +710,22 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
                   </div>
                 </div>
               ))}
-              <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ textDecoration:"none", background:"linear-gradient(135deg,#f09433,#dc2743,#bc1888)", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13, boxShadow:"0 4px 14px rgba(220,39,67,0.22)" }}>
+              <a href={`https://wa.me/${OWNER.whatsapp}`} target="_blank" rel="noreferrer"
+                style={{ textDecoration:"none", background:"#25D366", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13 }}>
+                <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>💬</div>
+                <div><div style={{ fontSize:10, color:"rgba(255,255,255,0.8)", fontWeight:700, textTransform:"uppercase" }}>WhatsApp</div><div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>{OWNER.phoneDisplay}</div></div>
+                <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.7)", fontSize:18 }}>↗</span>
+              </a>
+              <a href={`https://line.me/ti/p/~${OWNER.lineId}`} target="_blank" rel="noreferrer"
+                style={{ textDecoration:"none", background:"#06C755", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13 }}>
+                <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>💚</div>
+                <div><div style={{ fontSize:10, color:"rgba(255,255,255,0.8)", fontWeight:700, textTransform:"uppercase" }}>Line</div><div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>ID: {OWNER.lineId}</div></div>
+                <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.7)", fontSize:18 }}>↗</span>
+              </a>
+              <a href={OWNER.igUrl} target="_blank" rel="noreferrer"
+                style={{ textDecoration:"none", background:"linear-gradient(135deg,#f09433,#dc2743,#bc1888)", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13 }}>
                 <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>📸</div>
-                <div>
-                  <div style={{ fontSize:10, color:"rgba(255,255,255,0.7)", fontWeight:700, textTransform:"uppercase" }}>Instagram</div>
-                  <div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>@{OWNER.ig}</div>
-                </div>
+                <div><div style={{ fontSize:10, color:"rgba(255,255,255,0.7)", fontWeight:700, textTransform:"uppercase" }}>Instagram</div><div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>@{OWNER.ig}</div></div>
                 <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.7)", fontSize:18 }}>↗</span>
               </a>
             </div>
@@ -501,10 +741,10 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
                 <>
                   <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#1C1410", marginBottom:18 }}>Send a Message</h3>
                   <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                    {[{l:"Name",k:"name",t:"text",ph:"Your name"},{l:"Email",k:"email",t:"email",ph:"your@email.com"}].map(f=>(
-                      <div key={f.k}>
-                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{f.l}</label>
-                        <input type={f.t} placeholder={f.ph} value={contact[f.k]} onChange={e=>setContact({...contact,[f.k]:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+                    {[{l:"Name",k:"name",t:"text",ph:"Your name"},{l:"Email",k:"email",t:"email",ph:"your@email.com"}].map(field=>(
+                      <div key={field.k}>
+                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{field.l}</label>
+                        <input type={field.t} placeholder={field.ph} value={contact[field.k]} onChange={e=>setContact({...contact,[field.k]:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
                       </div>
                     ))}
                     <div>
@@ -527,7 +767,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:16, alignItems:"center" }}>
           <div>
             <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>🏡 Nest<span style={{ color:"#C9A96E" }}>BKK</span></div>
-            <div style={{ color:"#4A3A2A", fontSize:12, marginTop:4 }}>{OWNER.email} · {OWNER.phone}</div>
+            <div style={{ color:"#4A3A2A", fontSize:12, marginTop:4 }}>{OWNER.email} · {OWNER.phoneDisplay}</div>
           </div>
           <div style={{ color:"#4A3A2A", fontSize:12 }}>© 2026 NestBKK · Real Estate By Annie · Bangkok, Thailand</div>
         </div>
@@ -539,18 +779,13 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
 export default function App() {
   const [screen, setScreen]     = useState("site");
   const [props, setProps]       = useState(() => {
-    // ✅ Load from localStorage on first render
-    try {
-      const saved = localStorage.getItem("nestbkk_props");
-      return saved ? JSON.parse(saved) : SEED;
-    } catch { return SEED; }
+    try { const s = localStorage.getItem("nestbkk_props"); return s ? JSON.parse(s) : SEED; } catch { return SEED; }
   });
   const [form, setForm]         = useState(null);
   const [delId, setDelId]       = useState(null);
   const [toast, setToast]       = useState(null);
   const [adminView, setAdminView] = useState(false);
 
-  // ✅ Save to localStorage whenever props change
   useEffect(() => {
     try { localStorage.setItem("nestbkk_props", JSON.stringify(props)); } catch (_) {}
   }, [props]);
