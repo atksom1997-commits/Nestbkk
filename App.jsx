@@ -86,8 +86,22 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 function PropForm({ init, onSave, onClose }) {
   const empty = { title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, img:"", tag:"New" };
   const [f, setF] = useState(init || empty);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
   const set = (k,v) => setF(x=>({...x,[k]:v}));
   const LBL = ({t}) => <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t}</label>;
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      set("img", ev.target.result);
+      setUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
 
   return (
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", backdropFilter:"blur(6px)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
@@ -97,12 +111,28 @@ function PropForm({ init, onSave, onClose }) {
           <button onClick={onClose} style={{ background:"#F3EEE8", border:"none", borderRadius:8, padding:"6px 12px", cursor:"pointer", fontWeight:600, fontSize:13 }}>✕ Close</button>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-          {[{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"Price",k:"price",ph:"฿5,200,000 or ฿35,000/mo"},{label:"Image URL",k:"img",ph:"https://images.unsplash.com/..."}].map(field=>(
+          {[{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"Price",k:"price",ph:"฿5,200,000 or ฿35,000/mo"}].map(field=>(
             <div key={field.k} style={{ gridColumn:"1/-1" }}>
               <LBL t={field.label}/>
               <input value={f[field.k]} placeholder={field.ph} onChange={e=>set(field.k,e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
             </div>
           ))}
+
+          {/* PHOTO UPLOAD */}
+          <div style={{ gridColumn:"1/-1" }}>
+            <LBL t="Property Photo"/>
+            <input ref={fileRef} type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display:"none" }}/>
+            <button onClick={()=>fileRef.current.click()} style={{ width:"100%", padding:"12px", border:"2px dashed #C9A96E", borderRadius:12, background:"#FFFBF5", color:"#9B6B2A", fontSize:14, fontWeight:600, cursor:"pointer", marginBottom:8 }}>
+              {uploading ? "⏳ Uploading..." : "📸 Upload Photo from Camera Roll"}
+            </button>
+            {f.img && (
+              <div style={{ position:"relative" }}>
+                <img src={f.img} alt="preview" style={{ width:"100%", height:160, objectFit:"cover", borderRadius:12, border:"1.5px solid #E5DDD3" }} onError={e=>e.target.style.display="none"}/>
+                <button onClick={()=>set("img","")} style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.6)", color:"#fff", border:"none", borderRadius:"50%", width:28, height:28, cursor:"pointer", fontSize:14 }}>✕</button>
+              </div>
+            )}
+          </div>
+
           {[{label:"Type",k:"type",opts:["Condo","House","Apartment","Villa"]},{label:"Status",k:"status",opts:["For Sale","For Rent"]},{label:"Badge",k:"tag",opts:ALL_TAGS}].map(sel=>(
             <div key={sel.k}>
               <LBL t={sel.label}/>
@@ -117,11 +147,6 @@ function PropForm({ init, onSave, onClose }) {
               <input type="number" value={f[n.k]} onChange={e=>set(n.k,Number(e.target.value))} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
             </div>
           ))}
-          {f.img && (
-            <div style={{ gridColumn:"1/-1" }}>
-              <img src={f.img} alt="preview" style={{ width:"100%", height:140, objectFit:"cover", borderRadius:10, border:"1.5px solid #E5DDD3" }} onError={e=>e.target.style.display="none"}/>
-            </div>
-          )}
         </div>
         <div style={{ display:"flex", gap:10, marginTop:20 }}>
           <button onClick={onClose} style={{ flex:1, background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"11px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
