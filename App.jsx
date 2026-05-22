@@ -176,7 +176,7 @@ function AdminLogin({ onLogin }) {
           {err && <p style={{ color:"#EF4444", fontSize:12, marginTop:6 }}>❌ Wrong password. Try again.</p>}
         </div>
         <button onClick={tryLogin} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Sign In →</button>
-        <p style={{ color:"#4A3A2A", fontSize:11, marginTop:18 }}>Password: <span style={{ color:"#C9A96E" }}>annie2024</span></p>
+
       </div>
     </div>
   );
@@ -582,7 +582,7 @@ export default function App() {
             onView={()=>{ setScreen("site"); setAdminView(true); }}/>
         : <PublicSite props={props} isAdmin={adminView}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
-            onGoAdmin={()=>setScreen("login")}/>
+            onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
       }
       {form !== null && <PropForm init={form&&form.id?form:null} onSave={handleSave} onClose={()=>setForm(null)}/>}
       {delId !== null && (
