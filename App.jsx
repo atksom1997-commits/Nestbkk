@@ -382,7 +382,7 @@ function AdminLogin({ onLogin }) {
       <div style={{ background:"#1C1410", border:"1px solid rgba(201,169,110,0.3)", borderRadius:22, padding:"44px 36px", width:"100%", maxWidth:380, textAlign:"center" }}>
         <div style={{ fontSize:44, marginBottom:14 }}>🏡</div>
         <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:30, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>
-          Nest<span style={{ color:"#C9A96E" }}>BKK</span>
+          Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span>
         </div>
         <div style={{ color:"#7B6A5A", fontSize:13, marginBottom:28 }}>Admin Panel — Real Estate By Annie</div>
         <div style={{ textAlign:"left", marginBottom:14 }}>
@@ -403,7 +403,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView }) {
       <div style={{ background:"#1C1410", padding:"0 clamp(16px,4vw,40px)", borderBottom:"1px solid rgba(201,169,110,0.2)", position:"sticky", top:0, zIndex:50 }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", height:60 }}>
           <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>
-            🏡 Nest<span style={{ color:"#C9A96E" }}>BKK</span> <span style={{ color:"#7B6A5A", fontSize:13, fontWeight:400 }}>Admin</span>
+            🏡 Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span> <span style={{ color:"#7B6A5A", fontSize:13, fontWeight:400 }}>Admin</span>
           </span>
           <div style={{ display:"flex", gap:10, alignItems:"center" }}>
             <span style={{ color:"#7B6A5A", fontSize:13 }}>Hi <b style={{ color:"#C9A96E" }}>Annie</b> 👋</span>
@@ -532,8 +532,8 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <div style={{ width:36, height:36, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17 }}>🏡</div>
             <div>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0", lineHeight:1 }}>Nest<span style={{ color:"#C9A96E" }}>BKK</span></div>
-              <div style={{ fontSize:8, color:"#7B6A5A", letterSpacing:"0.22em", textTransform:"uppercase" }}>Bangkok Property</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:15, fontWeight:700, color:"#F5E9D0", lineHeight:1 }}>Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
+              <div style={{ fontSize:8, color:"#7B6A5A", letterSpacing:"0.22em", textTransform:"uppercase" }}>Bangkok Property Finder</div>
             </div>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:18 }}>
@@ -766,10 +766,10 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       <footer style={{ background:"#0F0A04", padding:"36px clamp(20px,5vw,60px) 22px", borderTop:"1px solid rgba(201,169,110,0.12)" }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:16, alignItems:"center" }}>
           <div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>🏡 Nest<span style={{ color:"#C9A96E" }}>BKK</span></div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>🏡 Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
             <div style={{ color:"#4A3A2A", fontSize:12, marginTop:4 }}>{OWNER.email} · {OWNER.phoneDisplay}</div>
           </div>
-          <div style={{ color:"#4A3A2A", fontSize:12 }}>© 2026 NestBKK · Real Estate By Annie · Bangkok, Thailand</div>
+          <div style={{ color:"#4A3A2A", fontSize:12 }}>© 2026 Bangkok Property Finder Finder · Real Estate By Annie · Bangkok, Thailand</div>
         </div>
       </footer>
     </div>
@@ -779,7 +779,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
 export default function App() {
   const [screen, setScreen]     = useState("site");
   const [props, setProps]       = useState(() => {
-    try { const s = localStorage.getItem("nestbkk_props"); return s ? JSON.parse(s) : SEED; } catch { return SEED; }
+    try { const s = localStorage.getItem("bangkokpropertyfinder_props"); return s ? JSON.parse(s) : SEED; } catch { return SEED; }
   });
   const [form, setForm]         = useState(null);
   const [delId, setDelId]       = useState(null);
@@ -787,7 +787,7 @@ export default function App() {
   const [adminView, setAdminView] = useState(false);
 
   useEffect(() => {
-    try { localStorage.setItem("nestbkk_props", JSON.stringify(props)); } catch (_) {}
+    try { localStorage.setItem("bangkokpropertyfinder_props", JSON.stringify(props)); } catch (_) {}
   }, [props]);
 
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
