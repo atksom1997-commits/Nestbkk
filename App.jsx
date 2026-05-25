@@ -380,7 +380,14 @@ function AdminLogin({ onLogin }) {
   return (
     <div style={{ minHeight:"100vh", background:"#0F0A04", display:"flex", alignItems:"center", justifyContent:"center", padding:20, fontFamily:"'Outfit',sans-serif" }}>
       <div style={{ background:"#1C1410", border:"1px solid rgba(201,169,110,0.3)", borderRadius:22, padding:"44px 36px", width:"100%", maxWidth:380, textAlign:"center" }}>
-        <div style={{ fontSize:44, marginBottom:14 }}>🏡</div>
+        <div style={{ display:"flex", justifyContent:"center", marginBottom:14 }}>
+          <svg width="52" height="48" viewBox="0 0 42 38">
+            <path d="M2,20 L21,3 L40,20" fill="none" stroke="#F5E9D0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <line x1="8" y1="20" x2="8" y2="38" stroke="#F5E9D0" strokeWidth="1.5" strokeLinecap="round" opacity="0.3"/>
+            <line x1="34" y1="20" x2="34" y2="38" stroke="#F5E9D0" strokeWidth="1.5" strokeLinecap="round" opacity="0.3"/>
+            <line x1="21" y1="3" x2="21" y2="38" stroke="#F5E9D0" strokeWidth="1" strokeLinecap="round" opacity="0.15"/>
+          </svg>
+        </div>
         <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:30, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>
           Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span>
         </div>
@@ -403,7 +410,14 @@ function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView }) {
       <div style={{ background:"#1C1410", padding:"0 clamp(16px,4vw,40px)", borderBottom:"1px solid rgba(201,169,110,0.2)", position:"sticky", top:0, zIndex:50 }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", height:60 }}>
           <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>
-            🏡 Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span> <span style={{ color:"#7B6A5A", fontSize:13, fontWeight:400 }}>Admin</span>
+            <span style={{ display:"inline-flex", alignItems:"center", gap:10 }}>
+              <svg width="24" height="22" viewBox="0 0 42 38">
+                <path d="M2,20 L21,3 L40,20" fill="none" stroke="#F5E9D0" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="8" y1="20" x2="8" y2="38" stroke="#F5E9D0" strokeWidth="1.5" strokeLinecap="round" opacity="0.25"/>
+                <line x1="34" y1="20" x2="34" y2="38" stroke="#F5E9D0" strokeWidth="1.5" strokeLinecap="round" opacity="0.25"/>
+              </svg>
+              Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span> <span style={{ color:"#7B6A5A", fontSize:13, fontWeight:400 }}>Admin</span>
+            </span>
           </span>
           <div style={{ display:"flex", gap:10, alignItems:"center" }}>
             <span style={{ color:"#7B6A5A", fontSize:13 }}>Hi <b style={{ color:"#C9A96E" }}>Annie</b> 👋</span>
@@ -527,25 +541,65 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, background:"rgba(18,10,4,0.95)", backdropFilter:"blur(18px)", borderBottom:"1px solid rgba(201,169,110,0.18)", padding:"0 clamp(16px,4vw,48px)" }}>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, background:"rgba(253,250,246,0.98)", backdropFilter:"blur(18px)", borderBottom:"1px solid rgba(201,169,110,0.25)", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:"0 clamp(16px,4vw,48px)" }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <div style={{ width:36, height:36, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17 }}>🏡</div>
+            {/* Option 1 Style — Skyline + House Roof Logo */}
+            <svg width="42" height="38" viewBox="0 0 100 90" style={{ flexShrink:0 }}>
+              <defs>
+                <linearGradient id="lg" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#C9A96E"/>
+                  <stop offset="100%" stopColor="#7C4F1A"/>
+                </linearGradient>
+                <clipPath id="cr">
+                  <polygon points="0,0 100,0 100,62 50,30 0,62"/>
+                </clipPath>
+              </defs>
+              {/* Buildings clipped above roof line */}
+              <g clipPath="url(#cr)" fill="url(#lg)">
+                {/* Left rectangular buildings */}
+                <rect x="4" y="40" width="9" height="50"/>
+                <rect x="15" y="30" width="11" height="60"/>
+                {/* Left small Thai spire */}
+                <path d="M 28,62 C 26,54 25,46 27,39 C 28,33 31,29 34,29 C 37,29 40,33 41,39 C 43,46 42,54 40,62 Z"/>
+                {/* Center main tall prang */}
+                <path d="M 41,65 C 38,54 36,42 39,30 C 41,21 46,13 50,5 C 54,13 59,21 61,30 C 64,42 62,54 59,65 Z"/>
+                {/* Right small Thai spire */}
+                <path d="M 59,62 C 58,54 57,46 59,39 C 60,33 63,29 66,29 C 69,29 72,33 73,39 C 75,46 74,54 72,62 Z"/>
+                {/* Right rectangular buildings */}
+                <rect x="74" y="30" width="11" height="60"/>
+                <rect x="87" y="40" width="9" height="50"/>
+              </g>
+              {/* House roof chevron */}
+              <path d="M 0,62 L 50,30 L 100,62" fill="none" stroke="url(#lg)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+              {/* House walls */}
+              <line x1="0" y1="62" x2="0" y2="88" stroke="url(#lg)" strokeWidth="2.5"/>
+              <line x1="100" y1="62" x2="100" y2="88" stroke="url(#lg)" strokeWidth="2.5"/>
+              {/* Base */}
+              <line x1="0" y1="88" x2="100" y2="88" stroke="url(#lg)" strokeWidth="1.5"/>
+              {/* Door */}
+              <path d="M 44,88 L 44,76 Q 50,71 56,76 L 56,88" fill="none" stroke="url(#lg)" strokeWidth="1.8"/>
+            </svg>
+            {/* Text */}
             <div>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:15, fontWeight:700, color:"#F5E9D0", lineHeight:1 }}>Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
-              <div style={{ fontSize:8, color:"#7B6A5A", letterSpacing:"0.22em", textTransform:"uppercase" }}>Bangkok Property Finder</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#1C1410", letterSpacing:"0.1em", lineHeight:1 }}>BANGKOK</div>
+              <div style={{ display:"flex", alignItems:"center", gap:4, marginTop:3 }}>
+                <div style={{ width:10, height:"1px", background:"#9B6B2A" }}/>
+                <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:8, color:"#9B6B2A", letterSpacing:"0.2em", textTransform:"uppercase", fontWeight:600 }}>Property Finder</span>
+                <div style={{ width:10, height:"1px", background:"#9B6B2A" }}/>
+              </div>
             </div>
           </div>
-          <div style={{ display:"flex", alignItems:"center", gap:18 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:20 }}>
             {["Buy","Rent","Contact"].map(l=>(
-              <a key={l} href={`#${l.toLowerCase()}`} style={{ color:"#C0B0A0", fontSize:13, fontWeight:500, textDecoration:"none" }}
-                onMouseEnter={e=>e.target.style.color="#C9A96E"} onMouseLeave={e=>e.target.style.color="#C0B0A0"}>{l}</a>
+              <a key={l} href={`#${l.toLowerCase()}`} style={{ color:"#6B5E52", fontSize:13, fontWeight:500, textDecoration:"none", letterSpacing:"0.04em" }}
+                onMouseEnter={e=>e.target.style.color="#C9A96E"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>{l}</a>
             ))}
-            <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#C0B0A0", fontSize:13, fontWeight:500, textDecoration:"none" }}
-              onMouseEnter={e=>e.target.style.color="#E1306C"} onMouseLeave={e=>e.target.style.color="#C0B0A0"}>
+            <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#6B5E52", fontSize:12, fontWeight:500, textDecoration:"none" }}
+              onMouseEnter={e=>e.target.style.color="#E1306C"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>
               📸 @{OWNER.ig}
             </a>
-            <button onClick={onGoAdmin} style={{ background:"rgba(201,169,110,0.1)", color:"#C9A96E", border:"1px solid rgba(201,169,110,0.28)", padding:"7px 15px", borderRadius:20, fontSize:12, fontWeight:600, cursor:"pointer" }}>🔐 Admin</button>
+            <button onClick={onGoAdmin} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"7px 16px", borderRadius:20, fontSize:12, fontWeight:600, cursor:"pointer", letterSpacing:"0.03em" }}>🔐 Admin</button>
           </div>
         </div>
       </nav>
@@ -557,13 +611,13 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
         <div style={{ position:"absolute", top:"13%", right:"7%", width:200, height:200, borderRadius:"50%", border:"1px solid rgba(201,169,110,0.18)", animation:"floatBob 5s ease-in-out infinite", pointerEvents:"none" }}/>
 
         <div style={{ position:"relative", zIndex:2, textAlign:"center", padding:"0 20px", maxWidth:900, width:"100%" }}>
-          <div style={{ ...fadeUp(0.1), display:"inline-flex", alignItems:"center", gap:8, background:"rgba(201,169,110,0.13)", border:"1px solid rgba(201,169,110,0.36)", borderRadius:24, padding:"6px 16px", marginBottom:22 }}>
+          <div style={{ ...fadeUp(0.1), display:"inline-flex", alignItems:"center", gap:8, background:"rgba(245,158,11,0.12)", border:"1px solid rgba(245,158,11,0.35)", borderRadius:24, padding:"6px 16px", marginBottom:22 }}>
             <span>🇹🇭</span>
-            <span style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase" }}>Thailand Property Specialist</span>
+            <span style={{ color:"#F59E0B", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase" }}>Thailand Property Specialist</span>
           </div>
           <div style={fadeUp(0.2)}>
             <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(40px,6.5vw,80px)", fontWeight:700, color:"#F5E9D0", lineHeight:1.08, marginBottom:18, textShadow:"0 4px 30px rgba(0,0,0,0.5)" }}>
-              Your Dream Home<br/><em style={{ color:"#C9A96E" }}>Awaits in Thailand</em>
+              Your Dream Home<br/><em style={{ color:"#F59E0B" }}>Awaits in Thailand</em>
             </h1>
             <p style={{ color:"#B0A090", fontSize:"clamp(14px,1.8vw,17px)", lineHeight:1.8, maxWidth:500, margin:"0 auto 36px" }}>
               Condos, houses &amp; apartments for rent and sale — personally curated by <strong style={{ color:"#C9A96E" }}>Annie</strong>, your Bangkok real estate expert.
@@ -594,7 +648,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
           <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:16 }}>
             {[["18,500+","Properties"],["9,200+","Happy Clients"],["48","Cities"],["15+","Years Exp"]].map(([n,l])=>(
               <div key={l} style={{ textAlign:"center" }}>
-                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(22px,3vw,36px)", fontWeight:700, color:"#C9A96E", lineHeight:1 }}>{n}</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(22px,3vw,36px)", fontWeight:700, color:"#F59E0B", lineHeight:1 }}>{n}</div>
                 <div style={{ color:"#7B6A5A", fontSize:10, marginTop:3, letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500 }}>{l}</div>
               </div>
             ))}
@@ -606,7 +660,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       <section id="buy" style={{ padding:"72px clamp(20px,5vw,60px)", maxWidth:1200, margin:"0 auto" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:28, flexWrap:"wrap", gap:14 }}>
           <div>
-            <div style={{ color:"#C9A96E", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:8 }}>Live Listings</div>
+            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:8 }}>Live Listings</div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>Properties in {city}</h2>
           </div>
           <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
@@ -632,7 +686,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       <section id="rent" style={{ background:"linear-gradient(135deg,#1C1410 0%,#2E1E0E 100%)", padding:"72px clamp(20px,5vw,60px)" }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:48, alignItems:"center" }}>
           <div>
-            <div style={{ color:"#C9A96E", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>Your Agent</div>
+            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>Your Agent</div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#F5E9D0", marginBottom:16 }}>
               Real Estate<br/><em style={{ color:"#C9A96E" }}>By Annie</em>
             </h2>
@@ -672,7 +726,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       {/* CITIES */}
       <section style={{ padding:"72px clamp(20px,5vw,60px)", maxWidth:1200, margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:36 }}>
-          <div style={{ color:"#C9A96E", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>Explore</div>
+          <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>Explore</div>
           <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>Browse by City</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(148px,1fr))", gap:13 }}>
@@ -695,7 +749,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       <section id="contact" style={{ background:"#F3EEE8", padding:"72px clamp(20px,5vw,60px)" }}>
         <div style={{ maxWidth:860, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:36 }}>
-            <div style={{ color:"#C9A96E", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>Get in Touch</div>
+            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>Get in Touch</div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>Contact Annie</h2>
             <p style={{ color:"#7B6A5A", fontSize:14, marginTop:8 }}>Annie replies within 24 hours</p>
           </div>
@@ -766,7 +820,14 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       <footer style={{ background:"#0F0A04", padding:"36px clamp(20px,5vw,60px) 22px", borderTop:"1px solid rgba(201,169,110,0.12)" }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:16, alignItems:"center" }}>
           <div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>🏡 Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <svg width="28" height="26" viewBox="0 0 42 38">
+                <path d="M2,20 L21,3 L40,20" fill="none" stroke="#F5E9D0" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="8" y1="20" x2="8" y2="38" stroke="#F5E9D0" strokeWidth="1.2" strokeLinecap="round" opacity="0.25"/>
+                <line x1="34" y1="20" x2="34" y2="38" stroke="#F5E9D0" strokeWidth="1.2" strokeLinecap="round" opacity="0.25"/>
+              </svg>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#F5E9D0", letterSpacing:"0.1em" }}>BANGKOK <span style={{ color:"#C9A96E", fontStyle:"italic", fontWeight:400 }}>Property Finder</span></div>
+            </div>
             <div style={{ color:"#4A3A2A", fontSize:12, marginTop:4 }}>{OWNER.email} · {OWNER.phoneDisplay}</div>
           </div>
           <div style={{ color:"#4A3A2A", fontSize:12 }}>© 2026 Bangkok Property Finder Finder · Real Estate By Annie · Bangkok, Thailand</div>
