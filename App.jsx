@@ -404,9 +404,113 @@ function AdminLogin({ onLogin }) {
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView, onImportCSV, onImportSheets }) {
+  const [sheetsUrl, setSheetsUrl] = useState("");
+  const [sheetsLoading, setSheetsLoading] = useState(false);
+  const [sheetsMsg, setSheetsMsg] = useState("");
+  const [showImport, setShowImport] = useState(false);
+  const csvRef = useRef(null);
+
+  const handleCSV = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const text = ev.target.result;
+        const lines = text.trim().split("\n");
+        const headers = lines[0].split(",").map(h => h.trim().replace(/"/g,"").toLowerCase());
+        const imported = lines.slice(1).map((line, i) => {
+          const vals = line.split(",").map(v => v.trim().replace(/"/g,""));
+          const obj = {};
+          headers.forEach((h, idx) => { obj[h] = vals[idx] || ""; });
+          return {
+            id: Date.now() + i,
+            title: obj.title || obj.name || "Untitled",
+            location: obj.location || obj.area || "",
+            type: obj.type || "Condo",
+            status: obj.status || "For Sale",
+            price: obj.price || "",
+            beds: Number(obj.beds || obj.bedrooms || 1),
+            baths: Number(obj.baths || obj.bathrooms || 1),
+            sqm: Number(obj.sqm || obj.size || obj.area_sqm || 0),
+            img: obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
+            imgs: [obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80"],
+            tag: obj.tag || obj.badge || "New",
+            bts: obj.bts || obj.transport || "",
+            furnished: obj.furnished || "",
+            parking: obj.parking || "",
+            pets: obj.pets || "",
+            facilities: obj.facilities || "",
+            maintenance: obj.maintenance || "",
+            available: obj.available || "Now",
+            floor: obj.floor || "",
+            totalFloors: obj.totalfloors || obj.total_floors || "",
+          };
+        }).filter(p => p.title !== "Untitled" || p.location);
+        onImportCSV(imported);
+      } catch(err) {
+        alert("❌ Could not read file. Make sure it's a valid CSV.");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  const handleSheets = async () => {
+    if (!sheetsUrl) return;
+    setSheetsLoading(true);
+    setSheetsMsg("");
+    try {
+      // Extract sheet ID from URL
+      const match = sheetsUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (!match) { setSheetsMsg("❌ Invalid Google Sheets URL"); setSheetsLoading(false); return; }
+      const sheetId = match[1];
+      const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+      const res = await fetch(csvUrl);
+      if (!res.ok) { setSheetsMsg("❌ Could not access sheet. Make sure it's public (Anyone with link can view)."); setSheetsLoading(false); return; }
+      const text = await res.text();
+      const lines = text.trim().split("\n");
+      const headers = lines[0].split(",").map(h => h.trim().replace(/"/g,"").toLowerCase());
+      const imported = lines.slice(1).map((line, i) => {
+        const vals = line.split(",").map(v => v.trim().replace(/"/g,""));
+        const obj = {};
+        headers.forEach((h, idx) => { obj[h] = vals[idx] || ""; });
+        return {
+          id: Date.now() + i,
+          title: obj.title || obj.name || "Untitled",
+          location: obj.location || obj.area || "",
+          type: obj.type || "Condo",
+          status: obj.status || "For Sale",
+          price: obj.price || "",
+          beds: Number(obj.beds || obj.bedrooms || 1),
+          baths: Number(obj.baths || obj.bathrooms || 1),
+          sqm: Number(obj.sqm || obj.size || 0),
+          img: obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
+          imgs: [obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80"],
+          tag: obj.tag || "New",
+          bts: obj.bts || obj.transport || "",
+          furnished: obj.furnished || "",
+          parking: obj.parking || "",
+          pets: obj.pets || "",
+          facilities: obj.facilities || "",
+          maintenance: obj.maintenance || "",
+          available: obj.available || "Now",
+          floor: obj.floor || "",
+          totalFloors: obj.totalfloors || obj.total_floors || "",
+        };
+      }).filter(p => p.title !== "Untitled" || p.location);
+      onImportCSV(imported);
+      setSheetsMsg(`✅ Imported ${imported.length} listings from Google Sheets!`);
+    } catch(err) {
+      setSheetsMsg("❌ Failed to fetch sheet. Check the URL and make sure it's public.");
+    }
+    setSheetsLoading(false);
+  };
+
   return (
     <div style={{ minHeight:"100vh", background:"#F7F3EE", fontFamily:"'Outfit',sans-serif" }}>
+      <input ref={csvRef} type="file" accept=".csv,.xlsx" onChange={handleCSV} style={{ display:"none" }}/>
       <div style={{ background:"#1C1410", padding:"0 clamp(16px,4vw,40px)", borderBottom:"1px solid rgba(201,169,110,0.2)", position:"sticky", top:0, zIndex:50 }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", height:60 }}>
           <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>
@@ -436,6 +540,71 @@ function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView }) {
             </div>
           ))}
         </div>
+
+        {/* ── IMPORT SECTION ── */}
+        <div style={{ background:"#fff", borderRadius:18, padding:"22px 24px", marginBottom:22, border:"1px solid #EDE8E0", boxShadow:"0 3px 18px rgba(0,0,0,0.04)" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showImport ? 20 : 0 }}>
+            <div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410" }}>📥 Import Listings</div>
+              <div style={{ color:"#A89580", fontSize:12, marginTop:2 }}>Upload from Excel/CSV or sync from Google Sheets</div>
+            </div>
+            <button onClick={()=>setShowImport(!showImport)}
+              style={{ background: showImport?"#F3EEE8":"linear-gradient(135deg,#C9A96E,#9B6B2A)", color: showImport?"#6B5E52":"#fff", border:"none", padding:"8px 18px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>
+              {showImport ? "✕ Close" : "Open Import ↓"}
+            </button>
+          </div>
+
+          {showImport && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:18 }}>
+
+              {/* CSV / Excel Upload */}
+              <div style={{ background:"#F7F3EE", borderRadius:14, padding:"22px 20px" }}>
+                <div style={{ fontSize:26, marginBottom:10 }}>📊</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Excel / CSV File</div>
+                <p style={{ color:"#7B6A5A", fontSize:13, lineHeight:1.7, marginBottom:16 }}>
+                  Save your listings in Excel or CSV format and upload here. All listings import instantly.
+                </p>
+                <div style={{ background:"#fff", borderRadius:10, padding:"12px 14px", marginBottom:14, border:"1px solid #EDE8E0" }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:"#A89580", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>Required columns:</div>
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
+                    {["title","location","price","status","type","beds","baths","sqm"].map(col=>(
+                      <span key={col} style={{ background:"#1C1410", color:"#C9A96E", fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:6, fontFamily:"monospace" }}>{col}</span>
+                    ))}
+                  </div>
+                  <div style={{ fontSize:11, color:"#A89580", marginTop:8 }}>Optional: img, bts, furnished, parking, pets, facilities</div>
+                </div>
+                <button onClick={()=>csvRef.current.click()}
+                  style={{ width:"100%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"11px", borderRadius:11, fontSize:14, fontWeight:700, cursor:"pointer" }}>
+                  📂 Choose CSV / Excel File
+                </button>
+              </div>
+
+              {/* Google Sheets */}
+              <div style={{ background:"#F0FDF4", borderRadius:14, padding:"22px 20px" }}>
+                <div style={{ fontSize:26, marginBottom:10 }}>📋</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Google Sheets</div>
+                <p style={{ color:"#7B6A5A", fontSize:13, lineHeight:1.7, marginBottom:14 }}>
+                  Paste your Google Sheet link below. Make sure it's set to <b>"Anyone with link can view"</b>.
+                </p>
+                <div style={{ background:"#fff", borderRadius:10, padding:"11px 13px", marginBottom:6, border:"1px solid #BBF7D0", fontSize:12, color:"#166534", lineHeight:1.7 }}>
+                  <b>How to make sheet public:</b><br/>
+                  Google Sheets → Share → Change to <i>"Anyone with link"</i> → Viewer → Copy link
+                </div>
+                <input value={sheetsUrl} onChange={e=>setSheetsUrl(e.target.value)}
+                  placeholder="https://docs.google.com/spreadsheets/d/..."
+                  style={{ ...S.inp({marginBottom:10, fontSize:12, marginTop:10}), borderColor:"#BBF7D0" }}
+                  onFocus={e=>e.target.style.borderColor="#16A34A"} onBlur={e=>e.target.style.borderColor="#BBF7D0"}/>
+                {sheetsMsg && <div style={{ fontSize:12, color: sheetsMsg.startsWith("✅")?"#16A34A":"#EF4444", marginBottom:8, fontWeight:600 }}>{sheetsMsg}</div>}
+                <button onClick={handleSheets} disabled={sheetsLoading}
+                  style={{ width:"100%", background:"#16A34A", color:"#fff", border:"none", padding:"11px", borderRadius:11, fontSize:14, fontWeight:700, cursor:"pointer", opacity: sheetsLoading?0.7:1 }}>
+                  {sheetsLoading ? "⏳ Importing..." : "🔄 Import from Google Sheets"}
+                </button>
+              </div>
+
+            </div>
+          )}
+        </div>
+
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18, flexWrap:"wrap", gap:12 }}>
           <div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1C1410" }}>All Listings</h2>
@@ -852,6 +1021,12 @@ export default function App() {
   }, [props]);
 
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
+
+  const handleImportCSV = (imported) => {
+    const merged = [...imported, ...props.filter(p => !imported.find(i => i.title === p.title))];
+    setProps(merged);
+    flash("✅ Imported " + imported.length + " listings successfully!");
+  };
 
   const handleSave = (data) => {
     const updated = form && form.id
