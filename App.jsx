@@ -23,7 +23,23 @@ const SEED = [
 
 const TAG_COLORS = { New:"#2563EB", Hot:"#DC2626", Popular:"#16A34A", Luxury:"#7C3AED", Featured:"#D97706", Reduced:"#EA580C" };
 const ALL_TYPES  = ["All","Condo","House","Apartment"];
-const ALL_CITIES = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
+const ALL_CITIES = [
+  "Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui",
+  "Chiang Rai","Krabi","Koh Phangan","Koh Chang","Rayong","Udon Thani",
+  "Khon Kaen","Nakhon Ratchasima","Cha Am","Phetchaburi","Ayutthaya",
+  "Kanchanaburi","Nonthaburi","Pathum Thani","Samut Prakan","Samut Sakhon",
+  "Nakhon Pathom","Suphan Buri","Lopburi","Saraburi","Chachoengsao",
+  "Chon Buri","Trat","Chanthaburi","Nakhon Sawan","Kamphaeng Phet",
+  "Phitsanulok","Sukhothai","Tak","Mae Sot","Lampang","Lamphun",
+  "Phrae","Nan","Phayao","Mae Hong Son","Uttaradit","Phetchabun",
+  "Roi Et","Maha Sarakham","Kalasin","Yasothon","Mukdahan","Sakon Nakhon",
+  "Nakhon Phanom","Nong Khai","Loei","Nong Bua Lamphu","Chaiyaphum",
+  "Buriram","Surin","Si Sa Ket","Ubon Ratchathani","Surat Thani",
+  "Ranong","Chumphon","Nakhon Si Thammarat","Phatthalung","Songkhla",
+  "Satun","Trang","Pattani","Yala","Narathiwat","Hat Yai",
+  "Koh Lanta","Koh Tao","Koh Phi Phi","Koh Lipe","Pai",
+  "Khao Yai","Bang Saen","Sri Racha","Prachuap Khiri Khan","Amnat Charoen"
+];","Phetchaburi","Prachuap Khiri Khan","Ayutthaya","Kanchanaburi"];
 const ALL_TAGS   = Object.keys(TAG_COLORS);
 
 const S = {
