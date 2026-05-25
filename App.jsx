@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
- 
+
 const ADMIN_USER = "annie";
 const ADMIN_PASS = "annie2024";
 const OWNER = {
@@ -375,29 +375,33 @@ function PropForm({ init, onSave, onClose }) {
 }
 
 function AdminLogin({ onLogin }) {
-  const [pw, setPw] = useState("");
-  const [err, setErr] = useState(false);
-  const tryLogin = () => { if(pw===ADMIN_PASS) onLogin(); else setErr(true); };
+  const [user, setUser] = useState("");
+  const [pw, setPw]     = useState("");
+  const [err, setErr]   = useState(false);
+  const tryLogin = () => {
+    if(user===ADMIN_USER && pw===ADMIN_PASS) onLogin();
+    else setErr(true);
+  };
   return (
     <div style={{ minHeight:"100vh", background:"#0F0A04", display:"flex", alignItems:"center", justifyContent:"center", padding:20, fontFamily:"'Outfit',sans-serif" }}>
       <div style={{ background:"#1C1410", border:"1px solid rgba(201,169,110,0.3)", borderRadius:22, padding:"44px 36px", width:"100%", maxWidth:380, textAlign:"center" }}>
-        <div style={{ display:"flex", justifyContent:"center", marginBottom:14 }}>
-          <svg width="52" height="48" viewBox="0 0 42 38">
-            <path d="M2,20 L21,3 L40,20" fill="none" stroke="#F5E9D0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <line x1="8" y1="20" x2="8" y2="38" stroke="#F5E9D0" strokeWidth="1.5" strokeLinecap="round" opacity="0.3"/>
-            <line x1="34" y1="20" x2="34" y2="38" stroke="#F5E9D0" strokeWidth="1.5" strokeLinecap="round" opacity="0.3"/>
-            <line x1="21" y1="3" x2="21" y2="38" stroke="#F5E9D0" strokeWidth="1" strokeLinecap="round" opacity="0.15"/>
-          </svg>
-        </div>
-        <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:30, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>
+        <div style={{ fontSize:44, marginBottom:14 }}>🏡</div>
+        <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>
           Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span>
         </div>
         <div style={{ color:"#7B6A5A", fontSize:13, marginBottom:28 }}>Admin Panel — Real Estate By Annie</div>
-        <div style={{ textAlign:"left", marginBottom:14 }}>
-          <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.08em", textTransform:"uppercase", display:"block", marginBottom:7 }}>Password</label>
-          <input type="password" value={pw} onChange={e=>{ setPw(e.target.value); setErr(false); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter password"
-            style={S.inp({ background:"#261C10", color:"#F5E9D0", borderColor:err?"#EF4444":"rgba(201,169,110,0.25)" })}/>
-          {err && <p style={{ color:"#EF4444", fontSize:12, marginTop:6 }}>❌ Wrong password. Try again.</p>}
+        <div style={{ display:"flex", flexDirection:"column", gap:14, textAlign:"left", marginBottom:20 }}>
+          <div>
+            <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.08em", textTransform:"uppercase", display:"block", marginBottom:7 }}>Username</label>
+            <input type="text" value={user} onChange={e=>{ setUser(e.target.value); setErr(false); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter username"
+              style={S.inp({ background:"#261C10", color:"#F5E9D0", borderColor:err?"#EF4444":"rgba(201,169,110,0.25)" })}/>
+          </div>
+          <div>
+            <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.08em", textTransform:"uppercase", display:"block", marginBottom:7 }}>Password</label>
+            <input type="password" value={pw} onChange={e=>{ setPw(e.target.value); setErr(false); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter password"
+              style={S.inp({ background:"#261C10", color:"#F5E9D0", borderColor:err?"#EF4444":"rgba(201,169,110,0.25)" })}/>
+          </div>
+          {err && <p style={{ color:"#EF4444", fontSize:12 }}>❌ Wrong username or password.</p>}
         </div>
         <button onClick={tryLogin} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Sign In →</button>
       </div>
