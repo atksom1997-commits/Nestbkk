@@ -13,12 +13,12 @@ const OWNER = {
 };
 
 const SEED = [
-  { id:1, title:"Rhythm Sukhumvit 42", location:"Sukhumvit, Bangkok", type:"Condo", status:"For Sale", price:"฿5,200,000", beds:1, baths:1, sqm:34, floor:"12", totalFloors:"35", furnished:"Fully Furnished", available:"Now", maintenance:"฿3,500/mo", parking:"1 slot", pets:"Not allowed", facilities:"Pool, Gym, Security, Lobby", bts:"Ekkamai BTS — 5 min walk", imgs:["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"], tag:"New" },
-  { id:2, title:"Pool Villa Rawai", location:"Rawai, Phuket", type:"House", status:"For Rent", price:"฿85,000/mo", beds:4, baths:3, sqm:320, floor:"1", totalFloors:"2", furnished:"Fully Furnished", available:"Now", maintenance:"Included", parking:"2 slots", pets:"Allowed", facilities:"Private Pool, Garden, Security", bts:"5 min to Rawai Beach", imgs:["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80","https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80"], tag:"Hot" },
-  { id:3, title:"Nimman Studio", location:"Nimmanhaemin, Chiang Mai", type:"Apartment", status:"For Rent", price:"฿18,000/mo", beds:1, baths:1, sqm:42, floor:"4", totalFloors:"8", furnished:"Fully Furnished", available:"Now", maintenance:"฿800/mo", parking:"1 slot", pets:"Not allowed", facilities:"Pool, Gym, Co-working space", bts:"Walk to Maya Mall — 3 min", imgs:["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80","https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"], tag:"Popular" },
-  { id:4, title:"Thonglor Townhouse", location:"Thonglor, Bangkok", type:"House", status:"For Sale", price:"฿12,900,000", beds:3, baths:3, sqm:220, floor:"1-3", totalFloors:"3", furnished:"Partially Furnished", available:"Now", maintenance:"฿2,000/mo", parking:"2 slots", pets:"Allowed", facilities:"Rooftop, Garden, Security", bts:"Thonglor BTS — 8 min walk", imgs:["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80","https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80","https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80"], tag:"New" },
-  { id:5, title:"Oceanview Penthouse", location:"Patong, Phuket", type:"Condo", status:"For Sale", price:"฿28,000,000", beds:3, baths:3, sqm:145, floor:"18", totalFloors:"18", furnished:"Fully Furnished", available:"Now", maintenance:"฿8,500/mo", parking:"2 slots", pets:"Not allowed", facilities:"Infinity Pool, Gym, Concierge, Sky Lounge", bts:"Patong Beach — 3 min drive", imgs:["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80","https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"], tag:"Luxury" },
-  { id:6, title:"Lanna Heritage Villa", location:"Old City, Chiang Mai", type:"House", status:"For Rent", price:"฿45,000/mo", beds:3, baths:2, sqm:210, floor:"1-2", totalFloors:"2", furnished:"Fully Furnished", available:"Now", maintenance:"Included", parking:"2 slots", pets:"Allowed", facilities:"Garden, Pool, Traditional Design", bts:"Inside Old City Moat — walk everywhere", imgs:["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"], tag:"Featured" },
+  { id:1, title:"Rhythm Sukhumvit 42", location:"Sukhumvit, Bangkok", type:"Condo", status:"For Sale", price:"฿5,200,000", beds:1, baths:1, sqm:34, floor:"12", totalFloors:"35", furnished:"Fully Furnished", available:"Now", maintenance:"฿3,500/mo", parking:"1 slot", pets:"Not allowed", facilities:"Pool, Gym, Security, Lobby", bts:"Ekkamai BTS — 5 min walk", imgs:["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"], tag:"New", active:true },
+  { id:2, title:"Pool Villa Rawai", location:"Rawai, Phuket", type:"House", status:"For Rent", price:"฿85,000/mo", beds:4, baths:3, sqm:320, floor:"1", totalFloors:"2", furnished:"Fully Furnished", available:"Now", maintenance:"Included", parking:"2 slots", pets:"Allowed", facilities:"Private Pool, Garden, Security", bts:"5 min to Rawai Beach", imgs:["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80","https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80"], tag:"Hot", active:true },
+  { id:3, title:"Nimman Studio", location:"Nimmanhaemin, Chiang Mai", type:"Apartment", status:"For Rent", price:"฿18,000/mo", beds:1, baths:1, sqm:42, floor:"4", totalFloors:"8", furnished:"Fully Furnished", available:"Now", maintenance:"฿800/mo", parking:"1 slot", pets:"Not allowed", facilities:"Pool, Gym, Co-working space", bts:"Walk to Maya Mall — 3 min", imgs:["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80","https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"], tag:"Popular", active:true },
+  { id:4, title:"Thonglor Townhouse", location:"Thonglor, Bangkok", type:"House", status:"For Sale", price:"฿12,900,000", beds:3, baths:3, sqm:220, floor:"1-3", totalFloors:"3", furnished:"Partially Furnished", available:"Now", maintenance:"฿2,000/mo", parking:"2 slots", pets:"Allowed", facilities:"Rooftop, Garden, Security", bts:"Thonglor BTS — 8 min walk", imgs:["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80","https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80","https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80"], tag:"New", active:true },
+  { id:5, title:"Oceanview Penthouse", location:"Patong, Phuket", type:"Condo", status:"For Sale", price:"฿28,000,000", beds:3, baths:3, sqm:145, floor:"18", totalFloors:"18", furnished:"Fully Furnished", available:"Now", maintenance:"฿8,500/mo", parking:"2 slots", pets:"Not allowed", facilities:"Infinity Pool, Gym, Concierge, Sky Lounge", bts:"Patong Beach — 3 min drive", imgs:["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80","https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"], tag:"Luxury", active:true },
+  { id:6, title:"Lanna Heritage Villa", location:"Old City, Chiang Mai", type:"House", status:"For Rent", price:"฿45,000/mo", beds:3, baths:2, sqm:210, floor:"1-2", totalFloors:"2", furnished:"Fully Furnished", available:"Now", maintenance:"Included", parking:"2 slots", pets:"Allowed", facilities:"Garden, Pool, Traditional Design", bts:"Inside Old City Moat — walk everywhere", imgs:["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"], tag:"Featured", active:true },
 ];
 
 const TAG_COLORS = { New:"#2563EB", Hot:"#DC2626", Popular:"#16A34A", Luxury:"#7C3AED", Featured:"#D97706", Reduced:"#EA580C" };
@@ -409,7 +409,7 @@ function AdminLogin({ onLogin }) {
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView, onImportCSV, onImportSheets }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets }) {
   const [sheetsUrl, setSheetsUrl] = useState("");
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [sheetsMsg, setSheetsMsg] = useState("");
@@ -655,6 +655,9 @@ function AdminDash({ props, onAdd, onEdit, onDel, onLogout, onView, onImportCSV,
                       <div style={{ display:"flex", gap:7 }}>
                         <button onClick={()=>onEdit(p)} style={{ background:"#EFF6FF", color:"#2563EB", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>✏️ Edit</button>
                         <button onClick={()=>onDel(p.id)} style={{ background:"#FEF2F2", color:"#EF4444", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>🗑️ Delete</button>
+                        <button onClick={()=>onToggle(p.id)} style={{ background: p.active===false?"#FEF9C3":"#F0FDF4", color: p.active===false?"#854D0E":"#166534", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap" }}>
+                          {p.active===false ? "🔴 Hidden" : "🟢 Visible"}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -693,6 +696,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
   useEffect(() => { const t = setTimeout(() => setHeroOn(true), 80); return () => clearTimeout(t); }, []);
 
   const shown = props.filter(p => {
+    if (p.active === false) return false; // Hide sold/rented listings
     if (type !== "All" && p.type !== type) return false;
     if (status !== "All" && p.status !== status) return false;
     if (!p.location.toLowerCase().includes(city.toLowerCase())) return false;
@@ -980,6 +984,13 @@ export default function App() {
   }, [props]);
 
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
+
+  const handleToggle = (id) => {
+    const updated = props.map(p => p.id === id ? {...p, active: p.active === false ? true : false} : p);
+    setProps(updated);
+    const prop = props.find(p => p.id === id);
+    flash(prop?.active === false ? "🟢 Listing is now Visible!" : "🔴 Listing is now Hidden!");
+  };
 
   const handleImportCSV = (imported) => {
     const merged = [...imported, ...props.filter(p => !imported.find(i => i.title === p.title))];
