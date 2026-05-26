@@ -655,7 +655,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                       <div style={{ display:"flex", gap:7 }}>
                         <button onClick={()=>onEdit(p)} style={{ background:"#EFF6FF", color:"#2563EB", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>✏️ Edit</button>
                         <button onClick={()=>onDel(p.id)} style={{ background:"#FEF2F2", color:"#EF4444", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>🗑️ Delete</button>
-                        <button onClick={()=>onToggle(p.id)} style={{ background: p.active===false?"#FEF9C3":"#F0FDF4", color: p.active===false?"#854D0E":"#166534", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap" }}>
+                        <button onClick={e=>{ e.stopPropagation(); onToggle(p.id); }} style={{ background: p.active===false?"#FEF3C7":"#DCFCE7", color: p.active===false?"#92400E":"#166534", border:`2px solid ${p.active===false?"#F59E0B":"#16A34A"}`, padding:"6px 14px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", transition:"all 0.2s" }}>
                           {p.active===false ? "🔴 Hidden" : "🟢 Visible"}
                         </button>
                       </div>
@@ -981,10 +981,11 @@ export default function App() {
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
 
   const handleToggle = (id) => {
-    const updated = props.map(p => p.id === id ? {...p, active: p.active === false ? true : false} : p);
-    setProps(updated);
     const prop = props.find(p => p.id === id);
-    flash(prop?.active === false ? "🟢 Listing is now Visible!" : "🔴 Listing is now Hidden!");
+    const newActive = prop?.active === false ? true : false;
+    const updated = props.map(p => p.id === id ? {...p, active: newActive} : p);
+    setProps(updated);
+    flash(newActive ? "🟢 Listing is now Visible!" : "🔴 Listing is now Hidden!");
   };
 
   const handleImportCSV = (imported) => {
@@ -1013,9 +1014,10 @@ export default function App() {
   return (
     <>
       {screen === "admin"
-        ? <AdminDash props={props} onAdd={()=>setForm({})} onEdit={p=>setForm(p)} onDel={id=>setDelId(id)}
+        ? <AdminDash props={props} onAdd={()=>setForm({})} onEdit={p=>setForm(p)} onDel={id=>setDelId(id)} onToggle={handleToggle}
             onLogout={()=>{ setScreen("site"); setAdminView(false); }}
-            onView={()=>{ setScreen("site"); setAdminView(true); }}/>
+            onView={()=>{ setScreen("site"); setAdminView(true); }}
+            onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}/>
         : <PublicSite props={props} isAdmin={adminView}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
             onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
