@@ -427,25 +427,43 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     setAiLoading(true);
     setAiError("");
     try {
-      const prompt = "You are a real estate listing assistant. Extract property details from this description and return ONLY a valid JSON object with no markdown: {title, location, type (Condo/House/Apartment/Villa), status (For Sale/For Rent), price, beds, baths, sqm, floor, totalFloors, furnished, bts, facilities, parking, pets, maintenance, available, tag (New/Hot/Luxury)}. Description: " + aiInput;
+      const prompt = "You are a Thai real estate listing assistant. Read the property description and return ONLY a raw JSON object with no markdown, no code fences, no explanation. Just the JSON. Fields: title, location, type (Condo/House/Apartment/Villa), status (For Sale/For Rent), price (e.g. 8500000 or 30000/mo), beds, baths, sqm, floor, totalFloors, furnished (Fully/Partially/Unfurnished), bts, facilities, parking (yes/no), pets (yes/no), maintenance, available, tag (New/Hot/Luxury). Use empty string for unknown fields. Description: " + aiInput;
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt })
       });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        setAiError("API error " + res.status + ": " + (errData.error || "Check your Anthropic API key in Vercel."));
+        setAiLoading(false);
+        return;
+      }
       const data = await res.json();
-      const text = (data.content && data.content[0] && data.content[0].text) || "";
-      const start = text.indexOf("{"); const end = text.lastIndexOf("}"); const match = start>=0 && end>start ? [text.slice(start, end+1)] : null;
-      if (match) {
-        const parsed = JSON.parse(match[0]);
+      if (data.type === "error") {
+        setAiError("AI error: " + (data.error && data.error.message ? data.error.message : "Invalid API key. Set ANTHROPIC_API_KEY in Vercel."));
+        setAiLoading(false);
+        return;
+      }
+      const rawText = (data.content && data.content[0] && data.content[0].text) || "";
+      const cleaned = rawText.replace(/```json/gi,"").replace(/```/g,"").trim();
+      const start = cleaned.indexOf("{");
+      const end = cleaned.lastIndexOf("}");
+      if (start < 0 || end <= start) {
+        setAiError("No JSON in response. Try a more specific description.");
+        setAiLoading(false);
+        return;
+      }
+      try {
+        const parsed = JSON.parse(cleaned.slice(start, end + 1));
         onAIFill(parsed);
         setAiInput("");
         setShowAI(false);
-      } else {
-        setAiError("Could not parse response. Please try again.");
+      } catch(parseErr) {
+        setAiError("Could not read AI response. Please try a different description.");
       }
     } catch(err) {
-      setAiError("Error: " + err.message);
+      setAiError("Connection error: " + err.message);
     }
     setAiLoading(false);
   };
