@@ -420,6 +420,34 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const [aiError, setAiError] = useState("");
   const csvRef = useRef(null);
 
+  const runAI = async () => {
+    if (!aiInput.trim()) return;
+    setAiLoading(true);
+    setAiError("");
+    try {
+      const prompt = "You are a real estate listing assistant. Extract property details from this description and return ONLY a valid JSON object with no markdown: {title, location, type (Condo/House/Apartment/Villa), status (For Sale/For Rent), price, beds, baths, sqm, floor, totalFloors, furnished, bts, facilities, parking, pets, maintenance, available, tag (New/Hot/Luxury)}. Description: " + aiInput;
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] })
+      });
+      const data = await res.json();
+      const text = (data.content && data.content[0] && data.content[0].text) || "";
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) {
+        const parsed = JSON.parse(match[0]);
+        onAIFill(parsed);
+        setAiInput("");
+        setShowAI(false);
+      } else {
+        setAiError("Could not parse response. Please try again.");
+      }
+    } catch(err) {
+      setAiError("Error: " + err.message);
+    }
+    setAiLoading(false);
+  };
+
   const handleCSV = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -630,83 +658,27 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
               <div style={{ fontSize:28 }}>🤖</div>
               <div>
                 <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#fff" }}>AI Listing Assistant</div>
-                <div style={{ color:"rgba(255,255,255,0.6)", fontSize:12, marginTop:2 }}>พิมพ์รายละเอียดอสังหาฯ ภาษาไทยหรืออังกฤษ — AI จะกรอกข้อมูลให้อัตโนมัติ</div>
+                <div style={{ color:"rgba(255,255,255,0.6)", fontSize:12, marginTop:2 }}>Type property details in Thai or English — AI fills everything automatically</div>
               </div>
             </div>
             <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
               <textarea
                 value={aiInput}
                 onChange={e=>setAiInput(e.target.value)}
-                placeholder="ตัวอย่าง: คอนโด สุขุมวิท 24 ห้อง 2 นอน 2 น้ำ ขนาด 65 ตรม. ชั้น 15 ราคา 8.5 ล้านบาท มีสระว่ายน้ำ ฟิตเนส ใกล้ BTS พร้อมพงษ์ 5 นาที เฟอร์นิเจอร์ครบ&#10;&#10;Or in English: 2 bed 2 bath condo Sukhumvit 24, 65sqm floor 15, ฿8.5M, pool gym, 5 min Phrom Phong BTS, fully furnished"
+                placeholder="Example: 2 bed 2 bath condo Sukhumvit 24, 65sqm floor 15, price 8.5M baht, pool gym, 5 min Phrom Phong BTS, fully furnished"
                 rows={4}
                 style={{ flex:1, minWidth:200, padding:"12px 14px", border:"1.5px solid rgba(124,58,237,0.4)", borderRadius:12, fontSize:13, background:"rgba(255,255,255,0.08)", color:"#fff", fontFamily:"'Outfit',sans-serif", resize:"vertical" }}
                 onFocus={e=>e.target.style.borderColor="#A78BFA"}
                 onBlur={e=>e.target.style.borderColor="rgba(124,58,237,0.4)"}
               />
-              <button
-                onClick={async () => {
-                  if (!aiInput.trim()) return;
-                  setAiLoading(true);
-                  setAiError("");
-                  try {
-                    const res = await fetch("https://api.anthropic.com/v1/messages", {
-                      method:"POST",
-                      headers:{ "Content-Type":"application/json" },
-                      body: JSON.stringify({
-                        model: "claude-sonnet-4-20250514",
-                        max_tokens: 1000,
-                        messages:[{
-                          role:"user",
-                          content:`You are a Thai real estate listing assistant. Extract property details from this description and return ONLY a valid JSON object with these exact fields (no markdown, no explanation):
-{
-  "title": "short property name",
-  "location": "area, city",
-  "type": "Condo" or "House" or "Apartment" or "Villa",
-  "status": "For Sale" or "For Rent",
-  "price": "฿X,XXX,XXX or ฿XX,XXX/mo",
-  "beds": number,
-  "baths": number,
-  "sqm": number,
-  "floor": "floor number as string",
-  "totalFloors": "total floors as string",
-  "furnished": "Fully Furnished" or "Partially Furnished" or "Unfurnished",
-  "bts": "nearest BTS/MRT and walking time",
-  "facilities": "comma separated facilities",
-  "parking": "X slot(s)",
-  "pets": "Allowed" or "Not allowed",
-  "maintenance": "฿X,XXX/mo or Included",
-  "available": "Now or date",
-  "tag": "New" or "Hot" or "Luxury" or "Popular" or "Featured"
-}
-
-Property description: ${aiInput}`
-                        }]
-                      })
-                    });
-                    const data = await res.json();
-                    const text = data.content?.[0]?.text || "";
-                    const jsonMatch = text.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                      const parsed = JSON.parse(jsonMatch[0]);
-                      onAIFill(parsed);
-                      setAiInput("");
-                      setShowAI(false);
-                    } else {
-                      setAiError("❌ Could not parse response. Try again.");
-                    }
-                  } catch(err) {
-                    setAiError("❌ Error: " + err.message);
-                  }
-                  setAiLoading(false);
-                }}
-                disabled={aiLoading}
+              <button onClick={runAI} disabled={aiLoading}
                 style={{ background: aiLoading?"#6D28D9":"linear-gradient(135deg,#8B5CF6,#6D28D9)", color:"#fff", border:"none", padding:"12px 22px", borderRadius:12, fontSize:14, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", opacity: aiLoading?0.8:1 }}>
-                {aiLoading ? "⏳ Analyzing..." : "✨ Generate Listing"}
+                {aiLoading ? "Analyzing..." : "Generate Listing"}
               </button>
             </div>
             {aiError && <div style={{ color:"#FCA5A5", fontSize:12, marginTop:8 }}>{aiError}</div>}
             <div style={{ color:"rgba(255,255,255,0.4)", fontSize:11, marginTop:10 }}>
-              💡 รองรับภาษาไทยและภาษาอังกฤษ • AI จะกรอกฟอร์มให้อัตโนมัติ คุณสามารถแก้ไขก่อน Publish ได้
+              💡 Supports Thai and English • AI fills the form automatically • You can edit before publishing
             </div>
           </div>
         )}
