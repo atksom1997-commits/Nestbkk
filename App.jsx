@@ -433,7 +433,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
       });
       const data = await res.json();
       const text = (data.content && data.content[0] && data.content[0].text) || "";
-      const match = text.match(/\{[\s\S]*\}/);
+      const start = text.indexOf("{"); const end = text.lastIndexOf("}"); const match = start>=0 && end>start ? [text.slice(start, end+1)] : null;
       if (match) {
         const parsed = JSON.parse(match[0]);
         onAIFill(parsed);
