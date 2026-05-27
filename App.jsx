@@ -428,10 +428,10 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     setAiError("");
     try {
       const prompt = "You are a real estate listing assistant. Extract property details from this description and return ONLY a valid JSON object with no markdown: {title, location, type (Condo/House/Apartment/Villa), status (For Sale/For Rent), price, beds, baths, sqm, floor, totalFloors, furnished, bts, facilities, parking, pets, maintenance, available, tag (New/Hot/Luxury)}. Description: " + aiInput;
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] })
+        body: JSON.stringify({ prompt })
       });
       const data = await res.json();
       const text = (data.content && data.content[0] && data.content[0].text) || "";
