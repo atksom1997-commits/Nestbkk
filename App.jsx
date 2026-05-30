@@ -1051,7 +1051,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
 }
 
 export default function App() {
-  const [screen, setScreen]     = useState("site");
+  const [screen, setScreen]     = useState(() => { try { return localStorage.getItem("bpf_screen") === "admin" ? "admin" : "site"; } catch { return "site"; } });
   const [props, setProps]       = useState(() => {
     try { const s = localStorage.getItem("bangkokpropertyfinder_props"); return s ? JSON.parse(s) : SEED; } catch { return SEED; }
   });
@@ -1099,13 +1099,13 @@ export default function App() {
     flash("🗑️ Listing deleted.");
   };
 
-  if (screen === "login") return <AdminLogin onLogin={() => setScreen("admin")} />;
+  if (screen === "login") return <AdminLogin onLogin={() => { setScreen("admin"); localStorage.setItem("bpf_screen","admin"); }} />;
 
   return (
     <>
       {screen === "admin"
         ? <AdminDash props={props} onAdd={()=>setForm({})} onEdit={p=>setForm(p)} onDel={id=>setDelId(id)} onToggle={handleToggle}
-            onLogout={()=>{ setScreen("site"); setAdminView(false); }}
+            onLogout={()=>{ setScreen("site"); setAdminView(false); localStorage.removeItem("bpf_screen"); }}
             onView={()=>{ setScreen("site"); setAdminView(true); }}
             onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}
             onAIFill={handleAIFill}/>
