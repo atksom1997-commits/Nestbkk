@@ -66,8 +66,12 @@ function PropDetail({ p, onClose }) {
   const imgs = (() => {
     let arr = p.imgs;
     if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
-    if (!Array.isArray(arr) || arr.length === 0) arr = p.img ? [p.img] : [];
-    return arr.filter(Boolean);
+    if (!Array.isArray(arr)) arr = [];
+    // Only keep real photo URLs — ignore facility names or other text
+    const isImg = (x) => typeof x === "string" && (x.startsWith("http") || x.startsWith("data:"));
+    arr = arr.filter(isImg);
+    if (arr.length === 0 && isImg(p.img)) arr = [p.img];
+    return arr;
   })();
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(p.location+", Thailand")}`;
   const waUrl = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(`Hi Annie! I'm interested in ${p.title} at ${p.location} (${p.price}). Can you give me more details?`)}`;
@@ -202,8 +206,12 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
   const imgs = (() => {
     let arr = p.imgs;
     if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
-    if (!Array.isArray(arr) || arr.length === 0) arr = p.img ? [p.img] : [];
-    return arr.filter(Boolean);
+    if (!Array.isArray(arr)) arr = [];
+    // Only keep real photo URLs — ignore facility names or other text
+    const isImg = (x) => typeof x === "string" && (x.startsWith("http") || x.startsWith("data:"));
+    arr = arr.filter(isImg);
+    if (arr.length === 0 && isImg(p.img)) arr = [p.img];
+    return arr;
   })();
 
   useEffect(() => {
@@ -319,7 +327,7 @@ function PropForm({ init, onSave, onClose }) {
     if (!files.length) return;
     setUploading(true);
     setUploadMsg("Uploading...");
-    const newImgs = [...(f.imgs||[])];
+    const newImgs = [...(f.imgs||[])].filter(x => typeof x === "string" && (x.startsWith("http") || x.startsWith("data:")));
     let successCount = 0;
     for (const file of files) {
       if (SB_ON) {
@@ -771,7 +779,10 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
               <tbody>
                 {props.length===0 && <tr><td colSpan={6} style={{ padding:"50px", textAlign:"center", color:"#A89580" }}><div style={{ fontSize:36, marginBottom:10 }}>📭</div><div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20 }}>No listings yet</div></td></tr>}
                 {props.map((p,i)=>{
-                  const imgs = p.imgs||[p.img];
+                  let imgs = p.imgs;
+                  if (typeof imgs === "string") { try { imgs = JSON.parse(imgs); } catch { imgs = []; } }
+                  if (!Array.isArray(imgs)) imgs = [];
+                  imgs = imgs.filter(x => typeof x === "string" && (x.startsWith("http") || x.startsWith("data:")));
                   return (
                   <tr key={p.id} style={{ borderBottom:"1px solid #F3EEE8", background:i%2===0?"#fff":"#FDFAF6" }}
                     onMouseEnter={e=>e.currentTarget.style.background="#FBF7F2"}
