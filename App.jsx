@@ -9,10 +9,10 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const SB_ON = SUPABASE_URL !== "PASTE_YOUR_SUPABASE_URL";
 const SB_H = () => ({ "apikey": SUPABASE_ANON_KEY, "Authorization": "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", "Prefer": "return=representation" });
 async function sbLoad() { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?order=created_at.desc", { headers: SB_H() }); return r.ok ? await r.json() : null; } catch { return null; } }
-async function sbAdd(d) { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(d) }); return r.ok ? (await r.json())[0] : null; } catch { return null; } }
-async function sbUpdate(id, d) { try { await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "PATCH", headers: SB_H(), body: JSON.stringify(d) }); } catch {} }
+async function sbAdd(d) { const { id, created_at, ...clean } = d; try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(clean) }); if (!r.ok) { console.error("sbAdd failed:", await r.text()); return null; } return (await r.json())[0]; } catch(e) { console.error("sbAdd error:", e); return null; } }
+async function sbUpdate(id, d) { const { id: _ignore, created_at, ...clean } = d; try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "PATCH", headers: SB_H(), body: JSON.stringify(clean) }); if (!r.ok) console.error("sbUpdate failed:", await r.text()); } catch(e) { console.error("sbUpdate error:", e); } }
 async function sbDelete(id) { try { await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "DELETE", headers: SB_H() }); } catch {} }
-async function sbBulk(list) { try { await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(list) }); } catch {} }
+async function sbBulk(list) { const clean = list.map(({id, created_at, ...rest}) => rest); try { await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(clean) }); } catch(e) { console.error("sbBulk error:", e); } }
 
 const ADMIN_USER = "annie";
 const ADMIN_PASS = "annie2024";
@@ -20,10 +20,10 @@ const OWNER = {
   phone: "0639644388",
   phoneDisplay: "063 964 4388",
   email: "bangkokcondo.th@gmail.com",
-  ig: "realestate_ann",
-  igUrl: "https://www.instagram.com/realestate_ann",
+  ig: "bkkproperty.finder",
+  igUrl: "https://www.instagram.com/bkkproperty.finder",
   lineId: "97b2blaq",
-  whatsapp: "66639644388",
+  whatsapp: "66825388189",
 };
 
 const SEED = [
