@@ -51,7 +51,12 @@ function onBG(e){ e.target.style.borderColor="#E5DDD3"; }
 /* Property Detail Modal */
 function PropDetail({ p, onClose }) {
   const [imgIdx, setImgIdx] = useState(0);
-  const imgs = p.imgs || [p.img];
+  const imgs = (() => {
+    let arr = p.imgs;
+    if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
+    if (!Array.isArray(arr) || arr.length === 0) arr = p.img ? [p.img] : [];
+    return arr.filter(Boolean);
+  })();
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(p.location+", Thailand")}`;
   const waUrl = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(`Hi Annie! I'm interested in ${p.title} at ${p.location} (${p.price}). Can you give me more details?`)}`;
   const lineUrl = `https://line.me/ti/p/~${OWNER.lineId}`;
@@ -182,7 +187,12 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
   const [vis, setVis] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const ref = useRef(null);
-  const imgs = p.imgs || [p.img];
+  const imgs = (() => {
+    let arr = p.imgs;
+    if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
+    if (!Array.isArray(arr) || arr.length === 0) arr = p.img ? [p.img] : [];
+    return arr.filter(Boolean);
+  })();
 
   useEffect(() => {
     const el = ref.current;
@@ -202,7 +212,13 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 
         {/* image */}
         <div style={{ position:"relative", height:210, overflow:"hidden" }}>
-          <img src={imgs[0]} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+          {imgs[0]
+            ? <img src={imgs[0]} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e=>{ e.target.style.display="none"; e.target.nextSibling.style.display="flex"; }}/>
+            : null}
+          <div style={{ width:"100%", height:"100%", background:"linear-gradient(135deg,#F5F0E8,#EDE8E0)", display:imgs[0]?"none":"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
+            <span style={{ fontSize:40 }}>🏠</span>
+            <span style={{ fontSize:12, color:"#9B8E7A" }}>No photo yet</span>
+          </div>
           <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55) 100%)" }} />
           <span style={{ position:"absolute", top:12, left:12, background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, letterSpacing:"0.08em", textTransform:"uppercase" }}>{p.tag}</span>
           {/* photo count badge */}
