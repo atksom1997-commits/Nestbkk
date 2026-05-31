@@ -212,13 +212,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 
         {/* image */}
         <div style={{ position:"relative", height:210, overflow:"hidden" }}>
-          {imgs[0]
-            ? <img src={imgs[0]} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e=>{ e.target.style.display="none"; e.target.nextSibling.style.display="flex"; }}/>
-            : null}
-          <div style={{ width:"100%", height:"100%", background:"linear-gradient(135deg,#F5F0E8,#EDE8E0)", display:imgs[0]?"none":"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
-            <span style={{ fontSize:40 }}>🏠</span>
-            <span style={{ fontSize:12, color:"#9B8E7A" }}>No photo yet</span>
-          </div>
+          {imgs[0] && <img src={imgs[0]} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>}
           <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55) 100%)" }} />
           <span style={{ position:"absolute", top:12, left:12, background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, letterSpacing:"0.08em", textTransform:"uppercase" }}>{p.tag}</span>
           {/* photo count badge */}
@@ -303,6 +297,7 @@ function PropForm({ init, onSave, onClose }) {
   const empty = { title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"" };
   const [f, setF] = useState(init || empty);
   const [uploading, setUploading] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState("");
   const fileRef = useRef(null);
   const set = (k,v) => setF(x=>({...x,[k]:v}));
   const LBL = ({t}) => <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t}</label>;
@@ -311,7 +306,9 @@ function PropForm({ init, onSave, onClose }) {
     const files = Array.from(e.target.files);
     if (!files.length) return;
     setUploading(true);
+    setUploadMsg("Uploading...");
     const newImgs = [...(f.imgs||[])];
+    let successCount = 0;
     for (const file of files) {
       if (SB_ON) {
         try {
@@ -322,16 +319,18 @@ function PropForm({ init, onSave, onClose }) {
             body: file
           });
           if (r.ok) {
-            newImgs.push(SUPABASE_URL + "/storage/v1/object/public/property-images/" + path);
+            const url = SUPABASE_URL + "/storage/v1/object/public/property-images/" + path;
+            newImgs.push(url);
+            successCount++;
           } else {
             const err = await r.json().catch(()=>({}));
-            alert("Upload failed: " + (err.message || r.status) + ". Make sure the property-images bucket exists in Supabase Storage.");
+            setUploadMsg("❌ Upload failed: " + (err.message || r.status));
           }
-        } catch(err) { alert("Upload error: " + err.message); }
+        } catch(err) { setUploadMsg("❌ Error: " + err.message); }
       } else {
         await new Promise(resolve => {
           const reader = new FileReader();
-          reader.onload = (ev) => { newImgs.push(ev.target.result); resolve(); };
+          reader.onload = (ev) => { newImgs.push(ev.target.result); successCount++; resolve(); };
           reader.readAsDataURL(file);
         });
       }
@@ -339,6 +338,8 @@ function PropForm({ init, onSave, onClose }) {
     set("imgs", newImgs);
     set("img", newImgs[0] || "");
     setUploading(false);
+    if (successCount > 0) setUploadMsg("✅ " + successCount + " photo" + (successCount>1?"s":"") + " uploaded!");
+    setTimeout(() => setUploadMsg(""), 4000);
   };
 
   const removeImg = (i) => {
@@ -363,6 +364,7 @@ function PropForm({ init, onSave, onClose }) {
             <button onClick={()=>fileRef.current.click()} style={{ width:"100%", padding:"14px", border:"2px dashed #C9A96E", borderRadius:12, background:"#FFFBF5", color:"#9B6B2A", fontSize:14, fontWeight:600, cursor:"pointer", marginBottom:10 }}>
               {uploading ? "⏳ Uploading..." : "📸 Upload Photos from Camera Roll"}
             </button>
+            {uploadMsg && <p style={{ color: uploadMsg.startsWith("❌") ? "#EF4444" : "#22C55E", fontSize:13, fontWeight:600, margin:"4px 0 8px" }}>{uploadMsg}</p>}
             {(f.imgs||[]).length > 0 && (
               <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                 {(f.imgs||[]).map((img,i)=>(
