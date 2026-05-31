@@ -291,25 +291,38 @@ function PropForm({ init, onSave, onClose }) {
   const set = (k,v) => setF(x=>({...x,[k]:v}));
   const LBL = ({t}) => <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t}</label>;
 
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
     setUploading(true);
-    let loaded = 0;
     const newImgs = [...(f.imgs||[])];
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        newImgs.push(ev.target.result);
-        loaded++;
-        if (loaded === files.length) {
-          set("imgs", newImgs);
-          set("img", newImgs[0]);
-          setUploading(false);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+    for (const file of files) {
+      if (SB_ON) {
+        try {
+          const path = "properties/" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.]/g,"_");
+          const r = await fetch(SUPABASE_URL + "/storage/v1/object/property-images/" + path, {
+            method: "POST",
+            headers: { "apikey": SUPABASE_ANON_KEY, "Authorization": "Bearer " + SUPABASE_ANON_KEY, "Content-Type": file.type, "x-upsert": "true" },
+            body: file
+          });
+          if (r.ok) {
+            newImgs.push(SUPABASE_URL + "/storage/v1/object/public/property-images/" + path);
+          } else {
+            const err = await r.json().catch(()=>({}));
+            alert("Upload failed: " + (err.message || r.status) + ". Make sure the property-images bucket exists in Supabase Storage.");
+          }
+        } catch(err) { alert("Upload error: " + err.message); }
+      } else {
+        await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = (ev) => { newImgs.push(ev.target.result); resolve(); };
+          reader.readAsDataURL(file);
+        });
+      }
+    }
+    set("imgs", newImgs);
+    set("img", newImgs[0] || "");
+    setUploading(false);
   };
 
   const removeImg = (i) => {
