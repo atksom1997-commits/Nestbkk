@@ -57,6 +57,43 @@ const S = {
   gold: { background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", borderRadius:11, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:"pointer" },
 };
 
+
+function facIcon(name) {
+  const n = name.toLowerCase();
+  if (n.includes("pool") && n.includes("table")) return "\u{1F3B1}";
+  if (n.includes("pool") || n.includes("swim")) return "\u{1F3CA}";
+  if (n.includes("gym") || n.includes("fitness")) return "\u{1F3CB}\uFE0F";
+  if (n.includes("spa")) return "\u{1F9D6}";
+  if (n.includes("jacuzzi") || n.includes("hot tub")) return "\u{1F6C1}";
+  if (n.includes("steam") || n.includes("sauna") || n.includes("onsen")) return "\u2668\uFE0F";
+  if (n.includes("yoga")) return "\u{1F9D8}";
+  if (n.includes("garden") || n.includes("lawn")) return "\u{1F333}";
+  if (n.includes("rooftop") || n.includes("roof")) return "\u{1F3D9}\uFE0F";
+  if (n.includes("sky")) return "\u{1F306}";
+  if (n.includes("security") || n.includes("cctv") || n.includes("guard")) return "\u{1F512}";
+  if (n.includes("parking") || n.includes("car")) return "\u{1F697}";
+  if (n.includes("charger") || n.includes("ev ")) return "\u{1F50C}";
+  if (n.includes("concierge")) return "\u{1F6CE}\uFE0F";
+  if (n.includes("cinema") || n.includes("theat")) return "\u{1F3AC}";
+  if (n.includes("game")) return "\u{1F3AE}";
+  if (n.includes("bar")) return "\u{1F378}";
+  if (n.includes("wifi") || n.includes("wi-fi") || n.includes("internet")) return "\u{1F4F6}";
+  if (n.includes("cowork") || n.includes("co-work") || n.includes("business") || n.includes("meeting")) return "\u{1F4BC}";
+  if (n.includes("laundry") || n.includes("washing")) return "\u{1F9FA}";
+  if (n.includes("restaurant") || n.includes("dining") || n.includes("cafe")) return "\u{1F37D}\uFE0F";
+  if (n.includes("library") || n.includes("reading")) return "\u{1F4DA}";
+  if (n.includes("lobby")) return "\u{1F3E2}";
+  if (n.includes("lift") || n.includes("elevator")) return "\u{1F6D7}";
+  if (n.includes("massage")) return "\u{1F486}";
+  if (n.includes("kid") || n.includes("child") || n.includes("playground")) return "\u{1F9F8}";
+  if (n.includes("limo") || n.includes("shuttle")) return "\u{1F699}";
+  if (n.includes("lounge")) return "\u{1F6CB}\uFE0F";
+  if (n.includes("bbq") || n.includes("barbecue")) return "\u{1F356}";
+  if (n.includes("pet")) return "\u{1F43E}";
+  if (n.includes("storage")) return "\u{1F4E6}";
+  return "\u2713";
+}
+
 function onFG(e){ e.target.style.borderColor="#C9A96E"; }
 function onBG(e){ e.target.style.borderColor="#E5DDD3"; }
 
@@ -168,9 +205,12 @@ function PropDetail({ p, onClose }) {
           {p.facilities && (
             <div style={{ marginBottom:16 }}>
               <div style={{ fontSize:11, color:"#A89580", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:8 }}>Facilities</div>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                {p.facilities.split(",").map((f,i)=>(
-                  <span key={i} style={{ background:"#EFF6FF", color:"#2563EB", fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:20, border:"1px solid #BFDBFE" }}>✓ {f.trim()}</span>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"10px 16px" }}>
+                {p.facilities.split(/[|,]/).filter(f=>f.trim()).map((f,i)=>(
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:9, fontSize:14, color:"#3D3528" }}>
+                    <span style={{ fontSize:17, flexShrink:0, width:24, textAlign:"center" }}>{facIcon(f)}</span>
+                    <span style={{ lineHeight:1.3 }}>{f.trim()}</span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -554,8 +594,8 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             beds: Number(obj.beds || obj.bedrooms || 1),
             baths: Number(obj.baths || obj.bathrooms || 1),
             sqm: Number(obj.sqm || obj.size || obj.area_sqm || 0),
-            img: obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
-            imgs: [obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80"],
+            img: (obj.img || obj.image || obj.photo || "").startsWith("http") ? (obj.img || obj.image || obj.photo) : "",
+            imgs: (obj.img || obj.image || obj.photo || "").startsWith("http") ? [obj.img || obj.image || obj.photo] : [],
             tag: obj.tag || obj.badge || "New",
             bts: obj.bts || obj.transport || "",
             furnished: obj.furnished || "",
@@ -606,8 +646,8 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           beds: Number(obj.beds || obj.bedrooms || 1),
           baths: Number(obj.baths || obj.bathrooms || 1),
           sqm: Number(obj.sqm || obj.size || 0),
-          img: obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
-          imgs: [obj.img || obj.image || obj.photo || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80"],
+          img: (obj.img || obj.image || obj.photo || "").startsWith("http") ? (obj.img || obj.image || obj.photo) : "",
+          imgs: (obj.img || obj.image || obj.photo || "").startsWith("http") ? [obj.img || obj.image || obj.photo] : [],
           tag: obj.tag || "New",
           bts: obj.bts || obj.transport || "",
           furnished: obj.furnished || "",
