@@ -119,6 +119,43 @@ const SALE_BUDGETS = [
 ];
 const parsePrice = (s) => parseInt((s||"").replace(/[^0-9]/g,""),10) || 0;
 
+// Thai <-> English search synonyms for bilingual search
+const SEARCH_SYNONYMS = [
+  ["คอนโด","condo"],["บ้าน","house"],["อพาร์ทเมนท์","apartment"],["อพาร์ตเมนต์","apartment"],["วิลล่า","villa"],["ทาวน์เฮาส์","townhouse"],
+  ["เช่า","rent"],["ให้เช่า","for rent"],["ขาย","sale"],["ซื้อ","buy"],["ราคา","price"],
+  ["สุขุมวิท","sukhumvit"],["ทองหล่อ","thonglor"],["ทองหล่อ","thong lo"],["สีลม","silom"],["สาทร","sathorn"],["สาธร","sathorn"],
+  ["อโศก","asok"],["อโศก","asoke"],["พร้อมพงษ์","phrom phong"],["เอกมัย","ekkamai"],["อารีย์","ari"],["อารี","ari"],
+  ["ลาดพร้าว","ladprao"],["ลาดพร้าว","lat phrao"],["จตุจักร","chatuchak"],["จตุจักร","jatujak"],["พญาไท","phaya thai"],["ราชเทวี","ratchathewi"],
+  ["รัชดา","ratchada"],["พระราม 9","rama 9"],["พระราม9","rama 9"],["ราชประสงค์","ratchaprasong"],["ชิดลม","chit lom"],["ชิดลม","chidlom"],
+  ["นานา","nana"],["อ่อนนุช","on nut"],["บางนา","bang na"],["พระโขนง","phra khanong"],["สนามกีฬา","national stadium"],["ช่องนนทรี","chong nonsi"],
+  ["สะพานควาย","saphan khwai"],["หมอชิต","mo chit"],["อนุสาวรีย์ชัย","victory monument"],["ริมแม่น้ำ","riverside"],["เจริญกรุง","charoen krung"],
+  ["ภูเก็ต","phuket"],["เชียงใหม่","chiang mai"],["พัทยา","pattaya"],["หัวหิน","hua hin"],["เกาะสมุย","koh samui"],["สมุย","samui"],["กรุงเทพ","bangkok"],["กทม","bangkok"],
+  ["ป่าตอง","patong"],["กะตะ","kata"],["กะรน","karon"],["ราไวย์","rawai"],["บางเทา","bang tao"],["นิมมาน","nimman"],["จอมเทียน","jomtien"],
+  ["สระว่ายน้ำ","pool"],["สระน้ำ","pool"],["ฟิตเนส","fitness"],["ยิม","gym"],["ฟิตเนส","gym"],["สปา","spa"],["ซาวน่า","sauna"],["จากุซซี่","jacuzzi"],
+  ["ที่จอดรถ","parking"],["รักษาความปลอดภัย","security"],["สวน","garden"],["ดาดฟ้า","rooftop"],["เลี้ยงสัตว์","pet"],["ห้องนอน","bed"],["ห้องน้ำ","bath"],
+  ["บีทีเอส","bts"],["รถไฟฟ้า","bts"],["เอ็มอาร์ที","mrt"],["ใกล้รถไฟฟ้า","near bts"],["เฟอร์นิเจอร์","furnished"],["เฟอร์ครบ","fully furnished"],
+];
+
+function matchSearch(p, q) {
+  if (!q || !q.trim()) return true;
+  const hay = [p.title, p.location, p.type, p.status, p.price, p.facilities, p.bts, p.ref, p.tag, p.furnished, p.beds+" bed", p.baths+" bath"].filter(Boolean).join(" ").toLowerCase();
+  const ql = q.toLowerCase().trim();
+  // build list of search variants (original + Thai/English translations)
+  const variants = [ql];
+  for (const [th, en] of SEARCH_SYNONYMS) {
+    if (ql.includes(th)) variants.push(ql.split(th).join(en));
+    if (ql.includes(en)) variants.push(ql.split(en).join(th));
+  }
+  // match if any variant (full or any of its words) appears in the haystack
+  for (const v of variants) {
+    if (hay.includes(v)) return true;
+    const words = v.split(/\s+/).filter(w => w.length > 1);
+    if (words.length && words.every(w => hay.includes(w))) return true;
+  }
+  return false;
+}
+
+
 const ALL_TYPES  = ["All","Condo","House","Apartment"];
 const ALL_CITIES = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui","Chiang Rai","Krabi","Koh Phangan","Koh Chang","Rayong","Udon Thani","Khon Kaen","Nakhon Ratchasima","Cha Am","Phetchaburi","Ayutthaya","Kanchanaburi","Nonthaburi","Pathum Thani","Samut Prakan","Samut Sakhon","Nakhon Pathom","Suphan Buri","Lopburi","Saraburi","Chachoengsao","Chon Buri","Trat","Chanthaburi","Nakhon Sawan","Kamphaeng Phet","Phitsanulok","Sukhothai","Tak","Mae Sot","Lampang","Lamphun","Phrae","Nan","Phayao","Mae Hong Son","Uttaradit","Phetchabun","Roi Et","Maha Sarakham","Kalasin","Yasothon","Mukdahan","Sakon Nakhon","Nakhon Phanom","Nong Khai","Loei","Nong Bua Lamphu","Chaiyaphum","Buriram","Surin","Si Sa Ket","Ubon Ratchathani","Surat Thani","Ranong","Chumphon","Nakhon Si Thammarat","Phatthalung","Songkhla","Satun","Trang","Pattani","Yala","Narathiwat","Hat Yai","Koh Lanta","Koh Tao","Koh Phi Phi","Koh Lipe","Pai","Khao Yai","Bang Saen","Sri Racha","Prachuap Khiri Khan","Amnat Charoen"];
 const CITY_AREAS = {
@@ -1054,7 +1091,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       const opt = [...RENT_BUDGETS, ...SALE_BUDGETS].find(b => b.l === budget);
       if (opt) { const pr = parsePrice(p.price); if (pr < opt.min || pr > opt.max) return false; }
     }
-    if (q && !p.title.toLowerCase().includes(q.toLowerCase()) && !p.location.toLowerCase().includes(q.toLowerCase()) && !(p.bts||"").toLowerCase().includes(q.toLowerCase())) return false;
+    if (q && !matchSearch(p, q)) return false;
     return true;
   });
   const areaOptions = CITY_AREAS[city] ? ["All Areas", ...CITY_AREAS[city]] : null;
