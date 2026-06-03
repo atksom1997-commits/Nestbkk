@@ -424,7 +424,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 
 /* Property Form Modal */
 function PropForm({ init, onSave, onClose }) {
-  const empty = { title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"" };
+  const empty = { ref:"", title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"" };
   const [f, setF] = useState(init || empty);
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState("");
@@ -509,7 +509,7 @@ function PropForm({ init, onSave, onClose }) {
           </div>
 
           {/* text fields */}
-          {[{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"Price",k:"price",ph:"฿5,200,000 or ฿35,000/mo"},{label:"BTS / Transport",k:"bts",ph:"e.g. Ekkamai BTS — 5 min walk"},{label:"Facilities",k:"facilities",ph:"Pool, Gym, Security"}].map(field=>(
+          {[{label:"Reference Code (for your photo tracking)",k:"ref",ph:"e.g. BKK-001"},{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"Price",k:"price",ph:"฿5,200,000 or ฿35,000/mo"},{label:"BTS / Transport",k:"bts",ph:"e.g. Ekkamai BTS — 5 min walk"},{label:"Facilities",k:"facilities",ph:"Pool, Gym, Security"}].map(field=>(
             <div key={field.k} style={{ gridColumn:"1/-1" }}>
               <LBL t={field.label}/>
               <input value={f[field.k]||""} placeholder={field.ph} onChange={e=>set(field.k,e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
@@ -683,6 +683,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             sqm: Number(obj.sqm || obj.size || obj.area_sqm || 0),
             img: (obj.img || obj.image || obj.photo || "").startsWith("http") ? (obj.img || obj.image || obj.photo) : "",
             imgs: (obj.img || obj.image || obj.photo || "").startsWith("http") ? [obj.img || obj.image || obj.photo] : [],
+            ref: obj.ref || obj.code || obj.reference || "",
             tag: obj.tag || obj.badge || "New",
             bts: obj.bts || obj.transport || "",
             furnished: obj.furnished || "",
@@ -735,6 +736,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           sqm: Number(obj.sqm || obj.size || 0),
           img: (obj.img || obj.image || obj.photo || "").startsWith("http") ? (obj.img || obj.image || obj.photo) : "",
           imgs: (obj.img || obj.image || obj.photo || "").startsWith("http") ? [obj.img || obj.image || obj.photo] : [],
+          ref: obj.ref || obj.code || obj.reference || "",
           tag: obj.tag || "New",
           bts: obj.bts || obj.transport || "",
           furnished: obj.furnished || "",
@@ -955,6 +957,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                           {imgs.length>1 && <span style={{ position:"absolute", bottom:-4, right:-4, background:"#C9A96E", color:"#fff", fontSize:8, fontWeight:700, padding:"1px 4px", borderRadius:6 }}>{imgs.length}</span>}
                         </div>
                         <div>
+                          {p.ref && <div style={{ display:"inline-block", fontSize:10, fontWeight:700, color:"#9B6B2A", background:"#FBF3E6", border:"1px solid #E8D5B5", padding:"1px 7px", borderRadius:5, marginBottom:3, letterSpacing:"0.05em" }}>{p.ref}</div>}
                           <div style={{ fontSize:13, fontWeight:600, color:"#1C1410" }}>{p.title}</div>
                           <div style={{ fontSize:11, color:"#A89580" }}>{p.beds}bd · {p.baths}ba · {p.sqm}m²</div>
                         </div>
