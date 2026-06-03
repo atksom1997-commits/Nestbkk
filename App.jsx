@@ -69,8 +69,8 @@ const OWNER = {
   email: "bangkokcondo.th@gmail.com",
   ig: "bkkproperty.finder",
   igUrl: "https://www.instagram.com/bkkproperty.finder",
-  lineId: "97b2blaq",
-  lineUrl: "https://line.me/ti/p/vBegjPQSN6",
+  lineId: "@bkkproperty.finder",
+  lineUrl: "https://line.me/R/ti/p/@bkkproperty.finder",
   whatsapp: "66825388189",
 };
 
@@ -84,6 +84,23 @@ const SEED = [
 ];
 
 const TAG_COLORS = { New:"#2563EB", Hot:"#DC2626", Popular:"#16A34A", Luxury:"#7C3AED", Featured:"#D97706", Reduced:"#EA580C" };
+const AREA_STATIONS = {
+  "Sukhumvit": ["Nana","Asok","Phrom Phong","Thong Lo","Ekkamai","Phra Khanong","On Nut","Sukhumvit","Phetchaburi"],
+  "Silom / Sathorn": ["Sala Daeng","Chong Nonsi","Saint Louis","Surasak","Saphan Taksin","Si Lom","Lumphini"],
+  "Thonglor / Ekkamai": ["Thong Lo","Ekkamai","Phra Khanong"],
+  "Asoke / Phrom Phong": ["Asok","Phrom Phong","Sukhumvit","Phetchaburi","Queen Sirikit","Nana"],
+  "Ari / Phaya Thai": ["Ari","Sanam Pao","Phaya Thai","Victory Monument","Saphan Khwai"],
+  "Ratchada / Rama 9": ["Phra Ram 9","Rama 9","Thailand Cultural Centre","Huai Khwang","Sutthisan","Ratchadaphisek","Phetchaburi"],
+  "Riverside / Charoen Krung": ["Saphan Taksin","Krung Thon Buri","Charoen Nakhon","Khlong San"],
+  "Ladprao / Chatuchak": ["Mo Chit","Chatuchak","Lat Phrao","Phahon Yothin","Ha Yaek Lat Phrao","Ha Yaek Ladprao","Kamphaeng Phet","Phahon Yothin 24","Ratchayothin"],
+  "Rama 3 / Yannawa": ["Chong Nonsi","Surasak","Saphan Taksin"],
+  "On Nut / Bang Na": ["On Nut","Bang Chak","Punnawithi","Udom Suk","Bang Na","Bearing","Samrong"],
+  "Victory Monument": ["Victory Monument","Phaya Thai","Ratchathewi"],
+  "Phra Khanong": ["Phra Khanong","Ekkamai","On Nut"],
+  "Ratchathewi": ["Ratchathewi","Phaya Thai","Siam"],
+  "Bang Sue": ["Bang Sue","Tao Poon","Bang Pho"],
+};
+
 const RENT_BUDGETS = [
   {l:"Any Budget", min:0, max:Infinity},
   {l:"Under ฿15,000/mo", min:0, max:15000},
@@ -1110,7 +1127,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 {ALL_CITIES.map(c=><option key={c}>{c}</option>)}
               </select>
               {areaOptions && (
-                <select value={area} onChange={e=>setArea(e.target.value)} style={S.inp({ minWidth:130, flex:1, cursor:"pointer", padding:"9px 10px" })}>
+                <select value={area} onChange={e=>{ setArea(e.target.value); setStation("All Stations"); }} style={S.inp({ minWidth:130, flex:1, cursor:"pointer", padding:"9px 10px" })}>
                   {areaOptions.map(a=><option key={a}>{a}</option>)}
                 </select>
               )}
@@ -1121,13 +1138,15 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 </select>
                 <select value={station} onChange={e=>setStation(e.target.value)} style={S.inp({ minWidth:150, flex:1, cursor:"pointer", padding:"9px 10px" })}>
                   <option>All Stations</option>
-                  {line !== "All Lines"
-                    ? (TRANSIT_LINES[line]||[]).map(st=><option key={st}>{st}</option>)
-                    : Object.entries(TRANSIT_LINES).map(([ln,sts])=>(
-                        <optgroup key={ln} label={ln}>
-                          {sts.map(st=><option key={ln+st} value={st}>{st}</option>)}
-                        </optgroup>
-                      ))}
+                  {AREA_STATIONS[area]
+                    ? AREA_STATIONS[area].map(st=><option key={st}>{st}</option>)
+                    : line !== "All Lines"
+                      ? (TRANSIT_LINES[line]||[]).map(st=><option key={st}>{st}</option>)
+                      : Object.entries(TRANSIT_LINES).map(([ln,sts])=>(
+                          <optgroup key={ln} label={ln}>
+                            {sts.map(st=><option key={ln+st} value={st}>{st}</option>)}
+                          </optgroup>
+                        ))}
                 </select>
                 </>
               )}
