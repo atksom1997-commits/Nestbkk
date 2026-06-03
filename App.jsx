@@ -84,6 +84,24 @@ const SEED = [
 ];
 
 const TAG_COLORS = { New:"#2563EB", Hot:"#DC2626", Popular:"#16A34A", Luxury:"#7C3AED", Featured:"#D97706", Reduced:"#EA580C" };
+const RENT_BUDGETS = [
+  {l:"Any Budget", min:0, max:Infinity},
+  {l:"Under ฿15,000/mo", min:0, max:15000},
+  {l:"฿15,000 - 30,000/mo", min:15000, max:30000},
+  {l:"฿30,000 - 50,000/mo", min:30000, max:50000},
+  {l:"฿50,000 - 100,000/mo", min:50000, max:100000},
+  {l:"฿100,000+/mo", min:100000, max:Infinity},
+];
+const SALE_BUDGETS = [
+  {l:"Any Budget", min:0, max:Infinity},
+  {l:"Under ฿3M", min:0, max:3000000},
+  {l:"฿3M - 5M", min:3000000, max:5000000},
+  {l:"฿5M - 10M", min:5000000, max:10000000},
+  {l:"฿10M - 20M", min:10000000, max:20000000},
+  {l:"฿20M+", min:20000000, max:Infinity},
+];
+const parsePrice = (s) => parseInt((s||"").replace(/[^0-9]/g,""),10) || 0;
+
 const ALL_TYPES  = ["All","Condo","House","Apartment"];
 const ALL_CITIES = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui","Chiang Rai","Krabi","Koh Phangan","Koh Chang","Rayong","Udon Thani","Khon Kaen","Nakhon Ratchasima","Cha Am","Phetchaburi","Ayutthaya","Kanchanaburi","Nonthaburi","Pathum Thani","Samut Prakan","Samut Sakhon","Nakhon Pathom","Suphan Buri","Lopburi","Saraburi","Chachoengsao","Chon Buri","Trat","Chanthaburi","Nakhon Sawan","Kamphaeng Phet","Phitsanulok","Sukhothai","Tak","Mae Sot","Lampang","Lamphun","Phrae","Nan","Phayao","Mae Hong Son","Uttaradit","Phetchabun","Roi Et","Maha Sarakham","Kalasin","Yasothon","Mukdahan","Sakon Nakhon","Nakhon Phanom","Nong Khai","Loei","Nong Bua Lamphu","Chaiyaphum","Buriram","Surin","Si Sa Ket","Ubon Ratchathani","Surat Thani","Ranong","Chumphon","Nakhon Si Thammarat","Phatthalung","Songkhla","Satun","Trang","Pattani","Yala","Narathiwat","Hat Yai","Koh Lanta","Koh Tao","Koh Phi Phi","Koh Lipe","Pai","Khao Yai","Bang Saen","Sri Racha","Prachuap Khiri Khan","Amnat Charoen"];
 const CITY_AREAS = {
@@ -932,6 +950,8 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
   const [city, setCity]       = useState("Bangkok");
   const [area, setArea]       = useState("All Areas");
   const [line, setLine]       = useState("All Lines");
+  const [station, setStation] = useState("All Stations");
+  const [budget, setBudget]   = useState("Any Budget");
   const [type, setType]       = useState("All");
   const [status, setStatus]   = useState("All");
   const [q, setQ]             = useState("");
@@ -956,11 +976,19 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
       const bts = (p.bts||"").toLowerCase();
       if (!stations.some(s => bts.includes(s.toLowerCase()))) return false;
     }
+    if (station !== "All Stations") {
+      if (!(p.bts||"").toLowerCase().includes(station.toLowerCase())) return false;
+    }
+    if (budget !== "Any Budget") {
+      const opt = [...RENT_BUDGETS, ...SALE_BUDGETS].find(b => b.l === budget);
+      if (opt) { const pr = parsePrice(p.price); if (pr < opt.min || pr > opt.max) return false; }
+    }
     if (q && !p.title.toLowerCase().includes(q.toLowerCase()) && !p.location.toLowerCase().includes(q.toLowerCase()) && !(p.bts||"").toLowerCase().includes(q.toLowerCase())) return false;
     return true;
   });
   const areaOptions = CITY_AREAS[city] ? ["All Areas", ...CITY_AREAS[city]] : null;
   const lineOptions = ["All Lines", ...Object.keys(TRANSIT_LINES)];
+  const budgetOptions = status === "For Sale" ? SALE_BUDGETS : RENT_BUDGETS;
 
   const fadeUp = (d=0) => ({ opacity:heroOn?1:0, transform:heroOn?"translateY(0)":"translateY(24px)", transition:`opacity 0.75s ease ${d}s, transform 0.75s ease ${d}s` });
 
@@ -998,8 +1026,8 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
 
       {/* HERO */}
       <section style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", paddingTop:64 }}>
-        <div style={{ position:"absolute", inset:0, backgroundImage:"url('https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=1900&q=80')", backgroundSize:"cover", backgroundPosition:"center" }}/>
-        <div style={{ position:"absolute", inset:0, background:"linear-gradient(160deg,rgba(12,7,2,0.82) 0%,rgba(12,7,2,0.5) 55%,rgba(12,7,2,0.85) 100%)" }}/>
+        <div style={{ position:"absolute", inset:0, backgroundImage:"url('https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1900&q=85')", backgroundSize:"cover", backgroundPosition:"center" }}/>
+        <div style={{ position:"absolute", inset:0, background:"linear-gradient(160deg,rgba(28,16,8,0.85) 0%,rgba(40,24,12,0.55) 50%,rgba(20,12,6,0.9) 100%)" }}/>
         <div style={{ position:"absolute", top:"13%", right:"7%", width:200, height:200, borderRadius:"50%", border:"1px solid rgba(201,169,110,0.18)", animation:"floatBob 5s ease-in-out infinite", pointerEvents:"none" }}/>
 
         <div style={{ position:"relative", zIndex:2, textAlign:"center", padding:"0 20px", maxWidth:900, width:"100%" }}>
@@ -1019,12 +1047,12 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
             <div style={{ background:"rgba(253,250,246,0.97)", borderRadius:18, padding:"17px", boxShadow:"0 28px 70px rgba(0,0,0,0.38)", display:"flex", gap:9, alignItems:"center", flexWrap:"wrap" }}>
               <div style={{ display:"flex", gap:4, background:"#F3EEE8", padding:4, borderRadius:10 }}>
                 {["All","For Sale","For Rent"].map(s=>(
-                  <button key={s} onClick={()=>setStatus(s)} style={{ padding:"6px 11px", borderRadius:7, border:"none", background:status===s?"#1C1410":"transparent", color:status===s?"#C9A96E":"#7B6A5A", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>
+                  <button key={s} onClick={()=>{ setStatus(s); setBudget("Any Budget"); }} style={{ padding:"6px 11px", borderRadius:7, border:"none", background:status===s?"#1C1410":"transparent", color:status===s?"#C9A96E":"#7B6A5A", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>
                     {s==="All"?"Buy & Rent":s}
                   </button>
                 ))}
               </div>
-              <select value={city} onChange={e=>{ setCity(e.target.value); setArea("All Areas"); setLine("All Lines"); }} style={S.inp({ minWidth:120, flex:1, cursor:"pointer", padding:"9px 10px" })}>
+              <select value={city} onChange={e=>{ setCity(e.target.value); setArea("All Areas"); setLine("All Lines"); setStation("All Stations"); }} style={S.inp({ minWidth:120, flex:1, cursor:"pointer", padding:"9px 10px" })}>
                 {ALL_CITIES.map(c=><option key={c}>{c}</option>)}
               </select>
               {areaOptions && (
@@ -1033,12 +1061,27 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
                 </select>
               )}
               {city==="Bangkok" && (
-                <select value={line} onChange={e=>setLine(e.target.value)} style={S.inp({ minWidth:150, flex:1, cursor:"pointer", padding:"9px 10px" })}>
+                <>
+                <select value={line} onChange={e=>{ setLine(e.target.value); setStation("All Stations"); }} style={S.inp({ minWidth:150, flex:1, cursor:"pointer", padding:"9px 10px" })}>
                   {lineOptions.map(l=><option key={l}>{l}</option>)}
                 </select>
+                <select value={station} onChange={e=>setStation(e.target.value)} style={S.inp({ minWidth:150, flex:1, cursor:"pointer", padding:"9px 10px" })}>
+                  <option>All Stations</option>
+                  {line !== "All Lines"
+                    ? (TRANSIT_LINES[line]||[]).map(st=><option key={st}>{st}</option>)
+                    : Object.entries(TRANSIT_LINES).map(([ln,sts])=>(
+                        <optgroup key={ln} label={ln}>
+                          {sts.map(st=><option key={ln+st} value={st}>{st}</option>)}
+                        </optgroup>
+                      ))}
+                </select>
+                </>
               )}
               <select value={type} onChange={e=>setType(e.target.value)} style={S.inp({ minWidth:110, cursor:"pointer", padding:"9px 10px" })}>
                 {ALL_TYPES.map(t=><option key={t}>{t}</option>)}
+              </select>
+              <select value={budget} onChange={e=>setBudget(e.target.value)} style={S.inp({ minWidth:150, cursor:"pointer", padding:"9px 10px" })}>
+                {budgetOptions.map(b=><option key={b.l}>{b.l}</option>)}
               </select>
               <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search by name or location..." style={S.inp({ flex:2, minWidth:130 })} onFocus={onFG} onBlur={onBG}/>
               <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{...S.gold, whiteSpace:"nowrap"}}>Search</button>
