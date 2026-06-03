@@ -584,11 +584,28 @@ function AdminLogin({ onLogin }) {
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto }) {
   const [sheetsUrl, setSheetsUrl] = useState("");
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [sheetsMsg, setSheetsMsg] = useState("");
   const [showImport, setShowImport] = useState(false);
+  const [showCityPhotos, setShowCityPhotos] = useState(false);
+  const [cityUploading, setCityUploading] = useState("");
+  const CITY_LIST = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
+  const uploadCityPhoto = async (cityName, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCityUploading(cityName);
+    try {
+      const path = "cities/" + cityName.replace(/[^a-zA-Z0-9]/g,"_") + "-" + Date.now() + "." + (file.name.split(".").pop()||"jpg");
+      const r = await fetch(SUPABASE_URL + "/storage/v1/object/property-images/" + path, {
+        method:"POST", headers:{ "apikey":SUPABASE_ANON_KEY, "Authorization":"Bearer "+SUPABASE_ANON_KEY, "Content-Type":file.type, "x-upsert":"true" }, body:file
+      });
+      if (r.ok) { onCityPhoto && onCityPhoto(cityName, SUPABASE_URL + "/storage/v1/object/public/property-images/" + path); }
+      else { const err = await r.json().catch(()=>({})); alert("Upload failed: " + (err.message||r.status)); }
+    } catch(err) { alert("Error: " + err.message); }
+    setCityUploading("");
+  };
   const [showAI, setShowAI] = useState(false);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
@@ -831,6 +848,40 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           )}
         </div>
 
+        {/* CITY PHOTOS */}
+        <div style={{ background:"#fff", borderRadius:16, padding:"22px 24px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 2px 14px rgba(0,0,0,0.04)" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showCityPhotos ? 20 : 0 }}>
+            <div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="pin" s={18} c="#C9A96E"/>City Photos</div>
+              <div style={{ color:"#A89580", fontSize:12, marginTop:2 }}>Upload a photo for each city shown on your homepage</div>
+            </div>
+            <button onClick={()=>setShowCityPhotos(!showCityPhotos)}
+              style={{ background: showCityPhotos?"#F3EEE8":"linear-gradient(135deg,#C9A96E,#9B6B2A)", color: showCityPhotos?"#6B5E52":"#fff", border:"none", padding:"8px 18px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>
+              {showCityPhotos ? "Close" : "Manage Photos"}
+            </button>
+          </div>
+          {showCityPhotos && (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:14 }}>
+              {CITY_LIST.map(cn=>(
+                <div key={cn} style={{ border:"1px solid #EFE8DF", borderRadius:12, overflow:"hidden", background:"#FDFAF6" }}>
+                  <div style={{ position:"relative", aspectRatio:"4/3", background:"#F3EEE8" }}>
+                    {cityPhotos[cn]
+                      ? <img src={cityPhotos[cn]} alt={cn} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                      : <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", color:"#C0B0A0", fontSize:12 }}>Default photo</div>}
+                  </div>
+                  <div style={{ padding:"10px 12px" }}>
+                    <div style={{ fontWeight:700, fontSize:14, color:"#1C1410", marginBottom:8 }}>{cn}</div>
+                    <label style={{ display:"block", textAlign:"center", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", padding:"7px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>
+                      {cityUploading===cn ? "Uploading..." : (cityPhotos[cn] ? "Change Photo" : "Upload Photo")}
+                      <input type="file" accept="image/*" onChange={e=>uploadCityPhoto(cn,e)} style={{ display:"none" }}/>
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18, flexWrap:"wrap", gap:12 }}>
           <div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1C1410" }}>All Listings</h2>
@@ -946,7 +997,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   );
 }
 
-function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
+function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGoAdmin }) {
   const [city, setCity]       = useState("Bangkok");
   const [area, setArea]       = useState("All Areas");
   const [line, setLine]       = useState("All Lines");
@@ -1175,11 +1226,11 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
           <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>Browse by City</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))", gap:18 }}>
-          {[{c:"Bangkok",img:"https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=700&q=85"},{c:"Phuket",img:"https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?w=700&q=85"},{c:"Chiang Mai",img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700&q=85"},{c:"Pattaya",img:"https://images.unsplash.com/photo-1563245372-f21724e3856d?w=700&q=85"},{c:"Hua Hin",img:"https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=700&q=85"},{c:"Koh Samui",img:"https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=700&q=85"}].map((x,i)=>(
+          {[{c:"Bangkok",img:"https://images.unsplash.com/photo-1755251042986-91270ffd76f5?w=700&q=85"},{c:"Phuket",img:"https://images.unsplash.com/photo-1534008897995-27a23e859048?w=700&q=85"},{c:"Chiang Mai",img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700&q=85"},{c:"Pattaya",img:"https://images.unsplash.com/photo-1563245372-f21724e3856d?w=700&q=85"},{c:"Hua Hin",img:"https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=700&q=85"},{c:"Koh Samui",img:"https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=700&q=85"}].map((x,i)=>(
             <div key={i} onClick={()=>{ setCity(x.c); document.getElementById("buy")?.scrollIntoView({behavior:"smooth"}); }} style={{ position:"relative", borderRadius:18, overflow:"hidden", cursor:"pointer", aspectRatio:"4/5", border:city===x.c?"2px solid #C9A96E":"2px solid transparent", boxShadow:city===x.c?"0 12px 32px rgba(201,169,110,0.35)":"0 6px 20px rgba(0,0,0,0.12)", transition:"all 0.35s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e=>{ e.currentTarget.style.transform="translateY(-6px)"; e.currentTarget.style.boxShadow="0 18px 40px rgba(201,169,110,0.4)"; const img=e.currentTarget.querySelector("img"); if(img) img.style.transform="scale(1.1)"; const ex=e.currentTarget.querySelector(".explore"); if(ex) ex.style.opacity="1"; }}
               onMouseLeave={e=>{ e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=city===x.c?"0 12px 32px rgba(201,169,110,0.35)":"0 6px 20px rgba(0,0,0,0.12)"; const img=e.currentTarget.querySelector("img"); if(img) img.style.transform="scale(1)"; const ex=e.currentTarget.querySelector(".explore"); if(ex) ex.style.opacity="0"; }}>
-              <img src={x.img} alt={x.c} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.55s cubic-bezier(0.22,1,0.36,1)", filter:"saturate(1.05) brightness(0.98)" }}/>
+              <img src={cityPhotos[x.c] || x.img} alt={x.c} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.55s cubic-bezier(0.22,1,0.36,1)", filter:"saturate(1.05) brightness(0.98)" }}/>
               <div style={{ position:"absolute", inset:0, background:"linear-gradient(160deg, rgba(120,72,30,0.28) 0%, rgba(40,24,12,0.15) 40%, rgba(20,12,6,0.55) 100%)", mixBlendMode:"multiply" }}/>
               <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(20,12,6,0.92) 0%, rgba(40,24,12,0.32) 48%, rgba(201,169,110,0.18) 100%)" }}/>
               <div style={{ position:"absolute", bottom:16, left:16, right:16 }}>
@@ -1327,6 +1378,8 @@ export default function App() {
   const [delId, setDelId]       = useState(null);
   const [toast, setToast]       = useState(null);
   const [adminView, setAdminView] = useState(false);
+  const [cityPhotos, setCityPhotos] = useState(()=>{ try { return JSON.parse(localStorage.getItem("bpf_city_photos")||"{}"); } catch { return {}; } });
+  const [cityRowId, setCityRowId] = useState(null);
 
   useEffect(() => {
     if (!SB_ON) {
@@ -1337,8 +1390,11 @@ export default function App() {
     }
     sbLoad().then(data => {
       if (data && Array.isArray(data)) {
-        setProps(data);
-        try { localStorage.setItem("bangkokpropertyfinder_props", JSON.stringify(data)); } catch(_) {}
+        const cpRow = data.find(p => p.type === "__city_photos__");
+        if (cpRow) { setCityRowId(cpRow.id); try { const m = JSON.parse(cpRow.facilities||"{}"); setCityPhotos(m); localStorage.setItem("bpf_city_photos", JSON.stringify(m)); } catch(_) {} }
+        const listings = data.filter(p => p.type !== "__city_photos__");
+        setProps(listings);
+        try { localStorage.setItem("bangkokpropertyfinder_props", JSON.stringify(listings)); } catch(_) {}
       }
       setDbLoading(false);
     });
@@ -1398,6 +1454,18 @@ export default function App() {
     flash("🗑️ Listing deleted.");
   };
 
+  const handleCityPhoto = async (cityName, url) => {
+    const updated = { ...cityPhotos, [cityName]: url };
+    setCityPhotos(updated);
+    try { localStorage.setItem("bpf_city_photos", JSON.stringify(updated)); } catch(_) {}
+    if (SB_ON) {
+      const payload = { title:"__CITY_PHOTOS__", type:"__city_photos__", active:false, facilities: JSON.stringify(updated), location:"", price:"", status:"", beds:"", baths:"", sqm:"" };
+      if (cityRowId) { await sbUpdate(cityRowId, payload); }
+      else { const saved = await sbAdd(payload); if (saved) setCityRowId(saved.id); }
+    }
+    flash("✅ " + cityName + " photo updated!");
+  };
+
   if (dbLoading) return (
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#FDFAF6", flexDirection:"column", gap:16 }}>
       <div style={{ fontSize:40 }}>🏠</div>
@@ -1415,8 +1483,8 @@ export default function App() {
             onLogout={()=>{ setScreen("site"); setAdminView(false); localStorage.removeItem("bpf_screen"); }}
             onView={()=>{ setScreen("site"); setAdminView(true); }}
             onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}
-            onAIFill={handleAIFill}/>
-        : <PublicSite props={props} isAdmin={adminView}
+            onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto}/>
+        : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
             onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
       }
