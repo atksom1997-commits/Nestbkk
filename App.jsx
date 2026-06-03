@@ -86,6 +86,22 @@ const SEED = [
 const TAG_COLORS = { New:"#2563EB", Hot:"#DC2626", Popular:"#16A34A", Luxury:"#7C3AED", Featured:"#D97706", Reduced:"#EA580C" };
 const ALL_TYPES  = ["All","Condo","House","Apartment"];
 const ALL_CITIES = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui","Chiang Rai","Krabi","Koh Phangan","Koh Chang","Rayong","Udon Thani","Khon Kaen","Nakhon Ratchasima","Cha Am","Phetchaburi","Ayutthaya","Kanchanaburi","Nonthaburi","Pathum Thani","Samut Prakan","Samut Sakhon","Nakhon Pathom","Suphan Buri","Lopburi","Saraburi","Chachoengsao","Chon Buri","Trat","Chanthaburi","Nakhon Sawan","Kamphaeng Phet","Phitsanulok","Sukhothai","Tak","Mae Sot","Lampang","Lamphun","Phrae","Nan","Phayao","Mae Hong Son","Uttaradit","Phetchabun","Roi Et","Maha Sarakham","Kalasin","Yasothon","Mukdahan","Sakon Nakhon","Nakhon Phanom","Nong Khai","Loei","Nong Bua Lamphu","Chaiyaphum","Buriram","Surin","Si Sa Ket","Ubon Ratchathani","Surat Thani","Ranong","Chumphon","Nakhon Si Thammarat","Phatthalung","Songkhla","Satun","Trang","Pattani","Yala","Narathiwat","Hat Yai","Koh Lanta","Koh Tao","Koh Phi Phi","Koh Lipe","Pai","Khao Yai","Bang Saen","Sri Racha","Prachuap Khiri Khan","Amnat Charoen"];
+const CITY_AREAS = {
+  "Bangkok": ["Sukhumvit","Silom / Sathorn","Thonglor / Ekkamai","Asoke / Phrom Phong","Ari / Phaya Thai","Ratchada / Rama 9","Riverside / Charoen Krung","Ladprao / Chatuchak","Rama 3 / Yannawa","On Nut / Bang Na","Victory Monument","Phra Khanong","Ratchathewi","Bang Sue"],
+  "Phuket": ["Patong","Kata / Karon","Rawai / Nai Harn","Kamala","Bang Tao / Laguna","Surin","Phuket Town","Chalong","Cherng Talay","Mai Khao","Nai Yang"],
+  "Chiang Mai": ["Nimman","Old City","Riverside / Wat Ket","Hang Dong","San Sai","Santitham","Chang Klan","Mae Rim","San Kamphaeng"],
+  "Pattaya": ["Central Pattaya","Jomtien","Wongamat / Naklua","Pratumnak","North Pattaya","South Pattaya","East Pattaya","Bang Saray"],
+};
+const TRANSIT_LINES = {
+  "BTS Sukhumvit Line": ["Khu Khot","Yaek Kor Por Aor","Royal Thai Air Force","Bhumibol Adulyadej Hospital","Saphan Mai","Sai Yud","Phahon Yothin 59","Wat Phra Sri Mahathat","11th Infantry Regiment","Bang Bua","Kasetsart University","Sena Nikhom","Ratchayothin","Phahon Yothin 24","Ha Yaek Lat Phrao","Ha Yaek Ladprao","Lat Phrao","Ladprao","Mo Chit","Saphan Khwai","Ari","Sanam Pao","Victory Monument","Phaya Thai","Ratchathewi","Siam","Chit Lom","Phloen Chit","Nana","Asok","Phrom Phong","Thong Lo","Ekkamai","Phra Khanong","On Nut","Bang Chak","Punnawithi","Udom Suk","Bang Na","Bearing","Samrong","Kheha"],
+  "BTS Silom Line": ["National Stadium","Siam","Ratchadamri","Sala Daeng","Chong Nonsi","Saint Louis","Surasak","Saphan Taksin","Krung Thon Buri","Wongwian Yai","Talat Phlu","Wutthakat","Bang Wa"],
+  "BTS Gold Line": ["Krung Thon Buri","Charoen Nakhon","Khlong San"],
+  "MRT Blue Line": ["Hua Lamphong","Sam Yan","Si Lom","Lumphini","Khlong Toei","Queen Sirikit","Sukhumvit","Phetchaburi","Phra Ram 9","Rama 9","Thailand Cultural Centre","Huai Khwang","Sutthisan","Ratchadaphisek","Lat Phrao","Phahon Yothin","Chatuchak","Kamphaeng Phet","Bang Sue","Tao Poon","Bang Pho"],
+  "MRT Purple Line": ["Tao Poon","Bang Son","Wong Sawang","Bang Phlat","Nonthaburi","Bang Yai","Khlong Bang Phai"],
+  "MRT Yellow Line": ["Lat Phrao","Phawana","Chok Chai 4","Lat Phrao 101","Bang Kapi","Hua Mak","Si Nut","Samrong"],
+  "MRT Pink Line": ["Nonthaburi","Chaeng Watthana","Lak Si","Ram Inthra","Min Buri"],
+  "ARL Airport Link": ["Phaya Thai","Ratchaprarop","Makkasan","Ramkhamhaeng","Hua Mak","Ban Thap Chang","Lat Krabang","Suvarnabhumi"],
+};
 const ALL_TAGS   = Object.keys(TAG_COLORS);
 
 const S = {
@@ -914,6 +930,8 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
 
 function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
   const [city, setCity]       = useState("Bangkok");
+  const [area, setArea]       = useState("All Areas");
+  const [line, setLine]       = useState("All Lines");
   const [type, setType]       = useState("All");
   const [status, setStatus]   = useState("All");
   const [q, setQ]             = useState("");
@@ -928,9 +946,21 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
     if (type !== "All" && p.type !== type) return false;
     if (status !== "All" && p.status !== status) return false;
     if (!p.location.toLowerCase().includes(city.toLowerCase())) return false;
-    if (q && !p.title.toLowerCase().includes(q.toLowerCase()) && !p.location.toLowerCase().includes(q.toLowerCase())) return false;
+    if (area !== "All Areas") {
+      const keys = area.split("/").map(a => a.trim().toLowerCase());
+      const loc = (p.location + " " + (p.bts||"")).toLowerCase();
+      if (!keys.some(k => loc.includes(k))) return false;
+    }
+    if (line !== "All Lines") {
+      const stations = TRANSIT_LINES[line] || [];
+      const bts = (p.bts||"").toLowerCase();
+      if (!stations.some(s => bts.includes(s.toLowerCase()))) return false;
+    }
+    if (q && !p.title.toLowerCase().includes(q.toLowerCase()) && !p.location.toLowerCase().includes(q.toLowerCase()) && !(p.bts||"").toLowerCase().includes(q.toLowerCase())) return false;
     return true;
   });
+  const areaOptions = CITY_AREAS[city] ? ["All Areas", ...CITY_AREAS[city]] : null;
+  const lineOptions = ["All Lines", ...Object.keys(TRANSIT_LINES)];
 
   const fadeUp = (d=0) => ({ opacity:heroOn?1:0, transform:heroOn?"translateY(0)":"translateY(24px)", transition:`opacity 0.75s ease ${d}s, transform 0.75s ease ${d}s` });
 
@@ -994,9 +1024,19 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
                   </button>
                 ))}
               </div>
-              <select value={city} onChange={e=>setCity(e.target.value)} style={S.inp({ minWidth:120, flex:1, cursor:"pointer", padding:"9px 10px" })}>
+              <select value={city} onChange={e=>{ setCity(e.target.value); setArea("All Areas"); setLine("All Lines"); }} style={S.inp({ minWidth:120, flex:1, cursor:"pointer", padding:"9px 10px" })}>
                 {ALL_CITIES.map(c=><option key={c}>{c}</option>)}
               </select>
+              {areaOptions && (
+                <select value={area} onChange={e=>setArea(e.target.value)} style={S.inp({ minWidth:130, flex:1, cursor:"pointer", padding:"9px 10px" })}>
+                  {areaOptions.map(a=><option key={a}>{a}</option>)}
+                </select>
+              )}
+              {city==="Bangkok" && (
+                <select value={line} onChange={e=>setLine(e.target.value)} style={S.inp({ minWidth:150, flex:1, cursor:"pointer", padding:"9px 10px" })}>
+                  {lineOptions.map(l=><option key={l}>{l}</option>)}
+                </select>
+              )}
               <select value={type} onChange={e=>setType(e.target.value)} style={S.inp({ minWidth:110, cursor:"pointer", padding:"9px 10px" })}>
                 {ALL_TYPES.map(t=><option key={t}>{t}</option>)}
               </select>
@@ -1008,10 +1048,10 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
 
         <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(12,7,2,0.88)", backdropFilter:"blur(12px)", borderTop:"1px solid rgba(201,169,110,0.15)", padding:"18px clamp(20px,5vw,60px)", opacity:heroOn?1:0, transition:"opacity 1.2s 0.7s" }}>
           <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:16 }}>
-            {[["18,500+","Properties"],["9,200+","Happy Clients"],["48","Cities"],["15+","Years Exp"]].map(([n,l])=>(
-              <div key={l} style={{ textAlign:"center" }}>
-                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(22px,3vw,36px)", fontWeight:700, color:"#F59E0B", lineHeight:1 }}>{n}</div>
-                <div style={{ color:"#7B6A5A", fontSize:10, marginTop:3, letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500 }}>{l}</div>
+            {[{i:"shield",t:"Verified Listings"},{i:"chat",t:"Personal Service"},{i:"pin",t:"Local Knowledge"},{i:"check",t:"Honest Advice"}].map((x)=>(
+              <div key={x.t} style={{ textAlign:"center", display:"flex", flexDirection:"column", alignItems:"center", gap:7 }}>
+                <Icon n={x.i} s={24} c="#F59E0B"/>
+                <div style={{ color:"#C9A96E", fontSize:11, letterSpacing:"0.07em", textTransform:"uppercase", fontWeight:600 }}>{x.t}</div>
               </div>
             ))}
           </div>
@@ -1072,7 +1112,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:13 }}>
-            {[{e:"shield",t:"Verified Listings",d:"Every property personally checked."},{e:"globe",t:"Thai & English",d:"Bilingual support throughout."},{e:"zap",t:"Fast Closings",d:"Deal signed in as little as 7 days."},{e:"star",t:"500+ Clients",d:"Trusted since 2010."}].map((c,i)=>(
+            {[{e:"shield",t:"Verified Listings",d:"Every property personally checked."},{e:"globe",t:"Thai & English",d:"Bilingual support throughout."},{e:"zap",t:"Quick Response",d:"Fast, friendly replies to every enquiry."},{e:"star",t:"Personal Touch",d:"Dedicated one-on-one service."}].map((c,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(201,169,110,0.14)", borderRadius:14, padding:"20px 16px", transition:"all 0.22s" }}
                 onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,110,0.08)"; e.currentTarget.style.borderColor="rgba(201,169,110,0.38)"; }}
                 onMouseLeave={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor="rgba(201,169,110,0.14)"; }}>
@@ -1101,7 +1141,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
               <div style={{ position:"absolute", bottom:16, left:16, right:16 }}>
                 <div style={{ width:28, height:2, background:"#C9A96E", marginBottom:8, borderRadius:2 }}/>
                 <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#fff", letterSpacing:"0.02em", lineHeight:1.1 }}>{x.c}</div>
-                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{x.n} listings</div>
+                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.location.toLowerCase().includes(x.c.toLowerCase())).length; return n + (n===1?" listing":" listings"); })()}</div>
                 <div className="explore" style={{ color:"#fff", fontSize:11, fontWeight:600, marginTop:8, opacity:0, transition:"opacity 0.3s", letterSpacing:"0.08em", textTransform:"uppercase" }}>Explore →</div>
               </div>
             </div>
@@ -1121,8 +1161,7 @@ function PublicSite({ props, isAdmin, onEditProp, onDelProp, onGoAdmin }) {
             {[
               { icon:"search", title:"Property Sourcing", desc:"Tell us your budget, location, and needs — we search the market and bring you the best matching properties, including off-market deals." },
               { icon:"bulb", title:"Consultation", desc:"Expert advice on buying, renting, or investing in Thai real estate. We guide you through pricing, areas, legal steps, and more." },
-              { icon:"target", title:"Buyer & Tenant Matching", desc:"Looking for something specific? Share your requirements and we'll find exactly what you're looking for — saving you time and effort." },
-              { icon:"trending", title:"Investment Advisory", desc:"Maximize your returns with data-driven advice on high-growth areas, rental yields, and the best properties for investment." }
+              { icon:"target", title:"Buyer & Tenant Matching", desc:"Looking for something specific? Share your requirements and we'll find exactly what you're looking for — saving you time and effort." }
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(201,169,110,0.25)", borderRadius:16, padding:"28px 24px", transition:"all 0.22s" }}
                 onMouseEnter={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.08)"; e.currentTarget.style.transform="translateY(-4px)"; }}
