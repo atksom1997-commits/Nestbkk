@@ -241,8 +241,10 @@ function PropDetail({ p, onClose }) {
     return arr;
   })();
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(p.location+", Thailand")}`;
-  const waUrl = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(`Hi Annie! I'm interested in ${p.title} at ${p.location} (${p.price}). Can you give me more details?`)}`;
+  const propMsg = `Hi Annie! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const waUrl = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(propMsg)}`;
   const lineUrl = OWNER.lineUrl;
+  const copyForLine = () => { try { navigator.clipboard && navigator.clipboard.writeText(propMsg); } catch(_) {} };
 
   return (
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:400, display:"flex", alignItems:"center", justifyContent:"center", padding:16, backdropFilter:"blur(6px)" }}>
@@ -352,7 +354,7 @@ function PropDetail({ p, onClose }) {
               style={{ textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
             </a>
-            <a href={lineUrl} target="_blank" rel="noreferrer"
+            <a href={lineUrl} target="_blank" rel="noreferrer" onClick={copyForLine}
               style={{ textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="line" s={15} c="#fff"/>Line</span>
             </a>
@@ -361,6 +363,7 @@ function PropDetail({ p, onClose }) {
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="pin" s={15} c="#fff"/>Maps</span>
             </a>
           </div>
+          {p.ref && <div style={{ textAlign:"center", marginTop:11, fontSize:12, color:"#8E7E6E" }}>WhatsApp opens pre-filled with this property. For Line, please mention ref <b style={{ color:"#9B6B2A" }}>{p.ref}</b> 🙏</div>}
         </div>
       </div>
     </div>
@@ -373,6 +376,8 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
   const [vis, setVis] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const ref = useRef(null);
+  const cardMsg = `Hi Annie! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const cardCopyLine = () => { try { navigator.clipboard && navigator.clipboard.writeText(cardMsg); } catch(_) {} };
   const imgs = (() => {
     let arr = p.imgs;
     if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
@@ -458,13 +463,13 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 
           {/* action buttons */}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:7 }}>
-            <a href={`https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent("Hi Annie! I'm interested in "+p.title+" ("+p.price+")")}`} target="_blank" rel="noreferrer"
+            <a href={`https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(cardMsg)}`} target="_blank" rel="noreferrer"
               onClick={e=>e.stopPropagation()}
               style={{ textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
             </a>
             <a href={OWNER.lineUrl} target="_blank" rel="noreferrer"
-              onClick={e=>e.stopPropagation()}
+              onClick={e=>{ e.stopPropagation(); cardCopyLine(); }}
               style={{ textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="line" s={15} c="#fff"/>Line</span>
             </a>
