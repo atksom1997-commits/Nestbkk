@@ -638,12 +638,36 @@ function AdminLogin({ onLogin }) {
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0 }) {
   const [sheetsUrl, setSheetsUrl] = useState("");
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [sheetsMsg, setSheetsMsg] = useState("");
   const [showImport, setShowImport] = useState(false);
   const [showCityPhotos, setShowCityPhotos] = useState(false);
+  const [aSearch, setASearch] = useState("");
+  const [aType, setAType] = useState("All");
+  const [aBudget, setABudget] = useState("Any Price");
+  const [aPage, setAPage] = useState(1);
+  const PER = 20;
+  const ADMIN_BUDGETS = [
+    {l:"Any Price",min:0,max:Infinity},
+    {l:"Rent: under ฿30k",min:0,max:30000},
+    {l:"Rent: ฿30k–60k",min:30000,max:60000},
+    {l:"Rent: ฿60k+",min:60000,max:900000},
+    {l:"Sale: ฿1M–3M",min:1000000,max:3000000},
+    {l:"Sale: ฿3M–8M",min:3000000,max:8000000},
+    {l:"Sale: ฿8M–20M",min:8000000,max:20000000},
+    {l:"Sale: ฿20M+",min:20000000,max:Infinity},
+  ];
+  const aFiltered = props.filter(p => {
+    if (aType !== "All" && p.type !== aType) return false;
+    if (aBudget !== "Any Price") { const o = ADMIN_BUDGETS.find(b=>b.l===aBudget); if (o) { const pr = parsePrice(p.price); if (pr < o.min || pr > o.max) return false; } }
+    if (aSearch) { const q = aSearch.toLowerCase(); const hay = [p.ref,p.title,p.location,p.type,p.price].filter(Boolean).join(" ").toLowerCase(); if (!hay.includes(q)) return false; }
+    return true;
+  });
+  const aPages = Math.max(1, Math.ceil(aFiltered.length / PER));
+  const aPageSafe = Math.min(aPage, aPages);
+  const aPaged = aFiltered.slice((aPageSafe-1)*PER, aPageSafe*PER);
   const [cityUploading, setCityUploading] = useState("");
   const CITY_LIST = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
   const uploadCityPhoto = async (cityName, e) => {
@@ -831,7 +855,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
       </div>
       <div style={{ maxWidth:1200, margin:"0 auto", padding:"28px clamp(16px,4vw,40px)" }}>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:14, marginBottom:26 }}>
-          {[{e:"🏘️",n:props.length,l:"Total Listings",bg:"#1C1410",nc:"#C9A96E"},{e:"🏷️",n:props.filter(p=>p.status==="For Sale").length,l:"For Sale",bg:"#EFF6FF",nc:"#2563EB"},{e:"🔑",n:props.filter(p=>p.status==="For Rent").length,l:"For Rent",bg:"#F0FDF4",nc:"#16A34A"},{e:"👁️",n:"49",l:"Views / 30 days",bg:"#FFFBEB",nc:"#D97706"}].map((s,i)=>(
+          {[{e:"🏘️",n:props.length,l:"Total Listings",bg:"#1C1410",nc:"#C9A96E"},{e:"🏷️",n:props.filter(p=>p.status==="For Sale").length,l:"For Sale",bg:"#EFF6FF",nc:"#2563EB"},{e:"🔑",n:props.filter(p=>p.status==="For Rent").length,l:"For Rent",bg:"#F0FDF4",nc:"#16A34A"},{e:"👁️",n:visits,l:"Website Visits",bg:"#FFFBEB",nc:"#D97706"}].map((s,i)=>(
             <div key={i} style={{ background:s.bg, borderRadius:14, padding:"18px 16px", border:`1px solid ${s.nc}22` }}>
               <div style={{ fontSize:22, marginBottom:7 }}>{s.e}</div>
               <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:32, fontWeight:700, color:s.nc, lineHeight:1 }}>{s.n}</div>
@@ -983,6 +1007,22 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           </div>
         )}
 
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:14, alignItems:"center" }}>
+          <input value={aSearch} onChange={e=>{ setASearch(e.target.value); setAPage(1); }} placeholder="Search code, location, name..."
+            style={{ flex:1, minWidth:200, padding:"10px 14px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, fontFamily:"'Outfit',sans-serif", background:"#fff", color:"#1C1410" }}/>
+          <select value={aType} onChange={e=>{ setAType(e.target.value); setAPage(1); }} style={{ padding:"10px 12px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, background:"#fff", color:"#1C1410", cursor:"pointer" }}>
+            {["All","Condo","House","Apartment","Villa","Townhouse"].map(t=><option key={t}>{t}</option>)}
+          </select>
+          <select value={aBudget} onChange={e=>{ setABudget(e.target.value); setAPage(1); }} style={{ padding:"10px 12px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, background:"#fff", color:"#1C1410", cursor:"pointer" }}>
+            {ADMIN_BUDGETS.map(b=><option key={b.l}>{b.l}</option>)}
+          </select>
+          {(aSearch||aType!=="All"||aBudget!=="Any Price") && (
+            <button onClick={()=>{ setASearch(""); setAType("All"); setABudget("Any Price"); setAPage(1); }}
+              style={{ padding:"10px 14px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, background:"#F3EEE8", color:"#6B5E52", cursor:"pointer", fontWeight:600 }}>Clear</button>
+          )}
+        </div>
+        <div style={{ color:"#A89580", fontSize:12, marginBottom:10 }}>Showing {aFiltered.length===0?0:(aPageSafe-1)*PER+1}–{Math.min(aPageSafe*PER, aFiltered.length)} of {aFiltered.length} listing{aFiltered.length===1?"":"s"}</div>
+
         <div style={{ background:"#fff", borderRadius:18, overflow:"hidden", boxShadow:"0 3px 18px rgba(0,0,0,0.06)", border:"1px solid #EDE8E0" }}>
           <div style={{ overflowX:"auto" }}>
             <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"'Outfit',sans-serif" }}>
@@ -994,8 +1034,8 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                 </tr>
               </thead>
               <tbody>
-                {props.length===0 && <tr><td colSpan={6} style={{ padding:"50px", textAlign:"center", color:"#A89580" }}><div style={{ fontSize:36, marginBottom:10 }}>📭</div><div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20 }}>No listings yet</div></td></tr>}
-                {props.map((p,i)=>{
+                {aFiltered.length===0 && <tr><td colSpan={6} style={{ padding:"50px", textAlign:"center", color:"#A89580" }}><div style={{ fontSize:36, marginBottom:10 }}>{props.length===0?"📭":"🔍"}</div><div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20 }}>{props.length===0?"No listings yet":"No listings match your filters"}</div></td></tr>}
+                {aPaged.map((p,i)=>{
                   let imgs = p.imgs;
                   if (typeof imgs === "string") { try { imgs = JSON.parse(imgs); } catch { imgs = []; } }
                   if (!Array.isArray(imgs)) imgs = [];
@@ -1036,6 +1076,18 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             </table>
           </div>
         </div>
+        {aPages > 1 && (
+          <div style={{ display:"flex", justifyContent:"center", alignItems:"center", gap:6, marginTop:20, flexWrap:"wrap" }}>
+            <button onClick={()=>setAPage(Math.max(1,aPageSafe-1))} disabled={aPageSafe<=1}
+              style={{ padding:"8px 14px", borderRadius:9, border:"1.5px solid #E8DECF", background: aPageSafe<=1?"#F3EEE8":"#fff", color: aPageSafe<=1?"#C0B0A0":"#1C1410", cursor: aPageSafe<=1?"default":"pointer", fontWeight:600, fontSize:13 }}>‹ Prev</button>
+            {Array.from({length:aPages}).map((_,i)=>(
+              <button key={i} onClick={()=>setAPage(i+1)}
+                style={{ minWidth:38, padding:"8px 10px", borderRadius:9, border:"1.5px solid " + (i+1===aPageSafe?"#C9A96E":"#E8DECF"), background: i+1===aPageSafe?"linear-gradient(135deg,#C9A96E,#9B6B2A)":"#fff", color: i+1===aPageSafe?"#fff":"#6B5E52", cursor:"pointer", fontWeight:700, fontSize:13 }}>{i+1}</button>
+            ))}
+            <button onClick={()=>setAPage(Math.min(aPages,aPageSafe+1))} disabled={aPageSafe>=aPages}
+              style={{ padding:"8px 14px", borderRadius:9, border:"1.5px solid #E8DECF", background: aPageSafe>=aPages?"#F3EEE8":"#fff", color: aPageSafe>=aPages?"#C0B0A0":"#1C1410", cursor: aPageSafe>=aPages?"default":"pointer", fontWeight:600, fontSize:13 }}>Next ›</button>
+          </div>
+        )}
         <div style={{ marginTop:22, display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))", gap:14 }}>
           <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ textDecoration:"none", background:"linear-gradient(135deg,#f09433,#dc2743,#bc1888)", borderRadius:14, padding:"18px 20px", display:"flex", alignItems:"center", gap:12 }}>
             <Icon n="instagram" s={26} c="#fff"/>
@@ -1439,6 +1491,8 @@ export default function App() {
   const [adminView, setAdminView] = useState(false);
   const [cityPhotos, setCityPhotos] = useState(()=>{ try { return JSON.parse(localStorage.getItem("bpf_city_photos")||"{}"); } catch { return {}; } });
   const [cityRowId, setCityRowId] = useState(null);
+  const [visits, setVisits] = useState(0);
+  const [statsRowId, setStatsRowId] = useState(null);
 
   useEffect(() => {
     if (!SB_ON) {
@@ -1451,13 +1505,26 @@ export default function App() {
       if (data && Array.isArray(data)) {
         const cpRow = data.find(p => p.type === "__city_photos__");
         if (cpRow) { setCityRowId(cpRow.id); try { const m = JSON.parse(cpRow.facilities||"{}"); setCityPhotos(m); localStorage.setItem("bpf_city_photos", JSON.stringify(m)); } catch(_) {} }
-        const listings = data.filter(p => p.type !== "__city_photos__");
+        const stRow = data.find(p => p.type === "__stats__");
+        if (stRow) { setStatsRowId(stRow.id); setVisits(parseInt(stRow.facilities||"0",10)||0); }
+        const listings = data.filter(p => p.type !== "__city_photos__" && p.type !== "__stats__");
         setProps(listings);
         try { localStorage.setItem("bangkokpropertyfinder_props", JSON.stringify(listings)); } catch(_) {}
       }
       setDbLoading(false);
     });
   }, []);
+
+  // Count one visit per browser session
+  useEffect(() => {
+    if (!SB_ON || dbLoading) return;
+    try { if (sessionStorage.getItem("bpf_counted")) return; sessionStorage.setItem("bpf_counted","1"); } catch(_) { return; }
+    const n = (visits||0) + 1; setVisits(n);
+    (async () => {
+      if (statsRowId) { await sbUpdate(statsRowId, { title:"__STATS__", type:"__stats__", active:false, facilities:String(n) }); }
+      else { const s = await sbAdd({ title:"__STATS__", type:"__stats__", active:false, facilities:String(n) }); if (s) setStatsRowId(s.id); }
+    })();
+  }, [dbLoading]);
 
   useEffect(() => {
     if (!dbLoading) {
@@ -1542,7 +1609,7 @@ export default function App() {
             onLogout={()=>{ setScreen("site"); setAdminView(false); localStorage.removeItem("bpf_screen"); }}
             onView={()=>{ setScreen("site"); setAdminView(true); }}
             onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}
-            onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto}/>
+            onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto} visits={visits}/>
         : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
             onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
