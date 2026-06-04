@@ -32,6 +32,10 @@ function Icon({ n, s=18, c="currentColor", st={} }) {
     arrow: <g><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></g>,
     edit: <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/>,
     trash: <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>,
+    tag: <g><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.3"/></g>,
+    key: <g><circle cx="7.5" cy="15.5" r="4.5"/><path d="M11 12 20 3M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/></g>,
+    eye: <g><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></g>,
+    facebook: <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>,
   };
   return <svg {...a}>{P[n] || P.check}</svg>;
 }
@@ -69,6 +73,8 @@ const OWNER = {
   email: "bangkokcondo.th@gmail.com",
   ig: "bkkproperty.finder",
   igUrl: "https://www.instagram.com/bkkproperty.finder",
+  fb: "Bangkok Condo for Sale & Rent",
+  fbUrl: "https://www.facebook.com/BangkokCondoforSaleAndRent",
   lineId: "@bkkproperty.finder",
   lineUrl: "https://line.me/R/ti/p/@bkkproperty.finder",
   whatsapp: "66825388189",
@@ -855,9 +861,9 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
       </div>
       <div style={{ maxWidth:1200, margin:"0 auto", padding:"28px clamp(16px,4vw,40px)" }}>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:14, marginBottom:26 }}>
-          {[{e:"🏘️",n:props.length,l:"Total Listings",bg:"#1C1410",nc:"#C9A96E"},{e:"🏷️",n:props.filter(p=>p.status==="For Sale").length,l:"For Sale",bg:"#EFF6FF",nc:"#2563EB"},{e:"🔑",n:props.filter(p=>p.status==="For Rent").length,l:"For Rent",bg:"#F0FDF4",nc:"#16A34A"},{e:"👁️",n:visits,l:"Website Visits",bg:"#FFFBEB",nc:"#D97706"}].map((s,i)=>(
+          {[{ic:"layers",n:props.length,l:"Total Listings",bg:"#1C1410",nc:"#C9A96E"},{ic:"tag",n:props.filter(p=>p.status==="For Sale").length,l:"For Sale",bg:"#EFF6FF",nc:"#2563EB"},{ic:"key",n:props.filter(p=>p.status==="For Rent").length,l:"For Rent",bg:"#F0FDF4",nc:"#16A34A"},{ic:"eye",n:visits,l:"Website Visits",bg:"#FFFBEB",nc:"#D97706"}].map((s,i)=>(
             <div key={i} style={{ background:s.bg, borderRadius:14, padding:"18px 16px", border:`1px solid ${s.nc}22` }}>
-              <div style={{ fontSize:22, marginBottom:7 }}>{s.e}</div>
+              <div style={{ marginBottom:8 }}><Icon n={s.ic} s={22} c={s.nc}/></div>
               <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:32, fontWeight:700, color:s.nc, lineHeight:1 }}>{s.n}</div>
               <div style={{ fontSize:11, color:s.nc, marginTop:4, fontWeight:600, opacity:0.75 }}>{s.l}</div>
             </div>
@@ -1094,6 +1100,11 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             <div><div style={{ color:"rgba(255,255,255,0.7)", fontSize:10, fontWeight:700, textTransform:"uppercase" }}>Instagram</div><div style={{ color:"#fff", fontWeight:700, fontSize:15, marginTop:2 }}>@{OWNER.ig}</div></div>
             <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.6)", fontSize:20 }}>↗</span>
           </a>
+          <a href={OWNER.fbUrl} target="_blank" rel="noreferrer" style={{ textDecoration:"none", background:"linear-gradient(135deg,#1877F2,#0A56C2)", borderRadius:14, padding:"18px 20px", display:"flex", alignItems:"center", gap:12 }}>
+            <Icon n="facebook" s={26} c="#fff"/>
+            <div><div style={{ color:"rgba(255,255,255,0.7)", fontSize:10, fontWeight:700, textTransform:"uppercase" }}>Facebook</div><div style={{ color:"#fff", fontWeight:700, fontSize:15, marginTop:2 }}>{OWNER.fb}</div></div>
+            <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.6)", fontSize:20 }}>↗</span>
+          </a>
           <div style={{ background:"#1C1410", borderRadius:14, padding:"18px 20px", border:"1px solid rgba(201,169,110,0.2)" }}>
             <div style={{ color:"#C9A96E", fontSize:10, fontWeight:700, textTransform:"uppercase", marginBottom:10 }}>Contact Info</div>
             <div style={{ color:"#C0B0A0", fontSize:13, marginBottom:6, display:"flex", alignItems:"center", gap:7 }}><Icon n="phone" s={14} c="#C9A96E"/>{OWNER.phoneDisplay}</div>
@@ -1304,6 +1315,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <div style={{ color:"#C0B0A0", fontSize:14, display:"flex", alignItems:"center", gap:8 }}><Icon n="phone" s={15} c="#C9A96E"/>{OWNER.phoneDisplay}</div>
               <div style={{ color:"#C0B0A0", fontSize:14, display:"flex", alignItems:"center", gap:8 }}><Icon n="mail" s={15} c="#C9A96E"/>{OWNER.email}</div>
               <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#C0B0A0", fontSize:14, textDecoration:"none" }}><span style={{ display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="instagram" s={14} c="#C0B0A0"/>@{OWNER.ig}</span></a>
+              <a href={OWNER.fbUrl} target="_blank" rel="noreferrer" style={{ color:"#C0B0A0", fontSize:14, textDecoration:"none" }}><span style={{ display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="facebook" s={14} c="#C0B0A0"/>{OWNER.fb}</span></a>
               <div style={{ display:"flex", gap:10, marginTop:4 }}>
                 <a href={`https://wa.me/${OWNER.whatsapp}`} target="_blank" rel="noreferrer"
                   style={{ textDecoration:"none", background:"#25D366", color:"#fff", padding:"9px 18px", borderRadius:11, fontSize:13, fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
@@ -1429,6 +1441,12 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 style={{ textDecoration:"none", background:"linear-gradient(135deg,#f09433,#dc2743,#bc1888)", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13 }}>
                 <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n="instagram" s={19} c="#fff"/></div>
                 <div><div style={{ fontSize:10, color:"rgba(255,255,255,0.7)", fontWeight:700, textTransform:"uppercase" }}>Instagram</div><div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>@{OWNER.ig}</div></div>
+                <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.7)", fontSize:18 }}>↗</span>
+              </a>
+              <a href={OWNER.fbUrl} target="_blank" rel="noreferrer"
+                style={{ textDecoration:"none", background:"linear-gradient(135deg,#1877F2,#0A56C2)", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13 }}>
+                <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n="facebook" s={19} c="#fff"/></div>
+                <div><div style={{ fontSize:10, color:"rgba(255,255,255,0.7)", fontWeight:700, textTransform:"uppercase" }}>Facebook</div><div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>{OWNER.fb}</div></div>
                 <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.7)", fontSize:18 }}>↗</span>
               </a>
             </div>
