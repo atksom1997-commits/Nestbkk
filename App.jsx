@@ -76,9 +76,33 @@ const OWNER = {
   fb: "Bangkok Condo for Sale & Rent",
   fbUrl: "https://www.facebook.com/BangkokCondoforSaleAndRent",
   lineId: "@bkkproperty.finder",
-  lineUrl: "https://line.me/R/ti/p/@bkkproperty.finder",
+  lineUrl: "https://lin.ee/O6fgAUW",
   whatsapp: "66825388189",
 };
+
+function LineModal({ msg, onClose }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div onClick={(e)=>{ e.stopPropagation(); onClose(); }} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:18, backdropFilter:"blur(4px)" }}>
+      <div onClick={(e)=>e.stopPropagation()} style={{ background:"#fff", borderRadius:18, maxWidth:380, width:"100%", padding:"24px 22px", boxShadow:"0 24px 70px rgba(0,0,0,0.35)" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+          <div style={{ width:36, height:36, borderRadius:"50%", background:"#06C755", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n="line" s={19} c="#fff"/></div>
+          <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#1C1410" }}>Contact via LINE</div>
+        </div>
+        <p style={{ fontSize:13, color:"#7B6A5A", lineHeight:1.6, margin:"0 0 14px" }}>LINE can't fill the message for you. Tap <b>Copy &amp; Open LINE</b>, then <b>paste</b> it in the chat so Annie knows which property you like:</p>
+        <div style={{ background:"#F7F3EE", border:"1px solid #ECE3D6", borderRadius:11, padding:"12px 14px", fontSize:12.5, color:"#4A3F36", whiteSpace:"pre-wrap", lineHeight:1.55, marginBottom:14 }}>{msg}</div>
+        <a href={OWNER.lineUrl} target="_blank" rel="noreferrer"
+          onClick={()=>{ try { navigator.clipboard && navigator.clipboard.writeText(msg); } catch(_) {} setCopied(true); }}
+          style={{ display:"block", textDecoration:"none", textAlign:"center", background:"#06C755", color:"#fff", borderRadius:12, padding:"13px", fontWeight:700, fontSize:14 }}>
+          <span style={{ display:"inline-flex", alignItems:"center", gap:8, justifyContent:"center" }}><Icon n="line" s={16} c="#fff"/>Copy &amp; Open LINE</span>
+        </a>
+        {copied && <div style={{ textAlign:"center", fontSize:12.5, color:"#16A34A", fontWeight:700, marginTop:10 }}>✓ Copied! Now paste it in the LINE chat</div>}
+        <button onClick={onClose} style={{ width:"100%", background:"none", border:"none", color:"#A89580", fontSize:13, fontWeight:600, cursor:"pointer", padding:"10px 6px 0" }}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
 
 const SEED = [
   { id:1, title:"Rhythm Sukhumvit 42", location:"Sukhumvit, Bangkok", type:"Condo", status:"For Sale", price:"฿5,200,000", beds:1, baths:1, sqm:34, floor:"12", totalFloors:"35", furnished:"Fully Furnished", available:"Now", maintenance:"฿3,500/mo", parking:"1 slot", pets:"Not allowed", facilities:"Pool, Gym, Security, Lobby", bts:"Ekkamai BTS — 5 min walk", imgs:["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80","https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80","https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"], tag:"New", active:true },
@@ -244,9 +268,10 @@ function PropDetail({ p, onClose }) {
   const propMsg = `Hi Annie! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const waUrl = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(propMsg)}`;
   const lineUrl = OWNER.lineUrl;
-  const copyForLine = () => { try { navigator.clipboard && navigator.clipboard.writeText(propMsg); } catch(_) {} };
+  const [showLine, setShowLine] = useState(false);
 
   return (
+    <>
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:400, display:"flex", alignItems:"center", justifyContent:"center", padding:16, backdropFilter:"blur(6px)" }}>
       <div style={{ background:"#fff", borderRadius:22, width:"100%", maxWidth:620, maxHeight:"92vh", overflowY:"auto" }}>
         {/* photo gallery */}
@@ -354,19 +379,21 @@ function PropDetail({ p, onClose }) {
               style={{ textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
             </a>
-            <a href={lineUrl} target="_blank" rel="noreferrer" onClick={copyForLine}
-              style={{ textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
+            <button onClick={()=>setShowLine(true)}
+              style={{ border:"none", cursor:"pointer", background:"#06C755", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="line" s={15} c="#fff"/>Line</span>
-            </a>
+            </button>
             <a href={mapsUrl} target="_blank" rel="noreferrer"
               style={{ textDecoration:"none", background:"#2563EB", color:"#fff", borderRadius:12, padding:"12px 8px", textAlign:"center", fontWeight:700, fontSize:13 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="pin" s={15} c="#fff"/>Maps</span>
             </a>
           </div>
-          {p.ref && <div style={{ textAlign:"center", marginTop:11, fontSize:12, color:"#8E7E6E" }}>WhatsApp opens pre-filled with this property. For Line, please mention ref <b style={{ color:"#9B6B2A" }}>{p.ref}</b> 🙏</div>}
+          {p.ref && <div style={{ textAlign:"center", marginTop:11, fontSize:12, color:"#8E7E6E" }}>WhatsApp opens pre-filled. For Line, tap Line then paste the copied details 🙏</div>}
         </div>
       </div>
     </div>
+    {showLine && <LineModal msg={propMsg} onClose={()=>setShowLine(false)} />}
+    </>
   );
 }
 
@@ -377,7 +404,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
   const [showDetail, setShowDetail] = useState(false);
   const ref = useRef(null);
   const cardMsg = `Hi Annie! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
-  const cardCopyLine = () => { try { navigator.clipboard && navigator.clipboard.writeText(cardMsg); } catch(_) {} };
+  const [showLine, setShowLine] = useState(false);
   const imgs = (() => {
     let arr = p.imgs;
     if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
@@ -400,6 +427,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
   return (
     <>
       {showDetail && <PropDetail p={p} onClose={()=>setShowDetail(false)}/>}
+      {showLine && <LineModal msg={cardMsg} onClose={()=>setShowLine(false)} />}
       <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(32px)", transition:`opacity 0.5s ease ${idx*0.07}s, transform 0.5s ease ${idx*0.07}s`, background:"#fff", borderRadius:18, overflow:"hidden", border:"1px solid #EDE8E0", boxShadow:"0 2px 14px rgba(0,0,0,0.06)", cursor:"pointer" }}
         onClick={()=>!isAdmin && setShowDetail(true)}
         onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 14px 40px rgba(0,0,0,0.13)"; e.currentTarget.style.transform="translateY(-4px)"; }}
@@ -468,11 +496,10 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
               style={{ textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
             </a>
-            <a href={OWNER.lineUrl} target="_blank" rel="noreferrer"
-              onClick={e=>{ e.stopPropagation(); cardCopyLine(); }}
-              style={{ textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
+            <button onClick={e=>{ e.stopPropagation(); setShowLine(true); }}
+              style={{ border:"none", cursor:"pointer", background:"#06C755", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="line" s={15} c="#fff"/>Line</span>
-            </a>
+            </button>
             <a href={`https://www.google.com/maps/search/${encodeURIComponent(p.location+", Thailand")}`} target="_blank" rel="noreferrer"
               onClick={e=>e.stopPropagation()}
               style={{ textDecoration:"none", background:"#2563EB", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
