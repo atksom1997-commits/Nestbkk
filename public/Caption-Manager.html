@@ -390,6 +390,9 @@
     padding: 0;
   }
 
+  .platform-tabs { display:flex; gap:8px; padding:14px 18px 0; background:#fff; }
+  .platform-btn { flex:1; padding:9px 6px; border:1.5px solid var(--gold-pale); background:#fff; color:var(--muted); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:all .2s; }
+  .platform-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:#fff; border-color:var(--gold); }
   .caption-tabs {
     display: flex;
     border-bottom: 1px solid rgba(13,27,42,0.08);
@@ -590,6 +593,11 @@
       <div class="modal-pills" id="modalPills"></div>
     </div>
     <div class="modal-body">
+      <div class="platform-tabs">
+        <button class="platform-btn active" onclick="switchPlatform('ig', this)">📸 Instagram</button>
+        <button class="platform-btn" onclick="switchPlatform('fb', this)">👍 Facebook</button>
+        <button class="platform-btn" onclick="switchPlatform('tt', this)">🎵 TikTok</button>
+      </div>
       <div class="caption-tabs">
         <button class="tab-btn active" onclick="switchTab('en', this)">🇬🇧 English</button>
         <button class="tab-btn" onclick="switchTab('th', this)">🇹🇭 Thai</button>
@@ -628,50 +636,86 @@ const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 
 function _facs(p){ return (p.facilities||"").split(/[|,]/).map(s=>s.trim()).filter(Boolean); }
 function _station(p){ const m=(p.bts||"").match(/(BTS|MRT|ARL)\s+([A-Za-z .]+?)(?:\s*[\u2014\-]|$)/); return m?m[2].trim():""; }
+function _area(p){ return (p.location||"").split(/[,(]/)[0].replace(/bangkok/i,"").trim(); }
+function _isRent(p){ return p.status==="For Rent"; }
+function _statusEN(p){ return _isRent(p)?"For Rent":(p.status==="For Sale"?"For Sale":"For Rent / Sale"); }
+function _statusTH(p){ return _isRent(p)?"\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32":(p.status==="For Sale"?"\u0e02\u0e32\u0e22":"\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32 / \u0e02\u0e32\u0e22"); }
+const _CT_EN=["Contact Annie","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder","\ud83c\udf10 bangkokpropertyfinder.vercel.app"];
+const _CT_TH=["\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e41\u0e2d\u0e19\u0e19\u0e35\u0e48","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder","\ud83c\udf10 bangkokpropertyfinder.vercel.app"];
 
-function genEN(p){
-  const isRent=p.status==="For Rent", isSale=p.status==="For Sale";
-  const specs=[]; if(p.beds)specs.push(p.beds+" Bed"); if(p.baths)specs.push(p.baths+" Bath"); if(p.sqm)specs.push(p.sqm+" sqm"); if(p.floor)specs.push("Floor "+p.floor);
-  const extras=[]; if(p.furnished)extras.push(p.furnished); if(p.available)extras.push("Available "+p.available); if(p.pets&&/allow/i.test(p.pets))extras.push("Pet friendly"); if(p.parking&&!/no|not/i.test(p.parking))extras.push("Parking: "+p.parking);
-  const facs=_facs(p);
-  const L=[p.title+" \u2014 "+(isRent?"For Rent":isSale?"For Sale":"For Rent / Sale"),"",specs.join(" | ")];
-  if(extras.length)L.push(extras.join(" | "));
-  if(facs.length)L.push("Facilities: "+facs.join(", "));
+function igEN(p){
+  const sp=[]; if(p.beds)sp.push(p.beds+" Bed"); if(p.baths)sp.push(p.baths+" Bath"); if(p.sqm)sp.push(p.sqm+" sqm"); if(p.floor)sp.push("Floor "+p.floor);
+  const ex=[]; if(p.furnished)ex.push(p.furnished); if(p.available)ex.push("Available "+p.available);
+  const f=_facs(p); const L=["\ud83c\udfd9\ufe0f "+p.title+" \u2014 "+_statusEN(p),"",sp.join(" | ")];
+  if(ex.length)L.push(ex.join(" | ")); if(f.length)L.push("\u2728 "+f.join(" \u00b7 "));
   L.push(""); L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts);
-  L.push(""); L.push(p.price);
-  L.push(""); L.push("Contact Annie","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder","\ud83c\udf10 https://bangkokpropertyfinder.vercel.app");
+  L.push(""); L.push("\ud83d\udcb0 "+p.price); L.push(""); _CT_EN.forEach(x=>L.push(x)); return L.join("\n");
+}
+function igTH(p){
+  const sp=[]; if(p.beds)sp.push(p.beds+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e2d\u0e19"); if(p.baths)sp.push(p.baths+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e49\u0e33"); if(p.sqm)sp.push(p.sqm+" \u0e15\u0e23.\u0e21."); if(p.floor)sp.push("\u0e0a\u0e31\u0e49\u0e19 "+p.floor);
+  const fn=/fully/i.test(p.furnished||"")?"\u0e40\u0e1f\u0e2d\u0e23\u0e4c\u0e19\u0e34\u0e40\u0e08\u0e2d\u0e23\u0e4c\u0e04\u0e23\u0e1a":(p.furnished||"");
+  const ex=[]; if(fn)ex.push(fn); if(p.available)ex.push(/^now$/i.test(p.available)?"\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e40\u0e02\u0e49\u0e32\u0e2d\u0e22\u0e39\u0e48\u0e17\u0e31\u0e19\u0e17\u0e35":"\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e40\u0e02\u0e49\u0e32\u0e2d\u0e22\u0e39\u0e48 "+p.available);
+  const f=_facs(p); const L=["\ud83c\udfd9\ufe0f "+p.title+" \u2014 "+_statusTH(p),"",sp.join(" | ")];
+  if(ex.length)L.push(ex.join(" | ")); if(f.length)L.push("\u2728 "+f.join(" \u00b7 "));
+  L.push(""); L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts);
+  L.push(""); L.push("\ud83d\udcb0 "+p.price); L.push(""); _CT_TH.forEach(x=>L.push(x)); return L.join("\n");
+}
+function fbEN(p){
+  const a=_area(p)||"Bangkok"; const sp=[]; if(p.beds)sp.push(p.beds+" bedroom"); if(p.baths)sp.push(p.baths+" bathroom"); if(p.sqm)sp.push(p.sqm+" sqm");
+  const f=_facs(p); const L=["\u2728 Now "+(_isRent(p)?"For Rent":"Available")+" in "+a+"! \u2728","",p.title,""];
+  L.push("A beautiful "+(p.type||"condo").toLowerCase()+(sp.length?" \u2014 "+sp.join(", "):"")+(p.floor?", on floor "+p.floor:"")+".");
+  if(p.furnished)L.push("\ud83c\udfe0 "+p.furnished);
+  if(f.length)L.push("\ud83c\udfe2 Facilities: "+f.slice(0,8).join(", "));
+  L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts); L.push("\ud83d\udcb0 "+p.price);
+  L.push(""); L.push("\ud83d\udce9 Message me to arrange a viewing \u2014 happy to help you find your perfect home!");
+  L.push(""); L.push("\ud83d\udcde 063 964 4388  |  WhatsApp 082 538 8189"); L.push("\ud83d\udc9a LINE: @bkkproperty.finder"); L.push("\ud83c\udf10 https://bangkokpropertyfinder.vercel.app");
   return L.join("\n");
 }
-function genTH(p){
-  const isRent=p.status==="For Rent", isSale=p.status==="For Sale";
-  const specs=[]; if(p.beds)specs.push(p.beds+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e2d\u0e19"); if(p.baths)specs.push(p.baths+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e49\u0e33"); if(p.sqm)specs.push(p.sqm+" \u0e15\u0e23.\u0e21."); if(p.floor)specs.push("\u0e0a\u0e31\u0e49\u0e19 "+p.floor);
-  const furn=/fully/i.test(p.furnished||"")?"\u0e40\u0e1f\u0e2d\u0e23\u0e4c\u0e19\u0e34\u0e40\u0e08\u0e2d\u0e23\u0e4c\u0e04\u0e23\u0e1a":(p.furnished||"");
-  const extras=[]; if(furn)extras.push(furn); if(p.available)extras.push((/^now$/i.test(p.available)?"\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e40\u0e02\u0e49\u0e32\u0e2d\u0e22\u0e39\u0e48\u0e17\u0e31\u0e19\u0e17\u0e35":"\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e40\u0e02\u0e49\u0e32\u0e2d\u0e22\u0e39\u0e48 "+p.available));
-  const facs=_facs(p);
-  const L=[p.title+" \u2014 "+(isRent?"\u0e27\u0e48\u0e32\u0e07\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32":isSale?"\u0e02\u0e32\u0e22":"\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32 / \u0e02\u0e32\u0e22"),"",specs.join(" | ")];
-  if(extras.length)L.push(extras.join(" | "));
-  if(facs.length)L.push("\u0e2a\u0e34\u0e48\u0e07\u0e2d\u0e33\u0e19\u0e27\u0e22\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e30\u0e14\u0e27\u0e01: "+facs.join(", "));
-  L.push(""); L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts);
-  L.push(""); L.push(p.price);
-  L.push(""); L.push("\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e41\u0e2d\u0e19\u0e19\u0e35\u0e48","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder","\ud83c\udf10 https://bangkokpropertyfinder.vercel.app");
+function fbTH(p){
+  const a=_area(p)||"\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e"; const sp=[]; if(p.beds)sp.push(p.beds+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e2d\u0e19"); if(p.baths)sp.push(p.baths+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e49\u0e33"); if(p.sqm)sp.push(p.sqm+" \u0e15\u0e23.\u0e21.");
+  const f=_facs(p); const L=["\u2728 "+_statusTH(p)+" \u0e22\u0e48\u0e32\u0e19 "+a+"! \u2728","",p.title,""];
+  L.push((p.type||"\u0e04\u0e2d\u0e19\u0e42\u0e14")+(sp.length?" \u2014 "+sp.join(", "):"")+(p.floor?" \u0e0a\u0e31\u0e49\u0e19 "+p.floor:""));
+  if(/fully/i.test(p.furnished||""))L.push("\ud83c\udfe0 \u0e40\u0e1f\u0e2d\u0e23\u0e4c\u0e19\u0e34\u0e40\u0e08\u0e2d\u0e23\u0e4c\u0e04\u0e23\u0e1a");
+  if(f.length)L.push("\ud83c\udfe2 \u0e2a\u0e34\u0e48\u0e07\u0e2d\u0e33\u0e19\u0e27\u0e22\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e30\u0e14\u0e27\u0e01: "+f.slice(0,8).join(", "));
+  L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts); L.push("\ud83d\udcb0 "+p.price);
+  L.push(""); L.push("\ud83d\udce9 \u0e17\u0e31\u0e01\u0e21\u0e32\u0e19\u0e31\u0e14\u0e0a\u0e21\u0e2b\u0e49\u0e2d\u0e07\u0e44\u0e14\u0e49\u0e40\u0e25\u0e22\u0e04\u0e48\u0e30 \u0e22\u0e34\u0e19\u0e14\u0e35\u0e0a\u0e48\u0e27\u0e22\u0e2b\u0e32\u0e1a\u0e49\u0e32\u0e19\u0e17\u0e35\u0e48\u0e43\u0e0a\u0e48\u0e43\u0e2b\u0e49\u0e04\u0e38\u0e13!");
+  L.push(""); L.push("\ud83d\udcde 063 964 4388  |  WhatsApp 082 538 8189"); L.push("\ud83d\udc9a LINE: @bkkproperty.finder"); L.push("\ud83c\udf10 https://bangkokpropertyfinder.vercel.app");
   return L.join("\n");
 }
-function genHashtags(p){
-  const t=[]; const ty=(p.type||"Condo").replace(/\s/g,"");
-  t.push("#"+ty,"#BangkokProperty","#BangkokCondo");
-  if(p.status==="For Rent")t.push("#CondoForRent","#\u0e04\u0e2d\u0e19\u0e42\u0e14\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32");
-  else if(p.status==="For Sale")t.push("#CondoForSale","#\u0e04\u0e2d\u0e19\u0e42\u0e14\u0e02\u0e32\u0e22");
-  const loc=(p.location||"").replace(/bangkok/i,"").replace(/,/g,"").trim();
-  if(loc)t.push("#"+loc.replace(/\s/g,""));
-  const st=_station(p); if(st)t.push("#"+st.replace(/\s/g,""));
-  t.push("#\u0e04\u0e2d\u0e19\u0e42\u0e14\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e","#Thailand","#bkkproperty.finder");
-  return t.join(" ");
+function ttEN(p){
+  const top=_facs(p)[0]||""; const L=["POV: your next Bangkok home \ud83c\udfd9\ufe0f\u2728","",p.title+" \ud83d\udccd "+_area(p)];
+  const sp=[]; if(p.beds)sp.push(p.beds+" bed"); if(p.baths)sp.push(p.baths+" bath"); if(p.sqm)sp.push(p.sqm+" sqm");
+  if(sp.length)L.push(sp.join(" \u2022 ")); L.push("\ud83d\udcb0 "+p.price); if(top)L.push(top+" \ud83d\udd25");
+  L.push(""); L.push("DM to view! \ud83d\udcac LINE @bkkproperty.finder"); return L.join("\n");
+}
+function ttTH(p){
+  const top=_facs(p)[0]||""; const L=["\u0e1a\u0e49\u0e32\u0e19\u0e2b\u0e25\u0e31\u0e07\u0e15\u0e48\u0e2d\u0e44\u0e1b\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13 \ud83c\udfd9\ufe0f\u2728","",p.title+" \ud83d\udccd "+_area(p)];
+  const sp=[]; if(p.beds)sp.push(p.beds+" \u0e19\u0e2d\u0e19"); if(p.baths)sp.push(p.baths+" \u0e19\u0e49\u0e33"); if(p.sqm)sp.push(p.sqm+" \u0e15\u0e23.\u0e21.");
+  if(sp.length)L.push(sp.join(" \u2022 ")); L.push("\ud83d\udcb0 "+p.price); if(top)L.push(top+" \ud83d\udd25");
+  L.push(""); L.push("\u0e17\u0e31\u0e01\u0e21\u0e32\u0e14\u0e39\u0e2b\u0e49\u0e2d\u0e07! \ud83d\udcac LINE @bkkproperty.finder"); return L.join("\n");
+}
+function tagsIG(p){
+  const t=[]; const ty=(p.type||"Condo").replace(/\s/g,""); t.push("#"+ty,"#BangkokProperty","#BangkokCondo","#BangkokRealEstate");
+  if(_isRent(p))t.push("#CondoForRent","#\u0e04\u0e2d\u0e19\u0e42\u0e14\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32","#\u0e40\u0e0a\u0e48\u0e32\u0e04\u0e2d\u0e19\u0e42\u0e14"); else if(p.status==="For Sale")t.push("#CondoForSale","#\u0e04\u0e2d\u0e19\u0e42\u0e14\u0e02\u0e32\u0e22","#\u0e02\u0e32\u0e22\u0e04\u0e2d\u0e19\u0e42\u0e14");
+  const a=_area(p); if(a)t.push("#"+a.replace(/\s/g,"")); const st=_station(p); if(st)t.push("#"+st.replace(/\s/g,""));
+  t.push("#\u0e04\u0e2d\u0e19\u0e42\u0e14\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e","#Thailand","#bkkproperty.finder"); return t.join(" ");
+}
+function tagsFB(p){
+  const t=["#BangkokCondo"]; const a=_area(p); if(a)t.push("#"+a.replace(/\s/g,""));
+  if(_isRent(p))t.push("#ForRent"); else if(p.status==="For Sale")t.push("#ForSale"); t.push("#BangkokProperty","#bkkpropertyfinder"); return t.join(" ");
+}
+function tagsTT(p){
+  const t=["#fyp","#foryou","#fyp\u30b7","#bangkok","#bangkokcondo","#condotour","#property","#realestate","#thailand","#\u0e04\u0e2d\u0e19\u0e42\u0e14"];
+  const a=_area(p); if(a)t.push("#"+a.replace(/\s/g,"")); if(_isRent(p))t.push("#\u0e40\u0e0a\u0e48\u0e32\u0e04\u0e2d\u0e19\u0e42\u0e14"); else if(p.status==="For Sale")t.push("#\u0e02\u0e32\u0e22\u0e04\u0e2d\u0e19\u0e42\u0e14"); return t.join(" ");
 }
 function toCaption(p){
   const ref=(p.ref||"").trim(); const code=ref?ref.split("/")[0]:"\u2014";
   const status=p.status==="For Sale"?"sale":(p.status==="For Rent"?"rent":"both");
-  return { code, name:p.title||"Untitled", status, price:p.price||"", en:genEN(p), th:genTH(p), hashtags:genHashtags(p) };
+  return { code, name:p.title||"Untitled", status, price:p.price||"",
+    caps:{ ig:{en:igEN(p),th:igTH(p)}, fb:{en:fbEN(p),th:fbTH(p)}, tt:{en:ttEN(p),th:ttTH(p)} },
+    tags:{ ig:tagsIG(p), fb:tagsFB(p), tt:tagsTT(p) } };
 }
+
 async function loadListings(){
   const countEl=document.getElementById("listingCount"); if(countEl)countEl.textContent="Loading\u2026";
   try{
@@ -689,6 +733,7 @@ let currentFilter = "all";
 let currentSearch = "";
 let currentListing = null;
 let activeTab = "en";
+let activePlatform = "ig";
 
 // ── RENDER ──
 function getStatusLabel(status) {
@@ -772,12 +817,9 @@ function openModal(code) {
     `<span class="status-pill ${s.cls}">${s.label}</span>
      <span class="card-price" style="font-size:13px;color:var(--muted)">${currentListing.price}</span>`;
 
-  document.getElementById("captionEn").textContent = currentListing.en;
-  document.getElementById("hashtagsEn").textContent = currentListing.hashtags;
-  document.getElementById("captionTh").textContent = currentListing.th;
-  document.getElementById("hashtagsTh").textContent = currentListing.hashtags;
-  document.getElementById("captionBoth").textContent =
-    currentListing.en + "\n\n─────────────────\n\n" + currentListing.th + "\n\n" + currentListing.hashtags;
+  activePlatform = "ig";
+  document.querySelectorAll(".platform-btn").forEach((b,i)=>b.classList.toggle("active", i===0));
+  renderCaption();
 
   // Reset tab
   switchTab("en", document.querySelector(".tab-btn"));
@@ -803,12 +845,31 @@ function switchTab(tab, btn) {
   document.getElementById("tab-" + tab).classList.add("active");
 }
 
+function renderCaption() {
+  if (!currentListing) return;
+  const cap = currentListing.caps[activePlatform];
+  const tags = currentListing.tags[activePlatform];
+  document.getElementById("captionEn").textContent = cap.en;
+  document.getElementById("hashtagsEn").textContent = tags;
+  document.getElementById("captionTh").textContent = cap.th;
+  document.getElementById("hashtagsTh").textContent = tags;
+  document.getElementById("captionBoth").textContent = cap.en + "\n\n─────────────────\n\n" + cap.th + "\n\n" + tags;
+}
+function switchPlatform(plat, btn) {
+  activePlatform = plat;
+  document.querySelectorAll(".platform-btn").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  renderCaption();
+}
+
 // ── COPY ──
 function getVisibleText() {
   if (!currentListing) return "";
-  if (activeTab === "en") return currentListing.en + "\n\n" + currentListing.hashtags;
-  if (activeTab === "th") return currentListing.th + "\n\n" + currentListing.hashtags;
-  return currentListing.en + "\n\n─────────────────\n\n" + currentListing.th + "\n\n" + currentListing.hashtags;
+  const cap = currentListing.caps[activePlatform];
+  const tags = currentListing.tags[activePlatform];
+  if (activeTab === "en") return cap.en + "\n\n" + tags;
+  if (activeTab === "th") return cap.th + "\n\n" + tags;
+  return cap.en + "\n\n─────────────────\n\n" + cap.th + "\n\n" + tags;
 }
 
 function copyVisible() {
@@ -818,7 +879,9 @@ function copyVisible() {
 
 function copyBoth() {
   if (!currentListing) return;
-  const text = currentListing.en + "\n\n─────────────────\n\n" + currentListing.th + "\n\n" + currentListing.hashtags;
+  const cap = currentListing.caps[activePlatform];
+  const tags = currentListing.tags[activePlatform];
+  const text = cap.en + "\n\n─────────────────\n\n" + cap.th + "\n\n" + tags;
   copyToClipboard(text, "copyBoth", "✨ Both Copied!");
 }
 
