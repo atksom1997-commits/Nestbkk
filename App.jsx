@@ -57,6 +57,8 @@ function sbClean(d) {
     else if (rest[k] === null || rest[k] === undefined) { out[k] = ""; }
     else { out[k] = String(rest[k]); }
   }
+  if (!out.maplink) delete out.maplink;
+  if (!out.agent) delete out.agent;
   return out;
 }
 async function sbLoad() { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?order=created_at.desc", { headers: SB_H() }); return r.ok ? await r.json() : null; } catch { return null; } }
@@ -80,7 +82,8 @@ const OWNER = {
   whatsapp: "66825388189",
 };
 
-function LineModal({ msg, onClose }) {
+function LineModal({ msg, onClose, lineUrl }) {
+  const _url = lineUrl || OWNER.lineUrl;
   const [copied, setCopied] = useState(false);
   return (
     <div onClick={(e)=>{ e.stopPropagation(); onClose(); }} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.72)", zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:18, backdropFilter:"blur(4px)" }}>
@@ -91,7 +94,7 @@ function LineModal({ msg, onClose }) {
         </div>
         <p style={{ fontSize:13, color:"#7B6A5A", lineHeight:1.6, margin:"0 0 14px" }}>LINE can't fill the message for you. Tap <b>Copy &amp; Open LINE</b>, then <b>paste</b> it in the chat so Annie knows which property you like:</p>
         <div style={{ background:"#F7F3EE", border:"1px solid #ECE3D6", borderRadius:11, padding:"12px 14px", fontSize:12.5, color:"#4A3F36", whiteSpace:"pre-wrap", lineHeight:1.55, marginBottom:14 }}>{msg}</div>
-        <a href={OWNER.lineUrl} target="_blank" rel="noreferrer"
+        <a href={_url} target="_blank" rel="noreferrer"
           onClick={()=>{ try { navigator.clipboard && navigator.clipboard.writeText(msg); } catch(_) {} setCopied(true); }}
           style={{ display:"block", textDecoration:"none", textAlign:"center", background:"#06C755", color:"#fff", borderRadius:12, padding:"13px", fontWeight:700, fontSize:14 }}>
           <span style={{ display:"inline-flex", alignItems:"center", gap:8, justifyContent:"center" }}><Icon n="line" s={16} c="#fff"/>Copy &amp; Open LINE</span>
@@ -252,7 +255,7 @@ function onFG(e){ e.target.style.borderColor="#C9A96E"; }
 function onBG(e){ e.target.style.borderColor="#E5DDD3"; }
 
 /* Property Detail Modal */
-function PropDetail({ p, onClose }) {
+function PropDetail({ p, onClose, agentContacts={} }) {
   const [imgIdx, setImgIdx] = useState(0);
   const imgs = (() => {
     let arr = p.imgs;
@@ -264,9 +267,17 @@ function PropDetail({ p, onClose }) {
     if (arr.length === 0 && isImg(p.img)) arr = [p.img];
     return arr;
   })();
-  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(p.location+", Thailand")}`;
-  const propMsg = `Hi Annie! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
-  const waUrl = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(propMsg)}`;
+  const _ml = (p.maplink || "").trim();
+  const mapsUrl = _ml.startsWith("http")
+    ? _ml
+    : (/^-?\d+\.?\d*\s*,\s*-?\d+\.?\d*$/.test(_ml)
+        ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(_ml)
+        : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent([p.title, p.location, "Thailand"].filter(Boolean).join(", ")));
+  const _ct = (agentContacts && p.agent && agentContacts[p.agent]) || {};
+  const pdWa = (_ct.whatsapp||"").trim() || OWNER.whatsapp;
+  const pdLine = (_ct.line||"").trim() || OWNER.lineUrl;
+  const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const waUrl = `https://wa.me/${pdWa}?text=${encodeURIComponent(propMsg)}`;
   const lineUrl = OWNER.lineUrl;
   const [showLine, setShowLine] = useState(false);
 
@@ -388,22 +399,26 @@ function PropDetail({ p, onClose }) {
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="pin" s={15} c="#fff"/>Maps</span>
             </a>
           </div>
-          {p.ref && <div style={{ textAlign:"center", marginTop:11, fontSize:12, color:"#8E7E6E" }}>WhatsApp opens pre-filled. For Line, tap Line then paste the copied details 🙏</div>}
+          {p.agent && <div style={{ textAlign:"center", marginTop:11, fontSize:13, color:"#6B5E52", fontWeight:600 }}>👤 Listed by {p.agent}{(_ct.phone)?" · "+_ct.phone:""}</div>}
+          {p.ref && <div style={{ textAlign:"center", marginTop:6, fontSize:12, color:"#8E7E6E" }}>WhatsApp opens pre-filled. For Line, tap Line then paste the copied details 🙏</div>}
         </div>
       </div>
     </div>
-    {showLine && <LineModal msg={propMsg} onClose={()=>setShowLine(false)} />}
+    {showLine && <LineModal msg={propMsg} lineUrl={pdLine} onClose={()=>setShowLine(false)} />}
     </>
   );
 }
 
 /* Card */
-function Card({ p, idx, isAdmin, onEdit, onDel }) {
+function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={} }) {
   const [liked, setLiked] = useState(false);
   const [vis, setVis] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const ref = useRef(null);
-  const cardMsg = `Hi Annie! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const _ct = (agentContacts && p.agent && agentContacts[p.agent]) || {};
+  const cardWa = (_ct.whatsapp||"").trim() || OWNER.whatsapp;
+  const cardLine = (_ct.line||"").trim() || OWNER.lineUrl;
+  const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const [showLine, setShowLine] = useState(false);
   const imgs = (() => {
     let arr = p.imgs;
@@ -426,8 +441,8 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 
   return (
     <>
-      {showDetail && <PropDetail p={p} onClose={()=>setShowDetail(false)}/>}
-      {showLine && <LineModal msg={cardMsg} onClose={()=>setShowLine(false)} />}
+      {showDetail && <PropDetail p={p} onClose={()=>setShowDetail(false)} agentContacts={agentContacts}/>}
+      {showLine && <LineModal msg={cardMsg} lineUrl={cardLine} onClose={()=>setShowLine(false)} />}
       <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(32px)", transition:`opacity 0.5s ease ${idx*0.07}s, transform 0.5s ease ${idx*0.07}s`, background:"#fff", borderRadius:18, overflow:"hidden", border:"1px solid #EDE8E0", boxShadow:"0 2px 14px rgba(0,0,0,0.06)", cursor:"pointer" }}
         onClick={()=>!isAdmin && setShowDetail(true)}
         onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 14px 40px rgba(0,0,0,0.13)"; e.currentTarget.style.transform="translateY(-4px)"; }}
@@ -491,7 +506,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 
           {/* action buttons */}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:7 }}>
-            <a href={`https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(cardMsg)}`} target="_blank" rel="noreferrer"
+            <a href={`https://wa.me/${cardWa}?text=${encodeURIComponent(cardMsg)}`} target="_blank" rel="noreferrer"
               onClick={e=>e.stopPropagation()}
               style={{ textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:10, padding:"8px 4px", textAlign:"center", fontWeight:700, fontSize:11 }}>
               <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
@@ -515,9 +530,82 @@ function Card({ p, idx, isAdmin, onEdit, onDel }) {
 }
 
 /* Property Form Modal */
-function PropForm({ init, onSave, onClose }) {
-  const empty = { ref:"", title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"" };
-  const [f, setF] = useState(init || empty);
+/* Interactive map location picker (free OpenStreetMap, no API key) */
+function MapPicker({ value, onChange }) {
+  const mapRef = useRef(null);
+  const objRef = useRef({});
+  const [ready, setReady] = useState(!!(typeof window !== "undefined" && window.L));
+  const [q, setQ] = useState("");
+  const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    if (window.L) { setReady(true); return; }
+    if (!document.getElementById("leaflet-css")) {
+      const l = document.createElement("link"); l.id = "leaflet-css"; l.rel = "stylesheet";
+      l.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; document.head.appendChild(l);
+    }
+    let s = document.getElementById("leaflet-js");
+    if (!s) {
+      s = document.createElement("script"); s.id = "leaflet-js";
+      s.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      s.onload = () => setReady(true); document.head.appendChild(s);
+    } else {
+      const t = setInterval(() => { if (window.L) { setReady(true); clearInterval(t); } }, 200);
+      return () => clearInterval(t);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!ready || !window.L || !mapRef.current || objRef.current.map) return;
+    const L = window.L;
+    const p = (value || "").split(",").map(x => parseFloat(x.trim()));
+    const has = p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]);
+    const center = has ? [p[0], p[1]] : [13.7466, 100.5347];
+    const map = L.map(mapRef.current).setView(center, has ? 16 : 11);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(map);
+    const marker = L.marker(center, { draggable: true }).addTo(map);
+    const upd = (ll) => onChange(ll.lat.toFixed(6) + "," + ll.lng.toFixed(6));
+    marker.on("dragend", () => upd(marker.getLatLng()));
+    map.on("click", (e) => { marker.setLatLng(e.latlng); upd(e.latlng); });
+    objRef.current = { map, marker };
+    setTimeout(() => map.invalidateSize(), 250);
+  }, [ready]);
+
+  const search = async () => {
+    if (!q.trim() || !objRef.current.map) return;
+    setSearching(true);
+    try {
+      const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q + ", Thailand"));
+      const d = await r.json();
+      if (d && d[0]) {
+        const lat = parseFloat(d[0].lat), lng = parseFloat(d[0].lon);
+        objRef.current.map.setView([lat, lng], 16);
+        objRef.current.marker.setLatLng([lat, lng]);
+        onChange(lat.toFixed(6) + "," + lng.toFixed(6));
+      } else { alert("Place not found. Try the building name + area, e.g. 'Noble Ora Thonglor'."); }
+    } catch (_) { alert("Search failed — check your connection and try again."); }
+    setSearching(false);
+  };
+
+  return (
+    <div>
+      <div style={{ display:"flex", gap:8, marginBottom:8 }}>
+        <input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>{ if(e.key==="Enter"){ e.preventDefault(); search(); } }} placeholder="Search building or address…" style={S.inp({ flex:1 })}/>
+        <button type="button" onClick={search} style={{ ...S.gold, padding:"0 18px", whiteSpace:"nowrap" }}>{searching ? "…" : "Search"}</button>
+      </div>
+      <div ref={mapRef} style={{ width:"100%", height:240, borderRadius:12, border:"1px solid #E5DDD3", background:"#F3EEE8", overflow:"hidden" }}>
+        {!ready && <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100%", color:"#A89580", fontSize:13 }}>Loading map…</div>}
+      </div>
+      <div style={{ fontSize:11.5, color: value ? "#16A34A" : "#A89580", marginTop:6, fontWeight: value ? 600 : 400 }}>
+        {value ? ("📍 Pin set ("+value+") — tap or drag the pin to fine-tune") : "Search a building, then tap the map to drop a pin on the exact spot"}
+      </div>
+    </div>
+  );
+}
+
+function PropForm({ init, onSave, onClose, currentUser, agents=[] }) {
+  const empty = { ref:"", title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"", maplink:"", agent:"" };
+  const [f, setF] = useState(() => { const b = init || empty; return { ...b, agent: b.agent || (currentUser && currentUser.name) || "Annie" }; });
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState("");
   const fileRef = useRef(null);
@@ -632,6 +720,17 @@ function PropForm({ init, onSave, onClose }) {
           ))}
 
         </div>
+        <div style={{ marginTop:14 }}>
+          <LBL t="👤 Handled by (Agent)"/>
+          <select value={f.agent || "Annie"} onChange={e=>set("agent", e.target.value)} disabled={!(currentUser && currentUser.role==="owner")} style={S.inp((currentUser && currentUser.role==="owner")?{}:{opacity:0.65, cursor:"not-allowed"})}>
+            {Array.from(new Set(["Annie", ...(agents||[]).map(a=>a.name), f.agent].filter(Boolean))).map(n=><option key={n} value={n}>{n}</option>)}
+          </select>
+          {!(currentUser && currentUser.role==="owner") && <div style={{ fontSize:11, color:"#A89580", marginTop:5 }}>Listings you add are tagged to you and sent to Annie for approval.</div>}
+        </div>
+        <div style={{ marginTop:14 }}>
+          <LBL t="📍 Property Location (search & tap to pin the exact spot)"/>
+          <MapPicker value={f.maplink||""} onChange={v=>set("maplink",v)} />
+        </div>
         <div style={{ display:"flex", gap:10, marginTop:20 }}>
           <button onClick={onClose} style={{ flex:1, background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"11px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
           <button onClick={()=>onSave({...f, img:f.imgs&&f.imgs[0]?f.imgs[0]:f.img})} style={{...S.gold,flex:2}}>{init?"Save Changes ✓":"Add Property ✓"}</button>
@@ -641,47 +740,82 @@ function PropForm({ init, onSave, onClose }) {
   );
 }
 
-function AdminLogin({ onLogin }) {
+function AdminLogin({ onLogin, agents=[], pending=[], onApply }) {
+  const [mode, setMode] = useState("login");
   const [user, setUser] = useState("");
   const [pw, setPw]     = useState("");
-  const [err, setErr]   = useState(false);
+  const [err, setErr]   = useState("");
+  const [aName,setAName]=useState(""); const [aUser,setAUser]=useState(""); const [aPass,setAPass]=useState(""); const [aPhone,setAPhone]=useState(""); const [aWhats,setAWhats]=useState(""); const [aLine,setALine]=useState("");
+  const [applied,setApplied]=useState(false);
+  const LBLD = { fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.08em", textTransform:"uppercase", display:"block", marginBottom:7 };
+  const inpDark = (extra={}) => S.inp({ background:"#261C10", color:"#F5E9D0", borderColor:"rgba(201,169,110,0.25)", ...extra });
   const tryLogin = () => {
-    if(user===ADMIN_USER && pw===ADMIN_PASS) onLogin();
-    else setErr(true);
+    if(user.trim()===ADMIN_USER && pw===ADMIN_PASS) { onLogin({ name:"Annie", role:"owner" }); return; }
+    const a = (agents||[]).find(x => x.user===user.trim() && x.pass===pw);
+    if(a) { onLogin({ name:a.name, role:"agent" }); return; }
+    if((pending||[]).some(x => x.user===user.trim())) { setErr("\u23f3 Your application is still pending Annie\u2019s approval."); return; }
+    setErr("\u274c Wrong username or password.");
+  };
+  const submitApply = () => {
+    const name=aName.trim(), u=aUser.trim(), p=aPass.trim();
+    if(!name||!u||!p){ setErr("Please fill in name, username and password."); return; }
+    if(u===ADMIN_USER || (agents||[]).some(x=>x.user===u) || (pending||[]).some(x=>x.user===u)){ setErr("That username is taken \u2014 please choose another."); return; }
+    onApply({ name, user:u, pass:p, phone:aPhone.trim(), whatsapp:aWhats.trim(), line:aLine.trim(), ts:Date.now() });
+    setApplied(true); setErr("");
   };
   return (
     <div style={{ minHeight:"100vh", background:"#0F0A04", display:"flex", alignItems:"center", justifyContent:"center", padding:20, fontFamily:"'Outfit',sans-serif" }}>
       <div style={{ background:"#1C1410", border:"1px solid rgba(201,169,110,0.3)", borderRadius:22, padding:"44px 36px", width:"100%", maxWidth:380, textAlign:"center" }}>
-        <div style={{ fontSize:44, marginBottom:14 }}>🏡</div>
-        <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>
-          Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span>
-        </div>
-        <div style={{ color:"#7B6A5A", fontSize:13, marginBottom:28 }}>Admin Panel — Real Estate By Annie</div>
-        <div style={{ display:"flex", flexDirection:"column", gap:14, textAlign:"left", marginBottom:20 }}>
+        <div style={{ fontSize:44, marginBottom:14 }}>\ud83c\udfe1</div>
+        <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
+        <div style={{ color:"#7B6A5A", fontSize:13, marginBottom:28 }}>{mode==="login" ? "Admin Panel \u2014 Real Estate By Annie" : "Apply to Join Our Agent Team"}</div>
+        {applied ? (
           <div>
-            <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.08em", textTransform:"uppercase", display:"block", marginBottom:7 }}>Username</label>
-            <input type="text" value={user} onChange={e=>{ setUser(e.target.value); setErr(false); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter username"
-              style={S.inp({ background:"#261C10", color:"#F5E9D0", borderColor:err?"#EF4444":"rgba(201,169,110,0.25)" })}/>
+            <div style={{ fontSize:40, marginBottom:12 }}>\u2705</div>
+            <div style={{ color:"#F5E9D0", fontSize:16, fontWeight:700, marginBottom:8 }}>Application submitted!</div>
+            <div style={{ color:"#9A8A78", fontSize:13, lineHeight:1.6, marginBottom:22 }}>Annie will review your request. Once she approves you, sign in with your username &amp; password.</div>
+            <button onClick={()=>{ setApplied(false); setMode("login"); }} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Back to Login</button>
           </div>
-          <div>
-            <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.08em", textTransform:"uppercase", display:"block", marginBottom:7 }}>Password</label>
-            <input type="password" value={pw} onChange={e=>{ setPw(e.target.value); setErr(false); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter password"
-              style={S.inp({ background:"#261C10", color:"#F5E9D0", borderColor:err?"#EF4444":"rgba(201,169,110,0.25)" })}/>
-          </div>
-          {err && <p style={{ color:"#EF4444", fontSize:12 }}>❌ Wrong username or password.</p>}
-        </div>
-        <button onClick={tryLogin} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Sign In →</button>
+        ) : mode==="login" ? (
+          <>
+            <div style={{ display:"flex", flexDirection:"column", gap:14, textAlign:"left", marginBottom:20 }}>
+              <div><label style={LBLD}>Username</label>
+                <input type="text" value={user} onChange={e=>{ setUser(e.target.value); setErr(""); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter username" style={inpDark()}/></div>
+              <div><label style={LBLD}>Password</label>
+                <input type="password" value={pw} onChange={e=>{ setPw(e.target.value); setErr(""); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter password" style={inpDark()}/></div>
+              {err && <p style={{ color:"#EF4444", fontSize:12 }}>{err}</p>}
+            </div>
+            <button onClick={tryLogin} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Sign In \u2192</button>
+            <div style={{ marginTop:18, fontSize:12.5, color:"#7B6A5A" }}>Want to join our team? <button onClick={()=>{ setMode("apply"); setErr(""); }} style={{ background:"none", border:"none", color:"#C9A96E", fontWeight:700, cursor:"pointer", fontSize:12.5, textDecoration:"underline", padding:0 }}>Apply here</button></div>
+          </>
+        ) : (
+          <>
+            <div style={{ display:"flex", flexDirection:"column", gap:12, textAlign:"left", marginBottom:18 }}>
+              <div><label style={LBLD}>Full Name</label><input value={aName} onChange={e=>{ setAName(e.target.value); setErr(""); }} placeholder="Your name" style={inpDark()}/></div>
+              <div><label style={LBLD}>Choose a Username</label><input value={aUser} onChange={e=>{ setAUser(e.target.value); setErr(""); }} placeholder="e.g. somchai" style={inpDark()}/></div>
+              <div><label style={LBLD}>Choose a Password</label><input value={aPass} onChange={e=>{ setAPass(e.target.value); setErr(""); }} placeholder="Create a password" style={inpDark()}/></div>
+              <div><label style={LBLD}>WhatsApp number (with country code)</label><input value={aWhats} onChange={e=>setAWhats(e.target.value)} placeholder="e.g. 66812345678" style={inpDark()}/></div>
+              <div><label style={LBLD}>LINE link</label><input value={aLine} onChange={e=>setALine(e.target.value)} placeholder="e.g. https://lin.ee/xxxx" style={inpDark()}/></div>
+              <div><label style={LBLD}>Phone (shown to buyers)</label><input value={aPhone} onChange={e=>setAPhone(e.target.value)} placeholder="e.g. 081 234 5678" style={inpDark()}/></div>
+              {err && <p style={{ color:"#EF4444", fontSize:12 }}>{err}</p>}
+            </div>
+            <button onClick={submitApply} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Submit Application \u2192</button>
+            <div style={{ marginTop:16, fontSize:12.5, color:"#7B6A5A" }}>Already approved? <button onClick={()=>{ setMode("login"); setErr(""); }} style={{ background:"none", border:"none", color:"#C9A96E", fontWeight:700, cursor:"pointer", fontSize:12.5, textDecoration:"underline", padding:0 }}>Log in</button></div>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0 }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0, currentUser, agents=[], onAgentsChange, pending=[], onApprove, onReject, onApproveListing }) {
   const [sheetsUrl, setSheetsUrl] = useState("");
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [sheetsMsg, setSheetsMsg] = useState("");
   const [showImport, setShowImport] = useState(false);
   const [showCityPhotos, setShowCityPhotos] = useState(false);
+  const [showTeam, setShowTeam] = useState(false);
+  const [naName, setNaName] = useState(""); const [naUser, setNaUser] = useState(""); const [naPass, setNaPass] = useState(""); const [naWhats, setNaWhats] = useState(""); const [naLine, setNaLine] = useState(""); const [naPhone, setNaPhone] = useState("");
   const [aSearch, setASearch] = useState("");
   const [aType, setAType] = useState("All");
   const [aBudget, setABudget] = useState("Any Price");
@@ -1000,10 +1134,68 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           )}
         </div>
 
+        {currentUser && currentUser.role === "owner" && (
+        <div style={{ background:"#fff", borderRadius:16, padding:"22px 24px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 2px 14px rgba(0,0,0,0.04)" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showTeam ? 18 : 0 }}>
+            <div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👥 Team Accounts</div>
+              <div style={{ color:"#A89580", fontSize:12, marginTop:2 }}>Create logins for your team — they can add, edit &amp; delete listings{(pending||[]).length ? " · 🔔 "+pending.length+" pending request"+(pending.length>1?"s":"") : ""}</div>
+            </div>
+            <button onClick={()=>setShowTeam(!showTeam)} style={{ background: showTeam?"#F3EEE8":"linear-gradient(135deg,#C9A96E,#9B6B2A)", color: showTeam?"#6B5E52":"#fff", border:"none", padding:"8px 18px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>{showTeam ? "Close" : "Manage Team"}</button>
+          </div>
+          {showTeam && (
+            <div>
+              {(pending||[]).length > 0 && (
+                <div style={{ marginBottom:18, background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:12, padding:"14px 16px" }}>
+                  <div style={{ fontWeight:700, fontSize:13.5, color:"#92400E", marginBottom:10 }}>⏳ Pending Approval ({pending.length})</div>
+                  {pending.map((a,i)=>(
+                    <div key={i} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 12px", background:"#fff", borderRadius:10, marginBottom:8, border:"1px solid #FDE68A" }}>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>{a.name}</div>
+                        <div style={{ fontSize:12, color:"#A89580" }}>username: {a.user}{a.phone?" · "+a.phone:""}</div>
+                      </div>
+                      <button onClick={()=>onApprove(i)} style={{ background:"#16A34A", color:"#fff", border:"none", padding:"7px 13px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>✓ Approve</button>
+                      <button onClick={()=>{ if(confirm("Reject "+a.name+"\u2019s application?")) onReject(i); }} style={{ background:"#FEE2E2", color:"#DC2626", border:"none", padding:"7px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>✕</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div style={{ marginBottom:16 }}>
+                <div style={{ fontSize:12, fontWeight:700, color:"#A89580", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Active accounts</div>
+                <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#FBF7F0", borderRadius:10, marginBottom:8, border:"1px solid #EFE8DF" }}>
+                  <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:14 }}>A</div>
+                  <div style={{ flex:1 }}><div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>Annie <span style={{ fontSize:11, color:"#9B6B2A", background:"#FBF3E6", padding:"1px 7px", borderRadius:5, marginLeft:4 }}>Owner</span></div><div style={{ fontSize:12, color:"#A89580" }}>username: annie</div></div>
+                </div>
+                {(agents||[]).length === 0 && <div style={{ fontSize:12.5, color:"#A89580", padding:"4px 2px" }}>No team members yet — add one below.</div>}
+                {(agents||[]).map((a,i)=>(
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#FDFAF6", borderRadius:10, marginBottom:8, border:"1px solid #EFE8DF" }}>
+                    <div style={{ width:34, height:34, borderRadius:"50%", background:"#E8DECF", color:"#6B5E52", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:14 }}>{(a.name||"?").charAt(0).toUpperCase()}</div>
+                    <div style={{ flex:1 }}><div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>{a.name}</div><div style={{ fontSize:12, color:"#A89580" }}>username: {a.user}</div></div>
+                    <button onClick={()=>{ if(confirm("Remove "+a.name+"'s account?")) onAgentsChange(agents.filter((_,j)=>j!==i)); }} style={{ background:"#FEE2E2", color:"#DC2626", border:"none", padding:"6px 12px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>Remove</button>
+                  </div>
+                ))}
+              </div>
+              <div style={{ borderTop:"1px solid #EFE8DF", paddingTop:14 }}>
+                <div style={{ fontWeight:700, fontSize:13, color:"#1C1410", marginBottom:10 }}>➕ Add a team member</div>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:10, marginBottom:10 }}>
+                  <input value={naName} onChange={e=>setNaName(e.target.value)} placeholder="Full name" style={S.inp()}/>
+                  <input value={naUser} onChange={e=>setNaUser(e.target.value)} placeholder="Username (for login)" style={S.inp()}/>
+                  <input value={naPass} onChange={e=>setNaPass(e.target.value)} placeholder="Password" style={S.inp()}/>
+                  <input value={naWhats} onChange={e=>setNaWhats(e.target.value)} placeholder="WhatsApp (e.g. 66812345678)" style={S.inp()}/>
+                  <input value={naLine} onChange={e=>setNaLine(e.target.value)} placeholder="LINE link (lin.ee/...)" style={S.inp()}/>
+                  <input value={naPhone} onChange={e=>setNaPhone(e.target.value)} placeholder="Phone (081...)" style={S.inp()}/>
+                </div>
+                <button onClick={()=>{ const name=naName.trim(), user=naUser.trim(), pass=naPass.trim(); if(!name||!user||!pass){ alert("Please fill at least name, username and password."); return; } if(user==="annie" || (agents||[]).some(a=>a.user===user)){ alert("That username is taken — please choose another."); return; } onAgentsChange([...(agents||[]), {name,user,pass,whatsapp:naWhats.trim(),line:naLine.trim(),phone:naPhone.trim()}]); setNaName(""); setNaUser(""); setNaPass(""); setNaWhats(""); setNaLine(""); setNaPhone(""); }} style={{...S.gold, padding:"10px 20px"}}>Create Account</button>
+              </div>
+            </div>
+          )}
+        </div>
+        )}
+
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18, flexWrap:"wrap", gap:12 }}>
           <div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1C1410" }}>All Listings</h2>
-            <p style={{ color:"#A89580", fontSize:13, marginTop:2 }}>Add, edit or remove your properties</p>
+            <p style={{ color:"#A89580", fontSize:13, marginTop:2 }}>{currentUser ? "Signed in as " + currentUser.name + (currentUser.role==="owner"?" (Owner)":"") + " · " : ""}Add, edit or remove your properties</p>
           </div>
           <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
             <button onClick={()=>setShowAI(!showAI)} style={{ display:"flex", alignItems:"center", gap:7, background: showAI?"#7C3AED":"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"#fff", border:"none", padding:"10px 20px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
@@ -1090,6 +1282,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                         </div>
                         <div>
                           {p.ref && <div style={{ display:"inline-block", fontSize:10, fontWeight:700, color:"#9B6B2A", background:"#FBF3E6", border:"1px solid #E8D5B5", padding:"1px 7px", borderRadius:5, marginBottom:3, letterSpacing:"0.05em" }}>{p.ref}</div>}
+                          {p.agent && <div style={{ display:"inline-block", fontSize:10, fontWeight:700, color:"#0E7490", background:"#ECFEFF", border:"1px solid #A5F3FC", padding:"1px 7px", borderRadius:5, marginBottom:3, marginLeft:5 }}>👤 {p.agent}</div>}
                           <div style={{ fontSize:13, fontWeight:600, color:"#1C1410" }}>{p.title}</div>
                           <div style={{ fontSize:11, color:"#A89580" }}>{p.beds}bd · {p.baths}ba · {p.sqm}m²</div>
                         </div>
@@ -1100,12 +1293,16 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                     <td style={{ padding:"11px 15px" }}><span style={{ background:p.status==="For Sale"?"#EFF6FF":"#F0FDF4", borderRadius:20, padding:"3px 9px", fontSize:11, fontWeight:600, color:p.status==="For Sale"?"#2563EB":"#16A34A" }}>{p.status}</span></td>
                     <td style={{ padding:"11px 15px", fontSize:13, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{p.price}</td>
                     <td style={{ padding:"11px 15px" }}>
-                      <div style={{ display:"flex", gap:7 }}>
+                      <div style={{ display:"flex", gap:7, flexWrap:"wrap", alignItems:"center" }}>
+                        {p.approved==="0" && <span style={{ background:"#FEF3C7", color:"#92400E", border:"1px solid #F59E0B", borderRadius:8, padding:"5px 9px", fontSize:11, fontWeight:700, whiteSpace:"nowrap" }}>⏳ Pending</span>}
+                        {currentUser && currentUser.role==="owner" && p.approved==="0" && <button onClick={()=>onApproveListing(p.id)} style={{ background:"#16A34A", color:"#fff", border:"none", padding:"6px 12px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>✓ Approve</button>}
+                        {(currentUser && (currentUser.role==="owner" || p.agent===currentUser.name)) ? (<>
                         <button onClick={()=>onEdit(p)} style={{ background:"#EFF6FF", color:"#2563EB", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="edit" s={13} c="#2563EB"/>Edit</button>
                         <button onClick={()=>onDel(p.id)} style={{ background:"#FEF2F2", color:"#EF4444", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="trash" s={13} c="#EF4444"/>Delete</button>
                         <button onClick={e=>{ e.stopPropagation(); onToggle(p.id); }} style={{ background: p.active===false?"#FEF3C7":"#DCFCE7", color: p.active===false?"#92400E":"#166534", border:`2px solid ${p.active===false?"#F59E0B":"#16A34A"}`, padding:"6px 14px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", transition:"all 0.2s" }}>
                           {p.active===false ? <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><span style={{ width:8, height:8, borderRadius:"50%", background:"#F59E0B", display:"inline-block" }}/>Hidden</span> : <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><span style={{ width:8, height:8, borderRadius:"50%", background:"#16A34A", display:"inline-block" }}/>Visible</span>}
                         </button>
+                        </>) : <span style={{ fontSize:11, color:"#C0B0A0", fontStyle:"italic" }}>Another agent\u2019s listing</span>}
                       </div>
                     </td>
                   </tr>
@@ -1149,7 +1346,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   );
 }
 
-function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGoAdmin }) {
+function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGoAdmin, agentContacts={} }) {
   const [city, setCity]       = useState("Bangkok");
   const [area, setArea]       = useState("All Areas");
   const [line, setLine]       = useState("All Lines");
@@ -1166,6 +1363,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
 
   const shown = props.filter(p => {
     if (p.active === false) return false; // Hide sold/rented listings
+    if (p.approved === "0") return false; // Hide listings awaiting Annie\u2019s approval
     if (type !== "All" && p.type !== type) return false;
     if (status !== "All" && p.status !== status) return false;
     if (!p.location.toLowerCase().includes(city.toLowerCase())) return false;
@@ -1327,7 +1525,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
           </div>
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:22 }}>
-            {shown.map((p,i)=><Card key={p.id} p={p} idx={i} isAdmin={isAdmin} onEdit={onEditProp} onDel={onDelProp}/>)}
+            {shown.map((p,i)=><Card key={p.id} p={p} idx={i} isAdmin={isAdmin} onEdit={onEditProp} onDel={onDelProp} agentContacts={agentContacts}/>)}
           </div>
         )}
       </section>
@@ -1391,7 +1589,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <div style={{ position:"absolute", bottom:16, left:16, right:16 }}>
                 <div style={{ width:28, height:2, background:"#C9A96E", marginBottom:8, borderRadius:2 }}/>
                 <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#fff", letterSpacing:"0.02em", lineHeight:1.1 }}>{x.c}</div>
-                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.location.toLowerCase().includes(x.c.toLowerCase())).length; return n + (n===1?" listing":" listings"); })()}</div>
+                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.approved!=="0" && p.location.toLowerCase().includes(x.c.toLowerCase())).length; return n + (n===1?" listing":" listings"); })()}</div>
                 <div className="explore" style={{ color:"#fff", fontSize:11, fontWeight:600, marginTop:8, opacity:0, transition:"opacity 0.3s", letterSpacing:"0.08em", textTransform:"uppercase" }}>Explore →</div>
               </div>
             </div>
@@ -1543,6 +1741,11 @@ export default function App() {
   const [cityRowId, setCityRowId] = useState(null);
   const [visits, setVisits] = useState(0);
   const [statsRowId, setStatsRowId] = useState(null);
+  const [agents, setAgents] = useState([]);
+  const [agentsRowId, setAgentsRowId] = useState(null);
+  const [pending, setPending] = useState([]);
+  const [pendingRowId, setPendingRowId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(()=>{ try { return JSON.parse(localStorage.getItem("bpf_user")||"null"); } catch { return null; } });
 
   useEffect(() => {
     if (!SB_ON) {
@@ -1557,7 +1760,11 @@ export default function App() {
         if (cpRow) { setCityRowId(cpRow.id); try { const m = JSON.parse(cpRow.facilities||"{}"); setCityPhotos(m); localStorage.setItem("bpf_city_photos", JSON.stringify(m)); } catch(_) {} }
         const stRow = data.find(p => p.type === "__stats__");
         if (stRow) { setStatsRowId(stRow.id); setVisits(parseInt(stRow.facilities||"0",10)||0); }
-        const listings = data.filter(p => p.type !== "__city_photos__" && p.type !== "__stats__");
+        const agRow = data.find(p => p.type === "__agents__");
+        if (agRow) { setAgentsRowId(agRow.id); try { setAgents(JSON.parse(agRow.facilities||"[]")); } catch(_) {} }
+        const pdRow = data.find(p => p.type === "__pending__");
+        if (pdRow) { setPendingRowId(pdRow.id); try { setPending(JSON.parse(pdRow.facilities||"[]")); } catch(_) {} }
+        const listings = data.filter(p => p.type !== "__city_photos__" && p.type !== "__stats__" && p.type !== "__agents__" && p.type !== "__pending__");
         setProps(listings);
         try { localStorage.setItem("bangkokpropertyfinder_props", JSON.stringify(listings)); } catch(_) {}
       }
@@ -1611,15 +1818,23 @@ export default function App() {
       if (SB_ON) await sbUpdate(form.id, data);
       flash("✅ Property updated!");
     } else {
+      const isOwner = currentUser && currentUser.role === "owner";
+      const d2 = { ...data, approved: isOwner ? "1" : "0" };
       const tempId = Date.now();
-      setProps([{ ...data, id: tempId, active: true }, ...props]);
+      setProps([{ ...d2, id: tempId, active: true }, ...props]);
       if (SB_ON) {
-        const saved = await sbAdd({ ...data, active: true });
+        const saved = await sbAdd({ ...d2, active: true });
         if (saved) setProps(prev => prev.map(p => p.id === tempId ? { ...p, id: saved.id } : p));
       }
-      flash("✅ Property added!");
+      flash(isOwner ? "✅ Property added & live!" : "✅ Submitted! Annie will review & approve it before it goes live.");
     }
     setForm(null);
+  };
+
+  const handleApproveListing = async (id) => {
+    setProps(props.map(p => p.id === id ? { ...p, approved:"1" } : p));
+    if (SB_ON) await sbUpdate(id, { approved:"1" });
+    flash("✅ Listing approved — now live on the website!");
   };
 
   const confirmDel = async () => {
@@ -1642,6 +1857,34 @@ export default function App() {
     flash("✅ " + cityName + " photo updated!");
   };
 
+  const handleAgents = async (newAgents) => {
+    setAgents(newAgents);
+    if (SB_ON) {
+      const payload = { title:"__AGENTS__", type:"__agents__", active:false, facilities: JSON.stringify(newAgents), location:"", price:"", status:"", beds:"", baths:"", sqm:"" };
+      if (agentsRowId) { await sbUpdate(agentsRowId, payload); }
+      else { const saved = await sbAdd(payload); if (saved) setAgentsRowId(saved.id); }
+    }
+  };
+
+  const savePending = async (np) => {
+    setPending(np);
+    if (SB_ON) {
+      const payload = { title:"__PENDING__", type:"__pending__", active:false, facilities: JSON.stringify(np), location:"", price:"", status:"", beds:"", baths:"", sqm:"" };
+      if (pendingRowId) { await sbUpdate(pendingRowId, payload); }
+      else { const saved = await sbAdd(payload); if (saved) setPendingRowId(saved.id); }
+    }
+  };
+  const handleApply = async (applicant) => { await savePending([...(pending||[]), applicant]); };
+  const handleApprove = async (i) => {
+    const ap = pending[i]; if (!ap) return;
+    await handleAgents([...(agents||[]), { name:ap.name, user:ap.user, pass:ap.pass, whatsapp:ap.whatsapp||"", line:ap.line||"", phone:ap.phone||"" }]);
+    await savePending(pending.filter((_,j)=>j!==i));
+    flash("✅ " + ap.name + " approved — they can now log in!");
+  };
+  const handleReject = async (i) => { const ap = pending[i]; await savePending(pending.filter((_,j)=>j!==i)); flash("Removed " + (ap?ap.name+"\u2019s":"the") + " request"); };
+
+  const agentContacts = {}; (agents||[]).forEach(a=>{ if(a&&a.name) agentContacts[a.name] = { whatsapp:a.whatsapp||"", line:a.line||"", phone:a.phone||"" }; });
+
   if (dbLoading) return (
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#FDFAF6", flexDirection:"column", gap:16 }}>
       <div style={{ fontSize:40 }}>🏠</div>
@@ -1650,21 +1893,22 @@ export default function App() {
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
-  if (screen === "login") return <AdminLogin onLogin={() => { setScreen("admin"); localStorage.setItem("bpf_screen","admin"); }} />;
+  if (screen === "login") return <AdminLogin agents={agents} pending={pending} onApply={handleApply} onLogin={(u) => { setCurrentUser(u); try{localStorage.setItem("bpf_user",JSON.stringify(u));}catch(_){} setScreen("admin"); localStorage.setItem("bpf_screen","admin"); }} />;
 
   return (
     <>
       {screen === "admin"
         ? <AdminDash props={props} onAdd={()=>setForm({})} onEdit={p=>setForm(p)} onDel={id=>setDelId(id)} onToggle={handleToggle}
-            onLogout={()=>{ setScreen("site"); setAdminView(false); localStorage.removeItem("bpf_screen"); }}
+            onLogout={()=>{ setScreen("site"); setAdminView(false); setCurrentUser(null); localStorage.removeItem("bpf_screen"); localStorage.removeItem("bpf_user"); }}
             onView={()=>{ setScreen("site"); setAdminView(true); }}
             onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}
-            onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto} visits={visits}/>
-        : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos}
+            onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto} visits={visits}
+            currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing}/>
+        : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos} agentContacts={agentContacts}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
             onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
       }
-      {form !== null && <PropForm init={form&&form.id?form:null} onSave={handleSave} onClose={()=>setForm(null)}/>}
+      {form !== null && <PropForm init={form&&form.id?form:null} onSave={handleSave} onClose={()=>setForm(null)} currentUser={currentUser} agents={agents}/>}
       {delId !== null && (
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.65)", zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
           <div style={{ background:"#fff", borderRadius:20, padding:"32px 26px", maxWidth:340, width:"100%", textAlign:"center", fontFamily:"'Outfit',sans-serif" }}>
