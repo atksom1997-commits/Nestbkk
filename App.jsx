@@ -766,12 +766,12 @@ function AdminLogin({ onLogin, agents=[], pending=[], onApply }) {
   return (
     <div style={{ minHeight:"100vh", background:"#0F0A04", display:"flex", alignItems:"center", justifyContent:"center", padding:20, fontFamily:"'Outfit',sans-serif" }}>
       <div style={{ background:"#1C1410", border:"1px solid rgba(201,169,110,0.3)", borderRadius:22, padding:"44px 36px", width:"100%", maxWidth:380, textAlign:"center" }}>
-        <div style={{ fontSize:44, marginBottom:14 }}>\ud83c\udfe1</div>
+        <div style={{ fontSize:44, marginBottom:14 }}>🏡</div>
         <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
         <div style={{ color:"#7B6A5A", fontSize:13, marginBottom:28 }}>{mode==="login" ? "Admin Panel \u2014 Real Estate By Annie" : "Apply to Join Our Agent Team"}</div>
         {applied ? (
           <div>
-            <div style={{ fontSize:40, marginBottom:12 }}>\u2705</div>
+            <div style={{ fontSize:40, marginBottom:12 }}>✅</div>
             <div style={{ color:"#F5E9D0", fontSize:16, fontWeight:700, marginBottom:8 }}>Application submitted!</div>
             <div style={{ color:"#9A8A78", fontSize:13, lineHeight:1.6, marginBottom:22 }}>Annie will review your request. Once she approves you, sign in with your username &amp; password.</div>
             <button onClick={()=>{ setApplied(false); setMode("login"); }} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Back to Login</button>
@@ -785,7 +785,7 @@ function AdminLogin({ onLogin, agents=[], pending=[], onApply }) {
                 <input type="password" value={pw} onChange={e=>{ setPw(e.target.value); setErr(""); }} onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter password" style={inpDark()}/></div>
               {err && <p style={{ color:"#EF4444", fontSize:12 }}>{err}</p>}
             </div>
-            <button onClick={tryLogin} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Sign In \u2192</button>
+            <button onClick={tryLogin} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Sign In →</button>
             <div style={{ marginTop:18, fontSize:12.5, color:"#7B6A5A" }}>Want to join our team? <button onClick={()=>{ setMode("apply"); setErr(""); }} style={{ background:"none", border:"none", color:"#C9A96E", fontWeight:700, cursor:"pointer", fontSize:12.5, textDecoration:"underline", padding:0 }}>Apply here</button></div>
           </>
         ) : (
@@ -799,7 +799,7 @@ function AdminLogin({ onLogin, agents=[], pending=[], onApply }) {
               <div><label style={LBLD}>Phone (shown to buyers)</label><input value={aPhone} onChange={e=>setAPhone(e.target.value)} placeholder="e.g. 081 234 5678" style={inpDark()}/></div>
               {err && <p style={{ color:"#EF4444", fontSize:12 }}>{err}</p>}
             </div>
-            <button onClick={submitApply} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Submit Application \u2192</button>
+            <button onClick={submitApply} style={{...S.gold, width:"100%", padding:"12px", fontSize:14}}>Submit Application →</button>
             <div style={{ marginTop:16, fontSize:12.5, color:"#7B6A5A" }}>Already approved? <button onClick={()=>{ setMode("login"); setErr(""); }} style={{ background:"none", border:"none", color:"#C9A96E", fontWeight:700, cursor:"pointer", fontSize:12.5, textDecoration:"underline", padding:0 }}>Log in</button></div>
           </>
         )}
@@ -1302,7 +1302,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                         <button onClick={e=>{ e.stopPropagation(); onToggle(p.id); }} style={{ background: p.active===false?"#FEF3C7":"#DCFCE7", color: p.active===false?"#92400E":"#166534", border:`2px solid ${p.active===false?"#F59E0B":"#16A34A"}`, padding:"6px 14px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", transition:"all 0.2s" }}>
                           {p.active===false ? <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><span style={{ width:8, height:8, borderRadius:"50%", background:"#F59E0B", display:"inline-block" }}/>Hidden</span> : <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><span style={{ width:8, height:8, borderRadius:"50%", background:"#16A34A", display:"inline-block" }}/>Visible</span>}
                         </button>
-                        </>) : <span style={{ fontSize:11, color:"#C0B0A0", fontStyle:"italic" }}>Another agent\u2019s listing</span>}
+                        </>) : <span style={{ fontSize:11, color:"#C0B0A0", fontStyle:"italic" }}>Another agent's listing</span>}
                       </div>
                     </td>
                   </tr>
