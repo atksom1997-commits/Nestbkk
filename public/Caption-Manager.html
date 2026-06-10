@@ -640,8 +640,9 @@ function _area(p){ return (p.location||"").split(/[,(]/)[0].replace(/bangkok/i,"
 function _isRent(p){ return p.status==="For Rent"; }
 function _statusEN(p){ return _isRent(p)?"For Rent":(p.status==="For Sale"?"For Sale":"For Rent / Sale"); }
 function _statusTH(p){ return _isRent(p)?"\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32":(p.status==="For Sale"?"\u0e02\u0e32\u0e22":"\u0e43\u0e2b\u0e49\u0e40\u0e0a\u0e48\u0e32 / \u0e02\u0e32\u0e22"); }
-const _CT_EN=["Contact Annie","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder","\ud83c\udf10 bangkokpropertyfinder.vercel.app"];
-const _CT_TH=["\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e41\u0e2d\u0e19\u0e19\u0e35\u0e48","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder","\ud83c\udf10 bangkokpropertyfinder.vercel.app"];
+function listingUrl(p){ return (p && p.id) ? "https://bangkokpropertyfinder.vercel.app/?p="+p.id : "https://bangkokpropertyfinder.vercel.app"; }
+const _CT_EN=["Contact Annie","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder"];
+const _CT_TH=["\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e41\u0e2d\u0e19\u0e19\u0e35\u0e48","\ud83d\udcde 063 964 4388","\ud83d\udcac WhatsApp: 082 538 8189","\ud83d\udc9a LINE: @bkkproperty.finder","\ud83d\udcf8 IG: @bkkproperty.finder"];
 
 function igEN(p){
   const sp=[]; if(p.beds)sp.push(p.beds+" Bed"); if(p.baths)sp.push(p.baths+" Bath"); if(p.sqm)sp.push(p.sqm+" sqm"); if(p.floor)sp.push("Floor "+p.floor);
@@ -649,7 +650,7 @@ function igEN(p){
   const f=_facs(p); const L=["\ud83c\udfd9\ufe0f "+p.title+" \u2014 "+_statusEN(p),"",sp.join(" | ")];
   if(ex.length)L.push(ex.join(" | ")); if(f.length)L.push("\u2728 "+f.join(" \u00b7 "));
   L.push(""); L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts);
-  L.push(""); L.push("\ud83d\udcb0 "+p.price); L.push(""); _CT_EN.forEach(x=>L.push(x)); return L.join("\n");
+  L.push(""); L.push("\ud83d\udcb0 "+p.price); L.push(""); _CT_EN.forEach(x=>L.push(x)); L.push("\ud83c\udf10 "+listingUrl(p)); return L.join("\n");
 }
 function igTH(p){
   const sp=[]; if(p.beds)sp.push(p.beds+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e2d\u0e19"); if(p.baths)sp.push(p.baths+" \u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e49\u0e33"); if(p.sqm)sp.push(p.sqm+" \u0e15\u0e23.\u0e21."); if(p.floor)sp.push("\u0e0a\u0e31\u0e49\u0e19 "+p.floor);
@@ -658,7 +659,7 @@ function igTH(p){
   const f=_facs(p); const L=["\ud83c\udfd9\ufe0f "+p.title+" \u2014 "+_statusTH(p),"",sp.join(" | ")];
   if(ex.length)L.push(ex.join(" | ")); if(f.length)L.push("\u2728 "+f.join(" \u00b7 "));
   L.push(""); L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts);
-  L.push(""); L.push("\ud83d\udcb0 "+p.price); L.push(""); _CT_TH.forEach(x=>L.push(x)); return L.join("\n");
+  L.push(""); L.push("\ud83d\udcb0 "+p.price); L.push(""); _CT_TH.forEach(x=>L.push(x)); L.push("\ud83c\udf10 "+listingUrl(p)); return L.join("\n");
 }
 function fbEN(p){
   const a=_area(p)||"Bangkok"; const sp=[]; if(p.beds)sp.push(p.beds+" bedroom"); if(p.baths)sp.push(p.baths+" bathroom"); if(p.sqm)sp.push(p.sqm+" sqm");
@@ -668,7 +669,7 @@ function fbEN(p){
   if(f.length)L.push("\ud83c\udfe2 Facilities: "+f.slice(0,8).join(", "));
   L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts); L.push("\ud83d\udcb0 "+p.price);
   L.push(""); L.push("\ud83d\udce9 Message me to arrange a viewing \u2014 happy to help you find your perfect home!");
-  L.push(""); L.push("\ud83d\udcde 063 964 4388  |  WhatsApp 082 538 8189"); L.push("\ud83d\udc9a LINE: @bkkproperty.finder"); L.push("\ud83c\udf10 https://bangkokpropertyfinder.vercel.app");
+  L.push(""); L.push("\ud83d\udcde 063 964 4388  |  WhatsApp 082 538 8189"); L.push("\ud83d\udc9a LINE: @bkkproperty.finder"); L.push("\ud83c\udf10 "+listingUrl(p));
   return L.join("\n");
 }
 function fbTH(p){
@@ -679,20 +680,20 @@ function fbTH(p){
   if(f.length)L.push("\ud83c\udfe2 \u0e2a\u0e34\u0e48\u0e07\u0e2d\u0e33\u0e19\u0e27\u0e22\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e30\u0e14\u0e27\u0e01: "+f.slice(0,8).join(", "));
   L.push("\ud83d\udccd "+(p.location||"")); if(p.bts)L.push("\ud83d\ude87 "+p.bts); L.push("\ud83d\udcb0 "+p.price);
   L.push(""); L.push("\ud83d\udce9 \u0e17\u0e31\u0e01\u0e21\u0e32\u0e19\u0e31\u0e14\u0e0a\u0e21\u0e2b\u0e49\u0e2d\u0e07\u0e44\u0e14\u0e49\u0e40\u0e25\u0e22\u0e04\u0e48\u0e30 \u0e22\u0e34\u0e19\u0e14\u0e35\u0e0a\u0e48\u0e27\u0e22\u0e2b\u0e32\u0e1a\u0e49\u0e32\u0e19\u0e17\u0e35\u0e48\u0e43\u0e0a\u0e48\u0e43\u0e2b\u0e49\u0e04\u0e38\u0e13!");
-  L.push(""); L.push("\ud83d\udcde 063 964 4388  |  WhatsApp 082 538 8189"); L.push("\ud83d\udc9a LINE: @bkkproperty.finder"); L.push("\ud83c\udf10 https://bangkokpropertyfinder.vercel.app");
+  L.push(""); L.push("\ud83d\udcde 063 964 4388  |  WhatsApp 082 538 8189"); L.push("\ud83d\udc9a LINE: @bkkproperty.finder"); L.push("\ud83c\udf10 "+listingUrl(p));
   return L.join("\n");
 }
 function ttEN(p){
   const top=_facs(p)[0]||""; const L=["POV: your next Bangkok home \ud83c\udfd9\ufe0f\u2728","",p.title+" \ud83d\udccd "+_area(p)];
   const sp=[]; if(p.beds)sp.push(p.beds+" bed"); if(p.baths)sp.push(p.baths+" bath"); if(p.sqm)sp.push(p.sqm+" sqm");
   if(sp.length)L.push(sp.join(" \u2022 ")); L.push("\ud83d\udcb0 "+p.price); if(top)L.push(top+" \ud83d\udd25");
-  L.push(""); L.push("DM to view! \ud83d\udcac LINE @bkkproperty.finder"); return L.join("\n");
+  L.push(""); L.push("DM to view! \ud83d\udcac LINE @bkkproperty.finder"); L.push("\ud83d\udd17 "+listingUrl(p)); return L.join("\n");
 }
 function ttTH(p){
   const top=_facs(p)[0]||""; const L=["\u0e1a\u0e49\u0e32\u0e19\u0e2b\u0e25\u0e31\u0e07\u0e15\u0e48\u0e2d\u0e44\u0e1b\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13 \ud83c\udfd9\ufe0f\u2728","",p.title+" \ud83d\udccd "+_area(p)];
   const sp=[]; if(p.beds)sp.push(p.beds+" \u0e19\u0e2d\u0e19"); if(p.baths)sp.push(p.baths+" \u0e19\u0e49\u0e33"); if(p.sqm)sp.push(p.sqm+" \u0e15\u0e23.\u0e21.");
   if(sp.length)L.push(sp.join(" \u2022 ")); L.push("\ud83d\udcb0 "+p.price); if(top)L.push(top+" \ud83d\udd25");
-  L.push(""); L.push("\u0e17\u0e31\u0e01\u0e21\u0e32\u0e14\u0e39\u0e2b\u0e49\u0e2d\u0e07! \ud83d\udcac LINE @bkkproperty.finder"); return L.join("\n");
+  L.push(""); L.push("\u0e17\u0e31\u0e01\u0e21\u0e32\u0e14\u0e39\u0e2b\u0e49\u0e2d\u0e07! \ud83d\udcac LINE @bkkproperty.finder"); L.push("\ud83d\udd17 "+listingUrl(p)); return L.join("\n");
 }
 function tagsIG(p){
   const t=[]; const ty=(p.type||"Condo").replace(/\s/g,""); t.push("#"+ty,"#BangkokProperty","#BangkokCondo","#BangkokRealEstate");
