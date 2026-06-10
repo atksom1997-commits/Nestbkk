@@ -256,6 +256,7 @@ function onBG(e){ e.target.style.borderColor="#E5DDD3"; }
 
 /* Property Detail Modal */
 function PropDetail({ p, onClose, agentContacts={} }) {
+  const [linkCopied, setLinkCopied] = useState(false);
   const [imgIdx, setImgIdx] = useState(0);
   const imgs = (() => {
     let arr = p.imgs;
@@ -276,6 +277,8 @@ function PropDetail({ p, onClose, agentContacts={} }) {
   const _ct = (agentContacts && p.agent && agentContacts[p.agent]) || {};
   const pdWa = (_ct.whatsapp||"").trim() || OWNER.whatsapp;
   const pdLine = (_ct.line||"").trim() || OWNER.lineUrl;
+  const shareLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
+  const copyLink = () => { try { navigator.clipboard && navigator.clipboard.writeText(shareLink); } catch(_) {} setLinkCopied(true); setTimeout(()=>setLinkCopied(false), 2000); };
   const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const waUrl = `https://wa.me/${pdWa}?text=${encodeURIComponent(propMsg)}`;
   const lineUrl = OWNER.lineUrl;
@@ -291,6 +294,7 @@ function PropDetail({ p, onClose, agentContacts={} }) {
           <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.5) 100%)" }}/>
           {/* close */}
           <button onClick={onClose} style={{ position:"absolute", top:14, right:14, width:36, height:36, borderRadius:"50%", border:"none", background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:18, cursor:"pointer" }}>✕</button>
+          <button onClick={copyLink} style={{ position:"absolute", top:16, right:58, border:"none", background: linkCopied?"#16A34A":"rgba(0,0,0,0.5)", color:"#fff", fontSize:12.5, fontWeight:700, cursor:"pointer", padding:"7px 13px", borderRadius:20, display:"inline-flex", alignItems:"center", gap:6, transition:"all 0.2s" }}>{linkCopied ? "✓ Link copied!" : "🔗 Copy link"}</button>
           {/* tag */}
           <span style={{ position:"absolute", top:14, left:14, background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, textTransform:"uppercase", letterSpacing:"0.08em" }}>{p.tag}</span>
           {/* photo thumbnails */}
@@ -410,16 +414,18 @@ function PropDetail({ p, onClose, agentContacts={} }) {
 }
 
 /* Card */
-function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={} }) {
+function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
   const [liked, setLiked] = useState(false);
   const [vis, setVis] = useState(false);
-  const [showDetail, setShowDetail] = useState(false);
   const ref = useRef(null);
   const _ct = (agentContacts && p.agent && agentContacts[p.agent]) || {};
   const cardWa = (_ct.whatsapp||"").trim() || OWNER.whatsapp;
   const cardLine = (_ct.line||"").trim() || OWNER.lineUrl;
   const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const [showLine, setShowLine] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const cardLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
+  const copyCardLink = (e) => { if(e) e.stopPropagation(); try { navigator.clipboard && navigator.clipboard.writeText(cardLink); } catch(_) {} setLinkCopied(true); setTimeout(()=>setLinkCopied(false), 2000); };
   const imgs = (() => {
     let arr = p.imgs;
     if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
@@ -441,10 +447,9 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={} }) {
 
   return (
     <>
-      {showDetail && <PropDetail p={p} onClose={()=>setShowDetail(false)} agentContacts={agentContacts}/>}
       {showLine && <LineModal msg={cardMsg} lineUrl={cardLine} onClose={()=>setShowLine(false)} />}
       <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(32px)", transition:`opacity 0.5s ease ${idx*0.07}s, transform 0.5s ease ${idx*0.07}s`, background:"#fff", borderRadius:18, overflow:"hidden", border:"1px solid #EDE8E0", boxShadow:"0 2px 14px rgba(0,0,0,0.06)", cursor:"pointer" }}
-        onClick={()=>!isAdmin && setShowDetail(true)}
+        onClick={()=>onOpen && onOpen(p)}
         onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 14px 40px rgba(0,0,0,0.13)"; e.currentTarget.style.transform="translateY(-4px)"; }}
         onMouseLeave={e=>{ e.currentTarget.style.boxShadow="0 2px 14px rgba(0,0,0,0.06)"; e.currentTarget.style.transform="translateY(0)"; }}>
 
@@ -460,6 +465,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={} }) {
             </span>
           )}
           <div style={{ position:"absolute", top:10, right:10, display:"flex", gap:6 }}>
+            <button onClick={copyCardLink} title="Copy link to this listing" style={{ height:30, padding:"0 11px", borderRadius:15, border:"none", background: linkCopied?"#16A34A":"rgba(255,255,255,0.92)", color: linkCopied?"#fff":"#6B5E52", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:5, fontSize:11.5, fontWeight:700, whiteSpace:"nowrap" }}>{linkCopied ? "✓ Copied!" : "🔗 Link"}</button>
             {isAdmin ? (
               <>
                 <button onClick={e=>{ e.stopPropagation(); onEdit(p); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}><Icon n="edit" s={14} c="#6B5E52"/></button>
@@ -815,6 +821,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const [showImport, setShowImport] = useState(false);
   const [showCityPhotos, setShowCityPhotos] = useState(false);
   const [showTeam, setShowTeam] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
   const [naName, setNaName] = useState(""); const [naUser, setNaUser] = useState(""); const [naPass, setNaPass] = useState(""); const [naWhats, setNaWhats] = useState(""); const [naLine, setNaLine] = useState(""); const [naPhone, setNaPhone] = useState("");
   const [aSearch, setASearch] = useState("");
   const [aType, setAType] = useState("All");
@@ -1294,6 +1301,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                     <td style={{ padding:"11px 15px", fontSize:13, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{p.price}</td>
                     <td style={{ padding:"11px 15px" }}>
                       <div style={{ display:"flex", gap:7, flexWrap:"wrap", alignItems:"center" }}>
+                        <button onClick={()=>{ const url = window.location.origin + window.location.pathname + "?p=" + p.id; try { navigator.clipboard && navigator.clipboard.writeText(url); } catch(_) {} setCopiedId(p.id); setTimeout(()=>setCopiedId(null), 2000); }} title="Copy this listing's link" style={{ background: copiedId===p.id?"#16A34A":"#EEF2FF", color: copiedId===p.id?"#fff":"#4F46E5", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>{copiedId===p.id ? "✓ Copied!" : "🔗 Link"}</button>
                         {p.approved==="0" && <span style={{ background:"#FEF3C7", color:"#92400E", border:"1px solid #F59E0B", borderRadius:8, padding:"5px 9px", fontSize:11, fontWeight:700, whiteSpace:"nowrap" }}>⏳ Pending</span>}
                         {currentUser && currentUser.role==="owner" && p.approved==="0" && <button onClick={()=>onApproveListing(p.id)} style={{ background:"#16A34A", color:"#fff", border:"none", padding:"6px 12px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>✓ Approve</button>}
                         {(currentUser && (currentUser.role==="owner" || p.agent===currentUser.name)) ? (<>
@@ -1359,7 +1367,17 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const [contact, setContact] = useState({ name:"", email:"", msg:"" });
   const [sent, setSent]       = useState(false);
 
+  const [selectedId, setSelectedId] = useState(null);
+
   useEffect(() => { const t = setTimeout(() => setHeroOn(true), 80); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    const readParam = () => { try { setSelectedId(new URLSearchParams(window.location.search).get("p")); } catch(_) {} };
+    readParam();
+    window.addEventListener("popstate", readParam);
+    return () => window.removeEventListener("popstate", readParam);
+  }, []);
+  const openDetail = (p) => { setSelectedId(String(p.id)); try { window.history.pushState({}, "", "?p=" + p.id); } catch(_) {} };
+  const closeDetail = () => { setSelectedId(null); try { window.history.pushState({}, "", window.location.pathname); } catch(_) {} };
 
   const shown = props.filter(p => {
     if (p.active === false) return false; // Hide sold/rented listings
@@ -1525,7 +1543,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
           </div>
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:22 }}>
-            {shown.map((p,i)=><Card key={p.id} p={p} idx={i} isAdmin={isAdmin} onEdit={onEditProp} onDel={onDelProp} agentContacts={agentContacts}/>)}
+            {shown.map((p,i)=><Card key={p.id} p={p} idx={i} isAdmin={isAdmin} onEdit={onEditProp} onDel={onDelProp} agentContacts={agentContacts} onOpen={openDetail}/>)}
+            {selectedId && (()=>{ const sp = props.find(p => String(p.id)===String(selectedId) && p.active!==false && p.approved!=="0"); return sp ? <PropDetail p={sp} onClose={closeDetail} agentContacts={agentContacts}/> : null; })()}
           </div>
         )}
       </section>
