@@ -815,7 +815,7 @@ function AdminLogin({ onLogin, agents=[], pending=[], onApply, ownerCreds }) {
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0, currentUser, agents=[], onAgentsChange, pending=[], onApprove, onReject, onApproveListing, ownerCreds, onSaveOwnerCreds }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0, currentUser, agents=[], onAgentsChange, pending=[], onApprove, onReject, onApproveListing, ownerCreds, onSaveOwnerCreds, onAgentSelfUpdate }) {
   const [sheetsUrl, setSheetsUrl] = useState("");
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [sheetsMsg, setSheetsMsg] = useState("");
@@ -824,10 +824,10 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const [showTeam, setShowTeam] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
   const [showMyAccount, setShowMyAccount] = useState(false);
-  const [maUser, setMaUser] = useState(""); const [maPass, setMaPass] = useState(""); const [maWhats, setMaWhats] = useState(""); const [maLine, setMaLine] = useState(""); const [maPhone, setMaPhone] = useState("");
+  const [maName, setMaName] = useState(""); const [maUser, setMaUser] = useState(""); const [maPass, setMaPass] = useState(""); const [maWhats, setMaWhats] = useState(""); const [maLine, setMaLine] = useState(""); const [maPhone, setMaPhone] = useState("");
   const _ownerUser = (ownerCreds && ownerCreds.user) || "annie";
   const _myEntry = () => (currentUser && currentUser.role==="agent") ? ((agents||[]).find(a=>a.user===currentUser.user) || (agents||[]).find(a=>a.name===currentUser.name) || {}) : {};
-  const openMyAccount = () => { const me=_myEntry(); setMaUser((currentUser&&currentUser.role==="owner")? _ownerUser : (me.user||"")); setMaPass(""); setMaWhats(me.whatsapp||""); setMaLine(me.line||""); setMaPhone(me.phone||""); setShowMyAccount(true); };
+  const openMyAccount = () => { const me=_myEntry(); setMaName(me.name||""); setMaUser((currentUser&&currentUser.role==="owner")? _ownerUser : (me.user||"")); setMaPass(""); setMaWhats(me.whatsapp||""); setMaLine(me.line||""); setMaPhone(me.phone||""); setShowMyAccount(true); };
   const saveMyAccount = () => {
     const u = maUser.trim();
     if(!u){ alert("Username can't be empty."); return; }
@@ -839,9 +839,11 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
       const me=_myEntry();
       const others=(agents||[]).filter(a=> !(a.user===me.user && a.name===me.name));
       if(u===_ownerUser || others.some(a=>a.user===u)){ alert("That username is taken — choose another."); return; }
-      const updated={ ...me, user:u, pass: maPass.trim()?maPass.trim():me.pass, whatsapp:maWhats.trim(), line:maLine.trim(), phone:maPhone.trim() };
-      onAgentsChange((agents||[]).map(a=> (a.user===me.user && a.name===me.name) ? updated : a));
-      alert("✅ Your account was updated!");
+      const newName = maName.trim() || me.name;
+      if(others.some(a=>a.name===newName) || newName===(currentUser&&currentUser.role==="owner"?"Annie":"")){ alert("That display name is already used — choose another."); return; }
+      const updated={ ...me, name:newName, user:u, pass: maPass.trim()?maPass.trim():me.pass, whatsapp:maWhats.trim(), line:maLine.trim(), phone:maPhone.trim() };
+      onAgentSelfUpdate(me.name, me.user, updated);
+      alert("✅ Your account was updated!" + (newName!==me.name ? " Your listings now show \""+newName+"\"." : ""));
     }
     setShowMyAccount(false);
   };
@@ -1179,13 +1181,17 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                 <div><div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Username</div><input value={maUser} onChange={e=>setMaUser(e.target.value)} placeholder="Your username" style={S.inp()}/></div>
                 <div><div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>New password</div><input value={maPass} onChange={e=>setMaPass(e.target.value)} placeholder="Leave blank to keep current" style={S.inp()}/></div>
               </div>
-              {currentUser && currentUser.role==="agent" && (
+              {currentUser && currentUser.role==="agent" && (<>
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Display name (shown on your listings)</div>
+                  <input value={maName} onChange={e=>setMaName(e.target.value)} placeholder="Your name" style={S.inp()}/>
+                </div>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:10 }}>
                   <input value={maWhats} onChange={e=>setMaWhats(e.target.value)} placeholder="WhatsApp (66...)" style={S.inp()}/>
                   <input value={maLine} onChange={e=>setMaLine(e.target.value)} placeholder="LINE link" style={S.inp()}/>
                   <input value={maPhone} onChange={e=>setMaPhone(e.target.value)} placeholder="Phone" style={S.inp()}/>
                 </div>
-              )}
+              </>)}
               <button onClick={saveMyAccount} style={{...S.gold, padding:"10px 20px"}}>Save Changes</button>
               <div style={{ fontSize:11.5, color:"#A89580", marginTop:8 }}>You'll use your new login the next time you sign in.</div>
             </div>
@@ -1950,6 +1956,16 @@ export default function App() {
     }
   };
   const handleApply = async (applicant) => { await savePending([...(pending||[]), applicant]); };
+  const handleAgentSelfUpdate = async (oldName, oldUser, record) => {
+    const newAgents = (agents||[]).map(a => (a.user===oldUser && a.name===oldName) ? record : a);
+    await handleAgents(newAgents);
+    if (record.name && record.name !== oldName) {
+      const affected = props.filter(p => p.agent === oldName);
+      setProps(props.map(p => p.agent === oldName ? { ...p, agent: record.name } : p));
+      if (SB_ON) { for (const ap of affected) { await sbUpdate(ap.id, { agent: record.name }); } }
+    }
+    setCurrentUser(cu => { if (!cu) return cu; const n = { ...cu, name: record.name, user: record.user }; try { localStorage.setItem("bpf_user", JSON.stringify(n)); } catch(_) {} return n; });
+  };
   const handleOwnerCreds = async (creds) => {
     setOwnerCreds(creds);
     if (SB_ON) {
@@ -1986,7 +2002,7 @@ export default function App() {
             onView={()=>{ setScreen("site"); setAdminView(true); }}
             onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}
             onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto} visits={visits}
-            currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing} ownerCreds={ownerCreds} onSaveOwnerCreds={handleOwnerCreds}/>
+            currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing} ownerCreds={ownerCreds} onSaveOwnerCreds={handleOwnerCreds} onAgentSelfUpdate={handleAgentSelfUpdate}/>
         : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos} agentContacts={agentContacts}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
             onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
