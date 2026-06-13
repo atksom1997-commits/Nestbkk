@@ -75,7 +75,7 @@ const OWNER = {
   email: "bangkokcondo.th@gmail.com",
   ig: "bkkproperty.finder",
   igUrl: "https://www.instagram.com/bkkproperty.finder",
-  fb: "Bangkok Condo for Sale & Rent",
+  fb: "Bangkok Property Finder",
   fbUrl: "https://www.facebook.com/BangkokCondoforSaleAndRent",
   lineId: "@bkkproperty.finder",
   lineUrl: "https://lin.ee/O6fgAUW",
