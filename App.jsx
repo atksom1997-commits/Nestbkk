@@ -1432,7 +1432,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const [status, setStatus]   = useState("All");
   const [q, setQ]             = useState("");
   const [heroOn, setHeroOn]   = useState(false);
-  const [contact, setContact] = useState({ name:"", email:"", msg:"" });
+  const [contact, setContact] = useState({ name:"", email:"", phone:"", budget:"", location:"", beds:"Any", movein:"", msg:"" });
   const [sent, setSent]       = useState(false);
 
   const [selectedId, setSelectedId] = useState(null);
@@ -1489,6 +1489,9 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         input,select,textarea,button{font-family:'Outfit',sans-serif}
         @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
         @keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+        .bpf-mbar{display:flex}.bpf-mbar-sp{display:none}
+        @media(min-width:900px){.bpf-mbar{display:none}}
+        @media(max-width:899px){.bpf-mbar-sp{display:block}}
       `}</style>
 
       {/* NAV */}
@@ -1524,10 +1527,10 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
           </div>
           <div style={fadeUp(0.2)}>
             <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(40px,6.5vw,80px)", fontWeight:700, color:"#F5E9D0", lineHeight:1.08, marginBottom:18, textShadow:"0 4px 30px rgba(0,0,0,0.5)" }}>
-              Your Dream Home<br/><em style={{ color:"#F59E0B" }}>Awaits in Thailand</em>
+              Find Your Perfect<br/><em style={{ color:"#F59E0B" }}>Home in Bangkok</em>
             </h1>
             <p style={{ color:"#B0A090", fontSize:"clamp(14px,1.8vw,17px)", lineHeight:1.8, maxWidth:500, margin:"0 auto 36px" }}>
-              Condos, houses &amp; apartments for rent and sale — personally curated by <strong style={{ color:"#C9A96E" }}>Annie</strong>, your Bangkok real estate expert.
+              Luxury condos, houses &amp; rentals matched to your lifestyle — guided personally by <strong style={{ color:"#C9A96E" }}>Annie</strong>, your trusted Bangkok property partner.
             </p>
           </div>
           <div style={fadeUp(0.35)}>
@@ -1576,11 +1579,15 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{...S.gold, whiteSpace:"nowrap"}}>Search</button>
             </div>
           </div>
+          <div style={{ ...fadeUp(0.45), display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginTop:24 }}>
+            <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"13px 28px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", letterSpacing:"0.02em", boxShadow:"0 10px 30px rgba(201,169,110,0.35)" }}>🔍 Find My Property</button>
+            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} style={{ background:"rgba(253,250,246,0.12)", color:"#F5E9D0", border:"1px solid rgba(245,233,208,0.4)", padding:"13px 28px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", letterSpacing:"0.02em", backdropFilter:"blur(4px)" }}>💬 Contact Annie</button>
+          </div>
         </div>
 
         <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(12,7,2,0.88)", backdropFilter:"blur(12px)", borderTop:"1px solid rgba(201,169,110,0.15)", padding:"18px clamp(20px,5vw,60px)", opacity:heroOn?1:0, transition:"opacity 1.2s 0.7s" }}>
           <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:16 }}>
-            {[{i:"shield",t:"Verified Listings"},{i:"chat",t:"Personal Service"},{i:"pin",t:"Local Knowledge"},{i:"check",t:"Honest Advice"}].map((x)=>(
+            {[{i:"pin",t:"Local Bangkok Knowledge"},{i:"search",t:"Property Matching"},{i:"key",t:"Viewing Assistance"},{i:"check",t:"Contract Support"}].map((x)=>(
               <div key={x.t} style={{ textAlign:"center", display:"flex", flexDirection:"column", alignItems:"center", gap:7 }}>
                 <Icon n={x.i} s={24} c="#F59E0B"/>
                 <div style={{ color:"#C9A96E", fontSize:11, letterSpacing:"0.07em", textTransform:"uppercase", fontWeight:600 }}>{x.t}</div>
@@ -1621,13 +1628,21 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <section id="rent" style={{ background:"linear-gradient(135deg,#1C1410 0%,#2E1E0E 100%)", padding:"72px clamp(20px,5vw,60px)" }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:48, alignItems:"center" }}>
           <div>
-            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>Your Agent</div>
+            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>Meet Annie</div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#F5E9D0", marginBottom:16 }}>
-              Real Estate<br/><em style={{ color:"#C9A96E" }}>By Annie</em>
+              Your Bangkok<br/><em style={{ color:"#C9A96E" }}>Property Specialist</em>
             </h2>
-            <p style={{ color:"#8E7E6E", lineHeight:1.85, fontSize:14, marginBottom:26 }}>
-              Professional agent specialising in Bangkok condos, Phuket villas and Chiang Mai homes. Helping buyers, renters and investors — in Thai and English.
+            <p style={{ color:"#8E7E6E", lineHeight:1.85, fontSize:14, marginBottom:22 }}>
+              Hi, I'm <strong style={{ color:"#C9A96E" }}>Annie</strong> — your dedicated Bangkok property consultant. I help expats, foreigners &amp; investors find the right condo, house or rental, and I guide you from the very first search all the way to signing your contract — clearly explained, in English &amp; Thai.
             </p>
+            <div style={{ display:"flex", flexDirection:"column", gap:11, marginBottom:26 }}>
+              {["Personalized property matching","Verified property information","Local area expertise","English & Thai support"].map(t=>(
+                <div key={t} style={{ display:"flex", alignItems:"center", gap:11, color:"#D8C8B4", fontSize:14 }}>
+                  <span style={{ width:22, height:22, borderRadius:"50%", background:"rgba(201,169,110,0.18)", color:"#C9A96E", display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, flexShrink:0 }}>✓</span>
+                  {t}
+                </div>
+              ))}
+            </div>
             <div style={{ display:"flex", flexDirection:"column", gap:11 }}>
               <div style={{ color:"#C0B0A0", fontSize:14, display:"flex", alignItems:"center", gap:8 }}><Icon n="phone" s={15} c="#C9A96E"/>{OWNER.phoneDisplay}</div>
               <div style={{ color:"#C0B0A0", fontSize:14, display:"flex", alignItems:"center", gap:8 }}><Icon n="mail" s={15} c="#C9A96E"/>{OWNER.email}</div>
@@ -1771,27 +1786,56 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               {sent ? (
                 <div style={{ textAlign:"center", padding:"30px 10px" }}>
                   <div style={{ fontSize:44, marginBottom:12 }}>✅</div>
-                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, marginBottom:6 }}>Message Sent!</div>
-                  <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:16 }}>Annie will reply within 24 hours.</p>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, marginBottom:6 }}>Sent to WhatsApp!</div>
+                  <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:16 }}>Just press send in WhatsApp — Annie will reply within 24 hours.</p>
                   <button onClick={()=>setSent(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"8px 18px", borderRadius:10, fontSize:13, fontWeight:600, cursor:"pointer" }}>Send Another</button>
                 </div>
               ) : (
                 <>
-                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#1C1410", marginBottom:18 }}>Send a Message</h3>
+                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Tell me what you're looking for</h3>
+                  <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:18 }}>Share a few details and Annie will send you matching properties.</p>
                   <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                    {[{l:"Name",k:"name",t:"text",ph:"Your name"},{l:"Email",k:"email",t:"email",ph:"your@email.com"}].map(field=>(
+                    {[{l:"Name",k:"name",t:"text",ph:"Your name"},{l:"Email",k:"email",t:"email",ph:"your@email.com"},{l:"Phone / LINE / WhatsApp",k:"phone",t:"text",ph:"How can Annie reach you?"},{l:"Budget",k:"budget",t:"text",ph:"e.g. ฿30,000/mo or ฿5M"},{l:"Preferred location",k:"location",t:"text",ph:"e.g. Sukhumvit, Thonglor"}].map(field=>(
                       <div key={field.k}>
                         <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{field.l}</label>
                         <input type={field.t} placeholder={field.ph} value={contact[field.k]} onChange={e=>setContact({...contact,[field.k]:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
                       </div>
                     ))}
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                      <div>
+                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>Bedrooms</label>
+                        <select value={contact.beds} onChange={e=>setContact({...contact,beds:e.target.value})} style={S.inp({cursor:"pointer"})}>
+                          {["Any","Studio","1","2","3","4+"].map(b=><option key={b}>{b}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>Move-in date</label>
+                        <input type="text" placeholder="e.g. ASAP, Mar 2026" value={contact.movein} onChange={e=>setContact({...contact,movein:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+                      </div>
+                    </div>
                     <div>
                       <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>Message</label>
-                      <textarea rows={4} placeholder="I'm interested in a property..." value={contact.msg} onChange={e=>setContact({...contact,msg:e.target.value})} style={{...S.inp(),resize:"vertical"}} onFocus={onFG} onBlur={onBG}/>
+                      <textarea rows={3} placeholder="Anything else I should know?" value={contact.msg} onChange={e=>setContact({...contact,msg:e.target.value})} style={{...S.inp(),resize:"vertical"}} onFocus={onFG} onBlur={onBG}/>
                     </div>
-                    <button onClick={()=>{ if(contact.name&&contact.email) setSent(true); }} style={{...S.gold,width:"100%",padding:"12px",fontSize:14}}>
-                      Send to Annie →
+                    <button onClick={()=>{
+                      if(!contact.name || !(contact.email||contact.phone)){ alert("Please add your name and an email or phone so Annie can reach you."); return; }
+                      const lines=["Hi Annie! I'm looking for a property 🏡",""];
+                      lines.push("Name: "+contact.name);
+                      if(contact.budget) lines.push("Budget: "+contact.budget);
+                      if(contact.location) lines.push("Preferred area: "+contact.location);
+                      if(contact.beds && contact.beds!=="Any") lines.push("Bedrooms: "+contact.beds);
+                      if(contact.movein) lines.push("Move-in: "+contact.movein);
+                      lines.push("");
+                      if(contact.email) lines.push("Email: "+contact.email);
+                      if(contact.phone) lines.push("Phone/LINE: "+contact.phone);
+                      if(contact.msg){ lines.push(""); lines.push("Message: "+contact.msg); }
+                      lines.push(""); lines.push("(Sent from bangkokpropertyfinder.vercel.app)");
+                      window.open("https://wa.me/"+OWNER.whatsapp+"?text="+encodeURIComponent(lines.join("\n")), "_blank");
+                      setSent(true);
+                    }} style={{...S.gold,width:"100%",padding:"13px",fontSize:14}}>
+                      Send to Annie via WhatsApp →
                     </button>
+                    <p style={{ fontSize:11, color:"#A89580", textAlign:"center" }}>Opens WhatsApp with your details ready to send.</p>
                   </div>
                 </>
               )}
@@ -1799,6 +1843,13 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
           </div>
         </div>
       </section>
+
+      <div className="bpf-mbar" style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:600, background:"rgba(28,16,8,0.97)", backdropFilter:"blur(10px)", borderTop:"1px solid rgba(201,169,110,0.25)", padding:"8px", gap:8, boxShadow:"0 -4px 20px rgba(0,0,0,0.3)" }}>
+        <a href={OWNER.lineUrl} target="_blank" rel="noreferrer" style={{ flex:1, textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:11, padding:"12px", display:"flex", alignItems:"center", justifyContent:"center", gap:7, fontSize:14, fontWeight:700 }}><Icon n="line" s={18} c="#fff"/>LINE</a>
+        <a href={`https://wa.me/${OWNER.whatsapp}`} target="_blank" rel="noreferrer" style={{ flex:1, textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:11, padding:"12px", display:"flex", alignItems:"center", justifyContent:"center", gap:7, fontSize:14, fontWeight:700 }}><Icon n="chat" s={18} c="#fff"/>WhatsApp</a>
+        <button onClick={()=>window.scrollTo({top:0, behavior:"smooth"})} style={{ flex:1, border:"none", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", borderRadius:11, padding:"12px", display:"flex", alignItems:"center", justifyContent:"center", gap:7, fontSize:14, fontWeight:700, cursor:"pointer" }}><Icon n="search" s={17} c="#fff"/>Search</button>
+      </div>
+      <div className="bpf-mbar-sp" style={{ height:64 }} />
 
       {/* FOOTER */}
       <footer style={{ background:"#0F0A04", padding:"36px clamp(20px,5vw,60px) 22px", borderTop:"1px solid rgba(201,169,110,0.12)" }}>
