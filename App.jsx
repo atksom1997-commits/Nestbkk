@@ -82,6 +82,36 @@ const OWNER = {
   whatsapp: "66825388189",
 };
 
+const GUIDES = [
+  { tag:"Rent Smart", icon:"key", title:"The \"2 + 1\" deposit rule", intro:"What every Bangkok lease asks for — and the part you can negotiate.",
+    points:[
+      {h:"The standard terms", b:"Almost every Bangkok lease asks for 2 months deposit + 1 month advance before move-in. The deposit is refundable; the advance counts as your first month's rent."},
+      {h:"What's negotiable", b:"Shorter stays sometimes mean a higher monthly rate, not a bigger deposit. On longer contracts (1 year+) you can often ask for lower rent or a small repaint — owners prefer stable tenants."},
+    ]},
+  { tag:"For Expats", icon:"check", title:"4 things to check before you sign", intro:"The paperwork side nobody explains until it's a problem.",
+    points:[
+      {h:"TM.30 registration", b:"When a foreigner moves in, the owner must report your address to Immigration (the TM.30). Ask if they'll handle it — you may need the receipt for your visa or 90-day reporting."},
+      {h:"Visa & contract length", b:"Some owners only accept tenants on certain visas, or require a work permit for a 1-year lease. Confirm this upfront so a viewing doesn't fall through at signing."},
+      {h:"What's included", b:"Check if rent covers the common-area fee and parking — some do, some don't. Internet, water and cleaning are sometimes bundled too. Get it in writing."},
+    ]},
+  { tag:"Area Guide", icon:"pin", title:"Thonglor vs Ekkamai", intro:"Two neighbours, two very different vibes.",
+    points:[
+      {h:"Thonglor", b:"Polished and lively — rooftop bars, designer cafes and a strong Japanese community. You pay a premium for the address, but you're in the centre of the action."},
+      {h:"Ekkamai", b:"A little calmer and often better value for the same size unit. Great food, easy access to Gateway mall, and a quick hop to Thonglor when you want the buzz."},
+    ]},
+  { tag:"Buying 101", icon:"tag", title:"The fees nobody warns you about", intro:"What \"50/50 transfer\" and \"no business tax\" actually mean.",
+    points:[
+      {h:"Transfer fee — 50/50", b:"The Land Department transfer fee is 2% of the appraised value. \"50/50\" means buyer and seller split it. Always confirm who pays what before you agree a price."},
+      {h:"\"No specific business tax\"", b:"Specific Business Tax (3.3%) usually applies if the seller has owned under 5 years. If a listing says \"no SBT\", the seller has held it longer — often a sign of a genuine, settled owner."},
+    ]},
+  { tag:"Stay Safe", icon:"shield", title:"3 signs a listing isn't real", intro:"If the deal feels too good, slow down and check these.",
+    points:[
+      {h:"Way below market", b:"A luxury 2-bed at half the going rate isn't a bargain — it's bait. Compare against similar units in the same building before you get excited."},
+      {h:"Deposit before viewing", b:"No legitimate owner needs a \"holding deposit\" wired before you've seen the unit or met anyone. Never transfer money to reserve a place you haven't visited."},
+      {h:"Same photos everywhere", b:"Reverse-image-search the photos. If the exact same set appears under different names and prices, it's been copied. Real listings have consistent, original detail."},
+    ]},
+];
+
 function LineModal({ msg, onClose, lineUrl }) {
   const _url = lineUrl || OWNER.lineUrl;
   const [copied, setCopied] = useState(false);
@@ -1436,6 +1466,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const [sent, setSent]       = useState(false);
 
   const [selectedId, setSelectedId] = useState(null);
+  const [openGuide, setOpenGuide] = useState(null);
 
   useEffect(() => { const t = setTimeout(() => setHeroOn(true), 80); return () => clearTimeout(t); }, []);
   useEffect(() => {
@@ -1734,6 +1765,47 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
               </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* GUIDES */}
+      <section id="guides" style={{ background:"#FDFAF6", padding:"72px clamp(20px,5vw,60px)" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ textAlign:"center", marginBottom:44 }}>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:12 }}>Buyer &amp; Renter Guides</div>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,44px)", fontWeight:700, color:"#1C1410", marginBottom:12 }}>Know Before You <em style={{ color:"#C9A96E" }}>Rent or Buy</em></h2>
+            <p style={{ color:"#8E7E6E", fontSize:15, maxWidth:560, margin:"0 auto", lineHeight:1.7 }}>Simple, honest explainers for renting and buying property in Bangkok — so there are no surprises.</p>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:18, alignItems:"start" }}>
+            {GUIDES.map((g,i)=>{
+              const open = openGuide===i;
+              return (
+                <div key={i} onClick={()=>setOpenGuide(open?null:i)} style={{ background:"#fff", border:"1px solid #EFE8DF", borderRadius:18, padding:"24px", boxShadow: open?"0 12px 36px rgba(28,20,16,0.1)":"0 2px 14px rgba(0,0,0,0.04)", transition:"box-shadow 0.25s", cursor:"pointer" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:13 }}>
+                    <span style={{ width:40, height:40, borderRadius:12, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={g.icon} s={19} c="#fff"/></span>
+                    <span style={{ fontSize:10.5, fontWeight:800, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9B6B2A", background:"#FBF3E6", padding:"4px 10px", borderRadius:20 }}>{g.tag}</span>
+                  </div>
+                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:8, lineHeight:1.2 }}>{g.title}</h3>
+                  <p style={{ color:"#8E7E6E", fontSize:13.5, lineHeight:1.6, marginBottom: open?18:0 }}>{g.intro}</p>
+                  {open && (
+                    <div style={{ display:"flex", flexDirection:"column", gap:14, borderTop:"1px solid #EFE8DF", paddingTop:16 }}>
+                      {g.points.map((p,j)=>(
+                        <div key={j} style={{ display:"flex", gap:11 }}>
+                          <span style={{ width:24, height:24, borderRadius:"50%", background:"#FBF3E6", color:"#9B6B2A", fontSize:12, fontWeight:800, display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>{j+1}</span>
+                          <div><div style={{ fontWeight:700, fontSize:14, color:"#1C1410", marginBottom:3 }}>{p.h}</div><div style={{ color:"#6B5E52", fontSize:13.5, lineHeight:1.65 }}>{p.b}</div></div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div style={{ marginTop:14, color:"#C9A96E", fontSize:13, fontWeight:700 }}>{open ? "Show less ↑" : "Read more ↓"}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ textAlign:"center", marginTop:36 }}>
+            <p style={{ color:"#8E7E6E", fontSize:14, marginBottom:16 }}>Still have questions about renting or buying in Bangkok?</p>
+            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"13px 30px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", boxShadow:"0 10px 30px rgba(201,169,110,0.3)" }}>💬 Ask Annie</button>
           </div>
         </div>
       </section>
