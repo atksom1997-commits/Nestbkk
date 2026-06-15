@@ -1765,12 +1765,6 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
               </a>
             </div>
-            <div style={{ marginTop:28, display:"flex", flexDirection:"column", alignItems:"center", gap:11 }}>
-              <div style={{ background:"#fff", padding:12, borderRadius:16, boxShadow:"0 8px 24px rgba(0,0,0,0.28)" }}>
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(OWNER.lineUrl)}`} alt="Scan to add Annie on LINE" width={150} height={150} style={{ display:"block", width:150, height:150 }}/>
-              </div>
-              <div style={{ color:"rgba(255,255,255,0.8)", fontSize:13.5, fontWeight:600, display:"inline-flex", alignItems:"center", gap:7 }}><Icon n="line" s={16} c="#06C755"/>Scan to add me on LINE</div>
-            </div>
           </div>
         </div>
       </section>
@@ -1930,14 +1924,39 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <div className="bpf-mbar-sp" style={{ height:64 }} />
 
       {/* FOOTER */}
-      <footer style={{ background:"#0F0A04", padding:"36px clamp(20px,5vw,60px) 22px", borderTop:"1px solid rgba(201,169,110,0.12)" }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:16, alignItems:"center" }}>
+      <footer style={{ background:"#0F0A04", padding:"56px clamp(20px,5vw,60px) 26px", borderTop:"1px solid rgba(201,169,110,0.12)" }}>
+        <div style={{ maxWidth:1080, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))", gap:40, alignItems:"start" }}>
           <div>
-            <img src={LOGO_IMG} alt="Bangkok Property Finder" style={{ height:44, width:"auto", objectFit:"contain" }}/>
-            <div style={{ color:"#4A3A2A", fontSize:12, marginTop:4 }}>{OWNER.email} · {OWNER.phoneDisplay}</div>
+            <img src={LOGO_IMG} alt="Bangkok Property Finder" style={{ height:46, width:"auto", objectFit:"contain", marginBottom:14 }}/>
+            <p style={{ color:"#7B6A5A", fontSize:13.5, lineHeight:1.7, maxWidth:280, margin:0 }}>Your trusted property partner in Thailand — helping you find condos, houses &amp; rentals in Bangkok with honest, personal guidance.</p>
           </div>
-          <div style={{ color:"#4A3A2A", fontSize:12 }}>© 2026 Bangkok Property Finder · Real Estate By Annie · Bangkok, Thailand</div>
+          <div>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>Get in Touch</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+              {[
+                { icon:"phone", label:OWNER.phoneDisplay, href:"tel:"+OWNER.phone },
+                { icon:"chat", label:"WhatsApp", href:"https://wa.me/"+OWNER.whatsapp },
+                { icon:"line", label:"LINE "+OWNER.lineId, href:OWNER.lineUrl },
+                { icon:"mail", label:OWNER.email, href:"mailto:"+OWNER.email },
+                { icon:"instagram", label:"@"+OWNER.ig, href:OWNER.igUrl },
+                { icon:"facebook", label:OWNER.fb, href:OWNER.fbUrl }
+              ].map((m,i)=>(
+                <a key={i} href={m.href} target="_blank" rel="noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:11, textDecoration:"none", color:"#D8C8B4", fontSize:13.5 }}>
+                  <span style={{ width:34, height:34, borderRadius:10, background:"rgba(201,169,110,0.12)", display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={m.icon} s={16} c="#C9A96E"/></span>
+                  {m.label}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>Add Me on LINE</div>
+            <div style={{ background:"#fff", padding:12, borderRadius:16, boxShadow:"0 8px 24px rgba(0,0,0,0.3)", display:"inline-block" }}>
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(OWNER.lineUrl)}`} alt="Scan to add Annie on LINE" width={140} height={140} style={{ display:"block", width:140, height:140 }}/>
+            </div>
+            <div style={{ color:"#7B6A5A", fontSize:12.5, marginTop:11, display:"inline-flex", alignItems:"center", gap:6 }}><Icon n="line" s={14} c="#06C755"/>Scan to chat instantly</div>
+          </div>
         </div>
+        <div style={{ maxWidth:1080, margin:"40px auto 0", paddingTop:22, borderTop:"1px solid rgba(201,169,110,0.1)", color:"#4A3A2A", fontSize:12, textAlign:"center" }}>© 2026 Bangkok Property Finder · Real Estate By Annie · Bangkok, Thailand</div>
       </footer>
     </div>
   );
