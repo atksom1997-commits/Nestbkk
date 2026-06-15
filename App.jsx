@@ -82,35 +82,187 @@ const OWNER = {
   whatsapp: "66825388189",
 };
 
-const GUIDES = [
-  { tag:"Rent Smart", icon:"key", title:"The \"2 + 1\" deposit rule", intro:"What every Bangkok lease asks for — and the part you can negotiate.",
-    points:[
-      {h:"The standard terms", b:"Almost every Bangkok lease asks for 2 months deposit + 1 month advance before move-in. The deposit is refundable; the advance counts as your first month's rent."},
-      {h:"What's negotiable", b:"Shorter stays sometimes mean a higher monthly rate, not a bigger deposit. On longer contracts (1 year+) you can often ask for lower rent or a small repaint — owners prefer stable tenants."},
-    ]},
-  { tag:"For Expats", icon:"check", title:"4 things to check before you sign", intro:"The paperwork side nobody explains until it's a problem.",
-    points:[
-      {h:"TM.30 registration", b:"When a foreigner moves in, the owner must report your address to Immigration (the TM.30). Ask if they'll handle it — you may need the receipt for your visa or 90-day reporting."},
-      {h:"Visa & contract length", b:"Some owners only accept tenants on certain visas, or require a work permit for a 1-year lease. Confirm this upfront so a viewing doesn't fall through at signing."},
-      {h:"What's included", b:"Check if rent covers the common-area fee and parking — some do, some don't. Internet, water and cleaning are sometimes bundled too. Get it in writing."},
-    ]},
-  { tag:"Area Guide", icon:"pin", title:"Thonglor vs Ekkamai", intro:"Two neighbours, two very different vibes.",
-    points:[
-      {h:"Thonglor", b:"Polished and lively — rooftop bars, designer cafes and a strong Japanese community. You pay a premium for the address, but you're in the centre of the action."},
-      {h:"Ekkamai", b:"A little calmer and often better value for the same size unit. Great food, easy access to Gateway mall, and a quick hop to Thonglor when you want the buzz."},
-    ]},
-  { tag:"Buying 101", icon:"tag", title:"The fees nobody warns you about", intro:"What \"50/50 transfer\" and \"no business tax\" actually mean.",
-    points:[
-      {h:"Transfer fee — 50/50", b:"The Land Department transfer fee is 2% of the appraised value. \"50/50\" means buyer and seller split it. Always confirm who pays what before you agree a price."},
-      {h:"\"No specific business tax\"", b:"Specific Business Tax (3.3%) usually applies if the seller has owned under 5 years. If a listing says \"no SBT\", the seller has held it longer — often a sign of a genuine, settled owner."},
-    ]},
-  { tag:"Stay Safe", icon:"shield", title:"3 signs a listing isn't real", intro:"If the deal feels too good, slow down and check these.",
-    points:[
-      {h:"Way below market", b:"A luxury 2-bed at half the going rate isn't a bargain — it's bait. Compare against similar units in the same building before you get excited."},
-      {h:"Deposit before viewing", b:"No legitimate owner needs a \"holding deposit\" wired before you've seen the unit or met anyone. Never transfer money to reserve a place you haven't visited."},
-      {h:"Same photos everywhere", b:"Reverse-image-search the photos. If the exact same set appears under different names and prices, it's been copied. Real listings have consistent, original detail."},
-    ]},
-];
+const GUIDE_ICONS = ["key","check","pin","tag","shield"];
+
+const GUIDES_I18N = {
+  en: [
+    { tag:"Rent Smart", title:"The \"2 + 1\" deposit rule", intro:"What every Bangkok lease asks for — and the part you can negotiate.",
+      points:[
+        {h:"The standard terms", b:"Almost every Bangkok lease asks for 2 months deposit + 1 month advance before move-in. The deposit is refundable; the advance counts as your first month's rent."},
+        {h:"What's negotiable", b:"Shorter stays sometimes mean a higher monthly rate, not a bigger deposit. On longer contracts (1 year+) you can often ask for lower rent or a small repaint — owners prefer stable tenants."},
+      ]},
+    { tag:"For Expats", title:"4 things to check before you sign", intro:"The paperwork side nobody explains until it's a problem.",
+      points:[
+        {h:"TM.30 registration", b:"When a foreigner moves in, the owner must report your address to Immigration (the TM.30). Ask if they'll handle it — you may need the receipt for your visa or 90-day reporting."},
+        {h:"Visa & contract length", b:"Some owners only accept tenants on certain visas, or require a work permit for a 1-year lease. Confirm this upfront so a viewing doesn't fall through at signing."},
+        {h:"What's included", b:"Check if rent covers the common-area fee and parking — some do, some don't. Internet, water and cleaning are sometimes bundled too. Get it in writing."},
+      ]},
+    { tag:"Area Guide", title:"Thonglor vs Ekkamai", intro:"Two neighbours, two very different vibes.",
+      points:[
+        {h:"Thonglor", b:"Polished and lively — rooftop bars, designer cafes and a strong Japanese community. You pay a premium for the address, but you're in the centre of the action."},
+        {h:"Ekkamai", b:"A little calmer and often better value for the same size unit. Great food, easy access to Gateway mall, and a quick hop to Thonglor when you want the buzz."},
+      ]},
+    { tag:"Buying 101", title:"The fees nobody warns you about", intro:"What \"50/50 transfer\" and \"no business tax\" actually mean.",
+      points:[
+        {h:"Transfer fee — 50/50", b:"The Land Department transfer fee is 2% of the appraised value. \"50/50\" means buyer and seller split it. Always confirm who pays what before you agree a price."},
+        {h:"\"No specific business tax\"", b:"Specific Business Tax (3.3%) usually applies if the seller has owned under 5 years. If a listing says \"no SBT\", the seller has held it longer — often a sign of a genuine, settled owner."},
+      ]},
+    { tag:"Stay Safe", title:"3 signs a listing isn't real", intro:"If the deal feels too good, slow down and check these.",
+      points:[
+        {h:"Way below market", b:"A luxury 2-bed at half the going rate isn't a bargain — it's bait. Compare against similar units in the same building before you get excited."},
+        {h:"Deposit before viewing", b:"No legitimate owner needs a \"holding deposit\" wired before you've seen the unit or met anyone. Never transfer money to reserve a place you haven't visited."},
+        {h:"Same photos everywhere", b:"Reverse-image-search the photos. If the exact same set appears under different names and prices, it's been copied. Real listings have consistent, original detail."},
+      ]},
+  ],
+  th: [
+    { tag:"เช่าอย่างฉลาด", title:"กฎเงินมัดจำ \"2 + 1\"", intro:"สิ่งที่สัญญาเช่าในกรุงเทพฯ ทุกฉบับขอ — และส่วนที่ต่อรองได้",
+      points:[
+        {h:"เงื่อนไขมาตรฐาน", b:"สัญญาเช่าในกรุงเทพฯ เกือบทุกฉบับขอเงินมัดจำ 2 เดือน + ค่าเช่าล่วงหน้า 1 เดือน ก่อนเข้าอยู่ เงินมัดจำคืนได้ ส่วนค่าล่วงหน้านับเป็นค่าเช่าเดือนแรก"},
+        {h:"ส่วนที่ต่อรองได้", b:"เช่าระยะสั้นบางครั้งหมายถึงค่าเช่าต่อเดือนสูงขึ้น ไม่ใช่มัดจำมากขึ้น ส่วนสัญญายาว (1 ปีขึ้นไป) มักขอลดค่าเช่าหรือขอทาสีใหม่เล็กน้อยได้ เพราะเจ้าของชอบผู้เช่าระยะยาว"},
+      ]},
+    { tag:"สำหรับชาวต่างชาติ", title:"4 สิ่งที่ต้องเช็กก่อนเซ็น", intro:"เรื่องเอกสารที่ไม่มีใครอธิบายจนกลายเป็นปัญหา",
+      points:[
+        {h:"การแจ้ง ตม.30", b:"เมื่อชาวต่างชาติย้ายเข้า เจ้าของต้องแจ้งที่อยู่ต่อสำนักงานตรวจคนเข้าเมือง (ตม.30) ลองถามว่าเขาจัดการให้ไหม คุณอาจต้องใช้ใบรับแจ้งสำหรับวีซ่าหรือรายงานตัว 90 วัน"},
+        {h:"วีซ่า & ระยะสัญญา", b:"เจ้าของบางรายรับเฉพาะผู้เช่าบางประเภทวีซ่า หรือขอใบอนุญาตทำงานสำหรับสัญญา 1 ปี ควรยืนยันก่อน เพื่อไม่ให้การนัดชมเสียเปล่าตอนเซ็น"},
+        {h:"ค่าใช้จ่ายที่รวมอยู่", b:"เช็กว่าค่าเช่ารวมค่าส่วนกลางและที่จอดรถหรือไม่ บางที่รวม บางที่ไม่รวม บางครั้งรวมอินเทอร์เน็ต น้ำ และทำความสะอาดด้วย ขอเป็นลายลักษณ์อักษร"},
+      ]},
+    { tag:"แนะนำทำเล", title:"ทองหล่อ vs เอกมัย", intro:"สองย่านใกล้กัน แต่บรรยากาศต่างกันมาก",
+      points:[
+        {h:"ทองหล่อ", b:"หรูและคึกคัก — รูฟท็อปบาร์ คาเฟ่ดีไซน์เก๋ และคอมมูนิตี้ญี่ปุ่นที่แข็งแรง ราคาพรีเมียมตามทำเล แต่คุณอยู่ใจกลางความเคลื่อนไหว"},
+        {h:"เอกมัย", b:"เงียบสงบกว่าเล็กน้อย และมักคุ้มค่ากว่าสำหรับห้องขนาดเท่ากัน ร้านอาหารอร่อย เดินทางสะดวกไปห้าง Gateway และไปทองหล่อได้รวดเร็วเมื่ออยากสัมผัสความคึกคัก"},
+      ]},
+    { tag:"ซื้อบ้าน 101", title:"ค่าธรรมเนียมที่ไม่มีใครเตือน", intro:"\"โอน 50/50\" และ \"ไม่มีภาษีธุรกิจ\" จริงๆ แล้วหมายความว่าอะไร",
+      points:[
+        {h:"ค่าโอน — 50/50", b:"ค่าธรรมเนียมการโอนที่กรมที่ดินคือ 2% ของราคาประเมิน \"50/50\" หมายถึงผู้ซื้อและผู้ขายแบ่งกันจ่าย ควรยืนยันให้ชัดว่าใครจ่ายอะไรก่อนตกลงราคา"},
+        {h:"\"ไม่มีภาษีธุรกิจเฉพาะ\"", b:"ภาษีธุรกิจเฉพาะ (3.3%) มักใช้เมื่อผู้ขายถือครองไม่ถึง 5 ปี ถ้าประกาศบอกว่า \"ไม่มี SBT\" แสดงว่าผู้ขายถือครองมานานกว่านั้น — มักเป็นสัญญาณว่าเป็นเจ้าของตัวจริงที่อยู่มานาน"},
+      ]},
+    { tag:"ปลอดภัยไว้ก่อน", title:"3 สัญญาณว่าประกาศไม่จริง", intro:"ถ้าดีลดูดีเกินไป ให้ช้าลงแล้วเช็ก 3 ข้อนี้",
+      points:[
+        {h:"ราคาต่ำกว่าตลาดมาก", b:"คอนโด 2 ห้องนอนหรูในราคาครึ่งเดียวของตลาดไม่ใช่ของถูก แต่คือเหยื่อล่อ เทียบกับห้องคล้ายกันในตึกเดียวกันก่อนจะตื่นเต้น"},
+        {h:"ขอมัดจำก่อนชมห้อง", b:"เจ้าของตัวจริงไม่มีใครต้องการ \"เงินจอง\" โอนก่อนที่คุณจะได้เห็นห้องหรือเจอใคร อย่าโอนเงินเพื่อจองที่ที่ยังไม่ได้ไปดู"},
+        {h:"รูปเดียวกันทุกที่", b:"ลองค้นรูปย้อนกลับ (reverse image search) ถ้ารูปชุดเดียวกันโผล่หลายชื่อหลายราคา แสดงว่าถูกก๊อปมา ประกาศจริงจะมีรายละเอียดเฉพาะตัวที่สม่ำเสมอ"},
+      ]},
+  ],
+  zh: [
+    { tag:"聪明租房", title:"\"2 + 1\" 押金规则", intro:"曼谷每份租约都会要求的 — 以及可以谈的部分。",
+      points:[
+        {h:"标准条款", b:"曼谷几乎每份租约在入住前都要求 2 个月押金 + 1 个月预付租金。押金可退；预付的部分算作您的第一个月租金。"},
+        {h:"可以谈的部分", b:"短租有时意味着更高的月租，而不是更多押金。长租（1 年以上）通常可以要求降低租金或小幅重新粉刷 — 房东更喜欢稳定的租客。"},
+      ]},
+    { tag:"外籍人士", title:"签约前要确认的 4 件事", intro:"那些没人解释、出了问题才知道的文件流程。",
+      points:[
+        {h:"TM.30 登记", b:"外籍人士入住时，房东必须向移民局申报您的住址（TM.30）。问清楚他们是否会办理 — 您办签证或 90 天报到时可能需要这张回执。"},
+        {h:"签证与租期", b:"有些房东只接受特定签证的租客，或要求工作许可才签 1 年租约。请提前确认，以免看房后在签约时落空。"},
+        {h:"包含哪些费用", b:"确认租金是否包含公共区域费和停车位 — 有的包含，有的不包含。网络、水费和清洁有时也包含在内。请落实成书面。"},
+      ]},
+    { tag:"区域指南", title:"通罗 vs 易三仓", intro:"相邻的两个区，氛围却大不相同。",
+      points:[
+        {h:"通罗 Thonglor", b:"精致而热闹 — 天台酒吧、设计感咖啡馆和庞大的日本人社区。地段溢价较高，但您身处繁华中心。"},
+        {h:"易三仓 Ekkamai", b:"略为安静，同样面积通常更超值。美食云集，去 Gateway 商场方便，想热闹时也能很快到通罗。"},
+      ]},
+    { tag:"买房入门", title:"没人提醒你的费用", intro:"\"50/50 过户\"和\"无营业税\"到底是什么意思。",
+      points:[
+        {h:"过户费 — 50/50", b:"土地厅的过户费为评估价的 2%。\"50/50\"指买卖双方各付一半。在谈定价格前，务必确认谁付哪一部分。"},
+        {h:"\"无特定营业税\"", b:"若卖家持有不足 5 年，通常需缴特定营业税（3.3%）。若房源写\"无 SBT\"，说明卖家持有时间更长 — 往往是真正、安定的业主。"},
+      ]},
+    { tag:"安全第一", title:"房源不真实的 3 个迹象", intro:"如果好得不真实，请放慢脚步、核对这几点。",
+      points:[
+        {h:"远低于市场价", b:"半价的豪华两居不是捡漏，而是诱饵。在心动之前，先和同栋类似户型对比。"},
+        {h:"看房前先要押金", b:"正规业主绝不会在您看房或见面之前，就要求电汇\"预订押金\"。切勿为没看过的房子转账预订。"},
+        {h:"到处都是同一组照片", b:"用反向图片搜索查一下。若同一组照片以不同名字和价格出现，说明是盗用的。真实房源会有一致、原创的细节。"},
+      ]},
+  ],
+};
+
+const UI = {
+  en: {
+    nav:["Buy","Rent","Services","Contact"], admin:"🔐 Admin",
+    heroBadge:"Thailand Property Specialist", heroH1a:"Find Your Perfect", heroH1b:"Home in Bangkok",
+    heroSub1:"Luxury condos, houses & rentals matched to your lifestyle — guided personally by ", heroSub2:", your trusted Bangkok property partner.",
+    sBuyRent:"Buy & Rent", sSale:"For Sale", sRent:"For Rent", searchPh:"Search by name or location...", searchBtn:"Search",
+    ctaFind:"🔍 Find My Property", ctaContact:"💬 Contact Annie",
+    trust:["Local Bangkok Knowledge","Property Matching","Viewing Assistance","Contract Support"],
+    live:"Live Listings", propsIn:"Properties in", emptyTitle:"No properties found", emptySub:"Try adjusting your filters",
+    meet:"Meet Annie", aboutH2a:"Your Bangkok", aboutH2b:"Property Specialist",
+    aboutP1:"Hi, I'm ", aboutP2:" — your dedicated Bangkok property consultant. I help expats, foreigners & investors find the right condo, house or rental, and I guide you from the very first search all the way to signing your contract — clearly explained, in English & Thai.",
+    aboutChecks:["Personalized property matching","Verified property information","Local area expertise","English & Thai support"],
+    aboutCards:[{t:"Verified Listings",d:"Every property personally checked."},{t:"Thai & English",d:"Bilingual support throughout."},{t:"Quick Response",d:"Fast, friendly replies to every enquiry."},{t:"Personal Touch",d:"Dedicated one-on-one service."}],
+    explore:"Explore", browse:"Browse by City", listingOne:"listing", listingMany:"listings", exploreMore:"Explore →",
+    offer:"What We Offer", ourServices:"Our Services", servicesSub:"More than just listings — we help you find, evaluate, and secure the perfect property in Thailand.",
+    serviceCards:[{title:"Property Sourcing",desc:"Tell us your budget, location, and needs — we search the market and bring you the best matching properties, including off-market deals."},{title:"Consultation",desc:"Expert advice on buying, renting, or investing in Thai real estate. We guide you through pricing, areas, legal steps, and more."},{title:"Buyer & Tenant Matching",desc:"Looking for something specific? Share your requirements and we'll find exactly what you're looking for — saving you time and effort."}],
+    cantFind:"Can't find what you're looking for? Let us find it for you.", addLine:"Add LINE",
+    guidesTag:"Buyer & Renter Guides", guidesH2a:"Know Before You", guidesH2b:"Rent or Buy",
+    guidesSub:"Simple, honest explainers for renting and buying property in Bangkok — so there are no surprises.",
+    readMore:"Read more ↓", showLess:"Show less ↑", guidesQ:"Still have questions about renting or buying in Bangkok?", askAnnie:"💬 Ask Annie",
+    getInTouch:"Get in Touch", contactAnnie:"Contact Annie", replies:"Annie replies within 24 hours", lblPhone:"Phone", lblEmail:"Email",
+    formTitle:"Tell me what you're looking for", formSub:"Share a few details and Annie will send you matching properties.",
+    fName:"Name", fNamePh:"Your name", fEmail:"Email", fEmailPh:"your@email.com", fPhone:"Phone / LINE / WhatsApp", fPhonePh:"How can Annie reach you?",
+    fBudget:"Budget", fBudgetPh:"e.g. ฿30,000/mo or ฿5M", fLoc:"Preferred location", fLocPh:"e.g. Sukhumvit, Thonglor", fBeds:"Bedrooms", fMove:"Move-in date", fMovePh:"e.g. ASAP, Mar 2026", fMsg:"Message", fMsgPh:"Anything else I should know?",
+    sendBtn:"Send to Annie via WhatsApp →", sendNote:"Opens WhatsApp with your details ready to send.",
+    sentTitle:"Sent to WhatsApp!", sentSub:"Just press send in WhatsApp — Annie will reply within 24 hours.", sendAnother:"Send Another",
+    formAlert:"Please add your name and an email or phone so Annie can reach you.",
+    footerTag:"Your trusted property partner in Thailand — helping you find condos, houses & rentals in Bangkok with honest, personal guidance.",
+    addMeLine:"Add Me on LINE", footerScan:"Scan to chat instantly", stickySearch:"Search",
+  },
+  th: {
+    nav:["ซื้อ","เช่า","บริการ","ติดต่อ"], admin:"🔐 แอดมิน",
+    heroBadge:"ผู้เชี่ยวชาญอสังหาฯ ประเทศไทย", heroH1a:"ค้นหาบ้านในฝัน", heroH1b:"ของคุณในกรุงเทพฯ",
+    heroSub1:"คอนโด บ้าน และห้องเช่าระดับพรีเมียม คัดสรรให้เข้ากับไลฟ์สไตล์ของคุณ — ดูแลโดย ", heroSub2:" ที่ปรึกษาอสังหาฯ กรุงเทพฯ ที่คุณไว้วางใจได้",
+    sBuyRent:"ซื้อ & เช่า", sSale:"ขาย", sRent:"เช่า", searchPh:"ค้นหาด้วยชื่อหรือทำเล...", searchBtn:"ค้นหา",
+    ctaFind:"🔍 ค้นหาอสังหาฯ", ctaContact:"💬 ติดต่อ Annie",
+    trust:["รู้ลึกทำเลกรุงเทพฯ","จับคู่อสังหาฯ ให้คุณ","พาชมห้องและบ้าน","ดูแลเรื่องสัญญา"],
+    live:"ประกาศล่าสุด", propsIn:"อสังหาฯ ใน", emptyTitle:"ไม่พบอสังหาฯ", emptySub:"ลองปรับตัวกรองดูใหม่",
+    meet:"รู้จัก Annie", aboutH2a:"ที่ปรึกษาอสังหาฯ", aboutH2b:"กรุงเทพฯ ของคุณ",
+    aboutP1:"สวัสดีค่ะ ฉันชื่อ ", aboutP2:" — ที่ปรึกษาอสังหาฯ กรุงเทพฯ ของคุณ ฉันช่วยชาวต่างชาติและนักลงทุนหาคอนโด บ้าน หรือห้องเช่าที่ใช่ และดูแลคุณตั้งแต่เริ่มค้นหาจนถึงเซ็นสัญญา อธิบายทุกขั้นตอนชัดเจน ทั้งภาษาอังกฤษและภาษาไทย",
+    aboutChecks:["จับคู่อสังหาฯ ตามความต้องการ","ข้อมูลอสังหาฯ ที่ตรวจสอบแล้ว","เชี่ยวชาญทำเลในพื้นที่","บริการภาษาไทยและอังกฤษ"],
+    aboutCards:[{t:"ประกาศที่ตรวจสอบแล้ว",d:"ทุกอสังหาฯ ตรวจสอบด้วยตัวเอง"},{t:"ไทย & อังกฤษ",d:"บริการสองภาษาตลอดการดูแล"},{t:"ตอบกลับรวดเร็ว",d:"ตอบทุกข้อความอย่างเป็นมิตรและรวดเร็ว"},{t:"ดูแลใกล้ชิด",d:"บริการแบบตัวต่อตัว"}],
+    explore:"สำรวจ", browse:"เลือกตามเมือง", listingOne:"ประกาศ", listingMany:"ประกาศ", exploreMore:"สำรวจ →",
+    offer:"สิ่งที่เรามอบให้", ourServices:"บริการของเรา", servicesSub:"มากกว่าแค่ประกาศ — เราช่วยคุณค้นหา ประเมิน และปิดดีลอสังหาฯ ที่ใช่ในประเทศไทย",
+    serviceCards:[{title:"จัดหาอสังหาฯ",desc:"บอกงบประมาณ ทำเล และความต้องการของคุณ แล้วเราจะค้นหาตลาดและนำอสังหาฯ ที่ตรงใจที่สุดมาให้ รวมถึงดีลที่ไม่ได้ลงประกาศ"},{title:"ให้คำปรึกษา",desc:"คำแนะนำจากผู้เชี่ยวชาญเรื่องการซื้อ เช่า หรือลงทุนอสังหาฯ ไทย เราพาคุณดูทั้งราคา ทำเล ขั้นตอนกฎหมาย และอื่นๆ"},{title:"จับคู่ผู้ซื้อ & ผู้เช่า",desc:"กำลังมองหาบางอย่างที่เฉพาะเจาะจง? บอกความต้องการมา แล้วเราจะหาสิ่งที่คุณต้องการให้พอดี ประหยัดเวลาและแรงของคุณ"}],
+    cantFind:"หาสิ่งที่ต้องการไม่เจอ? ให้เราช่วยหาให้คุณ", addLine:"เพิ่มเพื่อน LINE",
+    guidesTag:"คู่มือผู้ซื้อ & ผู้เช่า", guidesH2a:"รู้ไว้ก่อน", guidesH2b:"เช่าหรือซื้อ",
+    guidesSub:"คำอธิบายง่ายๆ และตรงไปตรงมา เรื่องการเช่าและซื้ออสังหาฯ ในกรุงเทพฯ เพื่อให้ไม่มีอะไรเซอร์ไพรส์",
+    readMore:"อ่านเพิ่มเติม ↓", showLess:"ย่อ ↑", guidesQ:"ยังมีคำถามเรื่องการเช่าหรือซื้อในกรุงเทพฯ ไหม?", askAnnie:"💬 ถาม Annie",
+    getInTouch:"ติดต่อเรา", contactAnnie:"ติดต่อ Annie", replies:"Annie ตอบกลับภายใน 24 ชั่วโมง", lblPhone:"โทรศัพท์", lblEmail:"อีเมล",
+    formTitle:"บอกฉันว่าคุณกำลังมองหาอะไร", formSub:"บอกรายละเอียดสักเล็กน้อย แล้ว Annie จะส่งอสังหาฯ ที่ตรงใจให้คุณ",
+    fName:"ชื่อ", fNamePh:"ชื่อของคุณ", fEmail:"อีเมล", fEmailPh:"your@email.com", fPhone:"โทร / LINE / WhatsApp", fPhonePh:"Annie ติดต่อคุณได้ทางไหน?",
+    fBudget:"งบประมาณ", fBudgetPh:"เช่น ฿30,000/เดือน หรือ ฿5M", fLoc:"ทำเลที่ต้องการ", fLocPh:"เช่น สุขุมวิท, ทองหล่อ", fBeds:"ห้องนอน", fMove:"วันเข้าอยู่", fMovePh:"เช่น เร็วที่สุด, มี.ค. 2026", fMsg:"ข้อความ", fMsgPh:"มีอะไรอยากให้ฉันรู้เพิ่มเติมไหม?",
+    sendBtn:"ส่งให้ Annie ทาง WhatsApp →", sendNote:"จะเปิด WhatsApp พร้อมรายละเอียดของคุณให้กดส่ง",
+    sentTitle:"ส่งไปที่ WhatsApp แล้ว!", sentSub:"แค่กดส่งใน WhatsApp — Annie จะตอบกลับภายใน 24 ชั่วโมง", sendAnother:"ส่งอีกครั้ง",
+    formAlert:"กรุณากรอกชื่อ และอีเมลหรือเบอร์โทร เพื่อให้ Annie ติดต่อคุณได้",
+    footerTag:"พาร์ทเนอร์อสังหาฯ ที่คุณไว้ใจในประเทศไทย — ช่วยคุณหาคอนโด บ้าน และห้องเช่าในกรุงเทพฯ ด้วยคำแนะนำที่จริงใจและเป็นกันเอง",
+    addMeLine:"เพิ่มฉันใน LINE", footerScan:"สแกนเพื่อแชททันที", stickySearch:"ค้นหา",
+  },
+  zh: {
+    nav:["买房","租房","服务","联系"], admin:"🔐 管理",
+    heroBadge:"泰国房产专家", heroH1a:"在曼谷找到", heroH1b:"您的理想之家",
+    heroSub1:"高级公寓、别墅与租房，量身匹配您的生活方式 — 由 ", heroSub2:" 亲自为您服务，您值得信赖的曼谷房产伙伴。",
+    sBuyRent:"买 & 租", sSale:"出售", sRent:"出租", searchPh:"按名称或地点搜索...", searchBtn:"搜索",
+    ctaFind:"🔍 寻找房源", ctaContact:"💬 联系 Annie",
+    trust:["熟悉曼谷本地","房源精准匹配","陪同看房","合同协助"],
+    live:"最新房源", propsIn:"房源 ·", emptyTitle:"未找到房源", emptySub:"请调整筛选条件",
+    meet:"认识 Annie", aboutH2a:"您的曼谷", aboutH2b:"房产专家",
+    aboutP1:"您好，我是 ", aboutP2:" — 您专属的曼谷房产顾问。我帮助外籍人士与投资者找到合适的公寓、别墅或租房，并从最初搜索一路陪伴到签约，每一步都清楚解释，提供英文与泰文协助。",
+    aboutChecks:["按需精准匹配房源","核实过的房源信息","本地区域专长","英文与泰文协助"],
+    aboutCards:[{t:"核实房源",d:"每套房源都亲自查验。"},{t:"泰文 & 英文",d:"全程双语（英 / 泰）协助。"},{t:"快速回复",d:"每条咨询都快速友善回复。"},{t:"贴心服务",d:"专属一对一服务。"}],
+    explore:"探索", browse:"按城市浏览", listingOne:"套房源", listingMany:"套房源", exploreMore:"探索 →",
+    offer:"服务内容", ourServices:"我们的服务", servicesSub:"不只是房源 — 我们帮您在泰国寻找、评估并锁定理想房产。",
+    serviceCards:[{title:"房源搜寻",desc:"告诉我们您的预算、地点与需求 — 我们将搜索市场，为您带来最匹配的房源，包括未公开的内部房源。"},{title:"咨询顾问",desc:"关于在泰国买房、租房或投资的专业建议。我们带您了解价格、区域、法律流程等。"},{title:"买家 & 租客匹配",desc:"在找特定的房子？告诉我们您的要求，我们会精准找到您想要的 — 为您节省时间与精力。"}],
+    cantFind:"找不到合适的？让我们为您寻找。", addLine:"添加 LINE",
+    guidesTag:"买家 & 租客指南", guidesH2a:"租房或买房前", guidesH2b:"必看",
+    guidesSub:"关于在曼谷租房与买房的简单、诚实的说明 — 让您没有意外。",
+    readMore:"展开 ↓", showLess:"收起 ↑", guidesQ:"对在曼谷租房或买房还有疑问吗？", askAnnie:"💬 询问 Annie",
+    getInTouch:"联系我们", contactAnnie:"联系 Annie", replies:"Annie 会在 24 小时内回复", lblPhone:"电话", lblEmail:"邮箱",
+    formTitle:"告诉我您在找什么", formSub:"留下一些细节，Annie 会为您发送匹配的房源。",
+    fName:"姓名", fNamePh:"您的姓名", fEmail:"邮箱", fEmailPh:"your@email.com", fPhone:"电话 / LINE / WhatsApp", fPhonePh:"Annie 如何联系到您？",
+    fBudget:"预算", fBudgetPh:"例如 ฿30,000/月 或 ฿5M", fLoc:"偏好地点", fLocPh:"例如 素坤逸、通罗", fBeds:"卧室", fMove:"入住日期", fMovePh:"例如 尽快、2026年3月", fMsg:"留言", fMsgPh:"还有什么需要我知道的吗？",
+    sendBtn:"通过 WhatsApp 发送给 Annie →", sendNote:"将打开 WhatsApp，您的信息已准备好发送。",
+    sentTitle:"已发送至 WhatsApp！", sentSub:"只需在 WhatsApp 中按发送 — Annie 会在 24 小时内回复。", sendAnother:"再发送一条",
+    formAlert:"请填写您的姓名以及邮箱或电话，以便 Annie 联系您。",
+    footerTag:"您值得信赖的泰国房产伙伴 — 以诚实、贴心的指导，帮您在曼谷寻找公寓、别墅与租房。",
+    addMeLine:"在 LINE 上添加我", footerScan:"扫码即刻聊天", stickySearch:"搜索",
+  },
+};
 
 function LineModal({ msg, onClose, lineUrl }) {
   const _url = lineUrl || OWNER.lineUrl;
@@ -1507,6 +1659,10 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const areaOptions = CITY_AREAS[city] ? ["All Areas", ...CITY_AREAS[city]] : null;
   const lineOptions = ["All Lines", ...Object.keys(TRANSIT_LINES)];
   const budgetOptions = status === "For Sale" ? SALE_BUDGETS : RENT_BUDGETS;
+  const [lang, setLang] = useState(()=>{ try { return localStorage.getItem("bpf_lang") || "en"; } catch(_) { return "en"; } });
+  useEffect(()=>{ try { localStorage.setItem("bpf_lang", lang); } catch(_) {} }, [lang]);
+  const t = UI[lang] || UI.en;
+  const guides = GUIDES_I18N[lang] || GUIDES_I18N.en;
 
   const fadeUp = (d=0) => ({ opacity:heroOn?1:0, transform:heroOn?"translateY(0)":"translateY(24px)", transition:`opacity 0.75s ease ${d}s, transform 0.75s ease ${d}s` });
 
@@ -1521,6 +1677,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
         @keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
         .bpf-mbar{display:flex}.bpf-mbar-sp{display:none}
+        @media(max-width:820px){.bpf-navlinks{display:none}}
         @media(min-width:900px){.bpf-mbar{display:none}}
         @media(max-width:899px){.bpf-mbar-sp{display:block}}
       `}</style>
@@ -1531,16 +1688,23 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                         <img src={LOGO_IMG} alt="Bangkok Property Finder" style={{ height:52, width:"auto", objectFit:"contain", flexShrink:0 }}/>
           </div>
-          <div style={{ display:"flex", alignItems:"center", gap:20 }}>
-            {["Buy","Rent","Services","Contact"].map(l=>(
-              <a key={l} href={`#${l.toLowerCase()}`} style={{ color:"#6B5E52", fontSize:13, fontWeight:500, textDecoration:"none", letterSpacing:"0.04em" }}
-                onMouseEnter={e=>e.target.style.color="#C9A96E"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>{l}</a>
-            ))}
-            <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#6B5E52", fontSize:12, fontWeight:500, textDecoration:"none" }}
-              onMouseEnter={e=>e.target.style.color="#E1306C"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>
-              <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="instagram" s={14} c="#6B5E52"/>@{OWNER.ig}</span>
-            </a>
-            <button onClick={onGoAdmin} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"7px 16px", borderRadius:20, fontSize:12, fontWeight:600, cursor:"pointer", letterSpacing:"0.03em" }}>🔐 Admin</button>
+          <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+            <div className="bpf-navlinks" style={{ display:"flex", alignItems:"center", gap:20 }}>
+              {[["buy",t.nav[0]],["rent",t.nav[1]],["services",t.nav[2]],["contact",t.nav[3]]].map(([href,l])=>(
+                <a key={href} href={`#${href}`} style={{ color:"#6B5E52", fontSize:13, fontWeight:500, textDecoration:"none", letterSpacing:"0.04em" }}
+                  onMouseEnter={e=>e.target.style.color="#C9A96E"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>{l}</a>
+              ))}
+              <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#6B5E52", fontSize:12, fontWeight:500, textDecoration:"none" }}
+                onMouseEnter={e=>e.target.style.color="#E1306C"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>
+                <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="instagram" s={14} c="#6B5E52"/>@{OWNER.ig}</span>
+              </a>
+            </div>
+            <div style={{ display:"flex", gap:2, background:"#F3EEE8", borderRadius:20, padding:3 }}>
+              {[["en","EN"],["th","ไทย"],["zh","中文"]].map(([code,lbl])=>(
+                <button key={code} onClick={()=>setLang(code)} style={{ border:"none", cursor:"pointer", borderRadius:16, padding:"5px 9px", fontSize:11, fontWeight:700, background: lang===code?"#1C1410":"transparent", color: lang===code?"#C9A96E":"#7B6A5A", whiteSpace:"nowrap" }}>{lbl}</button>
+              ))}
+            </div>
+            <button onClick={onGoAdmin} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"7px 16px", borderRadius:20, fontSize:12, fontWeight:600, cursor:"pointer", letterSpacing:"0.03em", whiteSpace:"nowrap" }}>{t.admin}</button>
           </div>
         </div>
       </nav>
@@ -1554,14 +1718,14 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ position:"relative", zIndex:2, textAlign:"center", padding:"0 20px", maxWidth:900, width:"100%" }}>
           <div style={{ ...fadeUp(0.1), display:"inline-flex", alignItems:"center", gap:8, background:"rgba(245,158,11,0.12)", border:"1px solid rgba(245,158,11,0.35)", borderRadius:24, padding:"6px 16px", marginBottom:22 }}>
             <span>🇹🇭</span>
-            <span style={{ color:"#F59E0B", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase" }}>Thailand Property Specialist</span>
+            <span style={{ color:"#F59E0B", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase" }}>{t.heroBadge}</span>
           </div>
           <div style={fadeUp(0.2)}>
             <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(40px,6.5vw,80px)", fontWeight:700, color:"#F5E9D0", lineHeight:1.08, marginBottom:18, textShadow:"0 4px 30px rgba(0,0,0,0.5)" }}>
-              Find Your Perfect<br/><em style={{ color:"#F59E0B" }}>Home in Bangkok</em>
+              {t.heroH1a}<br/><em style={{ color:"#F59E0B" }}>{t.heroH1b}</em>
             </h1>
             <p style={{ color:"#B0A090", fontSize:"clamp(14px,1.8vw,17px)", lineHeight:1.8, maxWidth:500, margin:"0 auto 36px" }}>
-              Luxury condos, houses &amp; rentals matched to your lifestyle — guided personally by <strong style={{ color:"#C9A96E" }}>Annie</strong>, your trusted Bangkok property partner.
+              {t.heroSub1}<strong style={{ color:"#C9A96E" }}>Annie</strong>{t.heroSub2}
             </p>
           </div>
           <div style={fadeUp(0.35)}>
@@ -1569,7 +1733,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <div style={{ display:"flex", gap:4, background:"#F3EEE8", padding:4, borderRadius:10 }}>
                 {["All","For Sale","For Rent"].map(s=>(
                   <button key={s} onClick={()=>{ setStatus(s); setBudget("Any Budget"); }} style={{ padding:"6px 11px", borderRadius:7, border:"none", background:status===s?"#1C1410":"transparent", color:status===s?"#C9A96E":"#7B6A5A", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>
-                    {s==="All"?"Buy & Rent":s}
+                    {s==="All"?t.sBuyRent:(s==="For Sale"?t.sSale:t.sRent)}
                   </button>
                 ))}
               </div>
@@ -1606,19 +1770,19 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <select value={budget} onChange={e=>setBudget(e.target.value)} style={S.inp({ minWidth:150, cursor:"pointer", padding:"9px 10px" })}>
                 {budgetOptions.map(b=><option key={b.l}>{b.l}</option>)}
               </select>
-              <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search by name or location..." style={S.inp({ flex:2, minWidth:130 })} onFocus={onFG} onBlur={onBG}/>
-              <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{...S.gold, whiteSpace:"nowrap"}}>Search</button>
+              <input value={q} onChange={e=>setQ(e.target.value)} placeholder={t.searchPh} style={S.inp({ flex:2, minWidth:130 })} onFocus={onFG} onBlur={onBG}/>
+              <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{...S.gold, whiteSpace:"nowrap"}}>{t.searchBtn}</button>
             </div>
           </div>
           <div style={{ ...fadeUp(0.45), display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginTop:24 }}>
-            <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"13px 28px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", letterSpacing:"0.02em", boxShadow:"0 10px 30px rgba(201,169,110,0.35)" }}>🔍 Find My Property</button>
-            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} style={{ background:"rgba(253,250,246,0.12)", color:"#F5E9D0", border:"1px solid rgba(245,233,208,0.4)", padding:"13px 28px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", letterSpacing:"0.02em", backdropFilter:"blur(4px)" }}>💬 Contact Annie</button>
+            <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"13px 28px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", letterSpacing:"0.02em", boxShadow:"0 10px 30px rgba(201,169,110,0.35)" }}>{t.ctaFind}</button>
+            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} style={{ background:"rgba(253,250,246,0.12)", color:"#F5E9D0", border:"1px solid rgba(245,233,208,0.4)", padding:"13px 28px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", letterSpacing:"0.02em", backdropFilter:"blur(4px)" }}>{t.ctaContact}</button>
           </div>
         </div>
 
         <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(12,7,2,0.88)", backdropFilter:"blur(12px)", borderTop:"1px solid rgba(201,169,110,0.15)", padding:"18px clamp(20px,5vw,60px)", opacity:heroOn?1:0, transition:"opacity 1.2s 0.7s" }}>
           <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:16 }}>
-            {[{i:"pin",t:"Local Bangkok Knowledge"},{i:"search",t:"Property Matching"},{i:"key",t:"Viewing Assistance"},{i:"check",t:"Contract Support"}].map((x)=>(
+            {[{i:"pin",t:t.trust[0]},{i:"search",t:t.trust[1]},{i:"key",t:t.trust[2]},{i:"check",t:t.trust[3]}].map((x)=>(
               <div key={x.t} style={{ textAlign:"center", display:"flex", flexDirection:"column", alignItems:"center", gap:7 }}>
                 <Icon n={x.i} s={24} c="#F59E0B"/>
                 <div style={{ color:"#C9A96E", fontSize:11, letterSpacing:"0.07em", textTransform:"uppercase", fontWeight:600 }}>{x.t}</div>
@@ -1632,8 +1796,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <section id="buy" style={{ padding:"72px clamp(20px,5vw,60px)", maxWidth:1200, margin:"0 auto" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:28, flexWrap:"wrap", gap:14 }}>
           <div>
-            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:8 }}>Live Listings</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>Properties in {city}</h2>
+            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:8 }}>{t.live}</div>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.propsIn} {city}</h2>
           </div>
           <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
             {ALL_TYPES.map(t=>(
@@ -1644,8 +1808,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         {shown.length===0 ? (
           <div style={{ textAlign:"center", padding:"60px 20px", color:"#A89580" }}>
             <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><Icon n="search" s={42} c="#D9CFC2"/></div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, marginBottom:6 }}>No properties found</div>
-            <div style={{ fontSize:13 }}>Try adjusting your filters</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, marginBottom:6 }}>{t.emptyTitle}</div>
+            <div style={{ fontSize:13 }}>{t.emptySub}</div>
           </div>
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:22 }}>
@@ -1659,18 +1823,18 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <section id="rent" style={{ background:"linear-gradient(135deg,#1C1410 0%,#2E1E0E 100%)", padding:"72px clamp(20px,5vw,60px)" }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:48, alignItems:"center" }}>
           <div>
-            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>Meet Annie</div>
+            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>{t.meet}</div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#F5E9D0", marginBottom:16 }}>
-              Your Bangkok<br/><em style={{ color:"#C9A96E" }}>Property Specialist</em>
+              {t.aboutH2a}<br/><em style={{ color:"#C9A96E" }}>{t.aboutH2b}</em>
             </h2>
             <p style={{ color:"#8E7E6E", lineHeight:1.85, fontSize:14, marginBottom:22 }}>
-              Hi, I'm <strong style={{ color:"#C9A96E" }}>Annie</strong> — your dedicated Bangkok property consultant. I help expats, foreigners &amp; investors find the right condo, house or rental, and I guide you from the very first search all the way to signing your contract — clearly explained, in English &amp; Thai.
+              {t.aboutP1}<strong style={{ color:"#C9A96E" }}>Annie</strong>{t.aboutP2}
             </p>
             <div style={{ display:"flex", flexDirection:"column", gap:11, marginBottom:26 }}>
-              {["Personalized property matching","Verified property information","Local area expertise","English & Thai support"].map(t=>(
-                <div key={t} style={{ display:"flex", alignItems:"center", gap:11, color:"#D8C8B4", fontSize:14 }}>
+              {t.aboutChecks.map(item=>(
+                <div key={item} style={{ display:"flex", alignItems:"center", gap:11, color:"#D8C8B4", fontSize:14 }}>
                   <span style={{ width:22, height:22, borderRadius:"50%", background:"rgba(201,169,110,0.18)", color:"#C9A96E", display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, flexShrink:0 }}>✓</span>
-                  {t}
+                  {item}
                 </div>
               ))}
             </div>
@@ -1692,11 +1856,11 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:13 }}>
-            {[{e:"shield",t:"Verified Listings",d:"Every property personally checked."},{e:"globe",t:"Thai & English",d:"Bilingual support throughout."},{e:"zap",t:"Quick Response",d:"Fast, friendly replies to every enquiry."},{e:"star",t:"Personal Touch",d:"Dedicated one-on-one service."}].map((c,i)=>(
+            {t.aboutCards.map((c,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(201,169,110,0.14)", borderRadius:14, padding:"20px 16px", transition:"all 0.22s" }}
                 onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,110,0.08)"; e.currentTarget.style.borderColor="rgba(201,169,110,0.38)"; }}
                 onMouseLeave={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor="rgba(201,169,110,0.14)"; }}>
-                <div style={{ marginBottom:11 }}><Icon n={c.e} s={24} c="#C9A96E"/></div>
+                <div style={{ marginBottom:11 }}><Icon n={["shield","globe","zap","star"][i]} s={24} c="#C9A96E"/></div>
                 <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:16, fontWeight:700, color:"#F5E9D0", marginBottom:5 }}>{c.t}</div>
                 <div style={{ color:"#8E7E6E", fontSize:12, lineHeight:1.6 }}>{c.d}</div>
               </div>
@@ -1708,8 +1872,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       {/* CITIES */}
       <section style={{ padding:"72px clamp(20px,5vw,60px)", maxWidth:1200, margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:36 }}>
-          <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>Explore</div>
-          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>Browse by City</h2>
+          <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>{t.explore}</div>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.browse}</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))", gap:18 }}>
           {[{c:"Bangkok",img:"https://images.unsplash.com/photo-1755251042986-91270ffd76f5?w=700&q=85"},{c:"Phuket",img:"https://images.unsplash.com/photo-1534008897995-27a23e859048?w=700&q=85"},{c:"Chiang Mai",img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700&q=85"},{c:"Pattaya",img:"https://images.unsplash.com/photo-1563245372-f21724e3856d?w=700&q=85"},{c:"Hua Hin",img:"https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=700&q=85"},{c:"Koh Samui",img:"https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=700&q=85"}].map((x,i)=>(
@@ -1722,8 +1886,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <div style={{ position:"absolute", bottom:16, left:16, right:16 }}>
                 <div style={{ width:28, height:2, background:"#C9A96E", marginBottom:8, borderRadius:2 }}/>
                 <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#fff", letterSpacing:"0.02em", lineHeight:1.1 }}>{x.c}</div>
-                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.approved!=="0" && p.location.toLowerCase().includes(x.c.toLowerCase())).length; return n + (n===1?" listing":" listings"); })()}</div>
-                <div className="explore" style={{ color:"#fff", fontSize:11, fontWeight:600, marginTop:8, opacity:0, transition:"opacity 0.3s", letterSpacing:"0.08em", textTransform:"uppercase" }}>Explore →</div>
+                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.approved!=="0" && p.location.toLowerCase().includes(x.c.toLowerCase())).length; return n + " " + (n===1?t.listingOne:t.listingMany); })()}</div>
+                <div className="explore" style={{ color:"#fff", fontSize:11, fontWeight:600, marginTop:8, opacity:0, transition:"opacity 0.3s", letterSpacing:"0.08em", textTransform:"uppercase" }}>{t.exploreMore}</div>
               </div>
             </div>
           ))}
@@ -1734,31 +1898,27 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <section id="services" style={{ background:"linear-gradient(135deg,#1C1410 0%,#2E1E0E 100%)", padding:"72px clamp(20px,5vw,60px)" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:44 }}>
-            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>What We Offer</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#fff", margin:0 }}>Our Services</h2>
-            <p style={{ color:"rgba(255,255,255,0.6)", fontSize:15, marginTop:12, maxWidth:560, marginLeft:"auto", marginRight:"auto", lineHeight:1.6 }}>More than just listings — we help you find, evaluate, and secure the perfect property in Thailand.</p>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>{t.offer}</div>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#fff", margin:0 }}>{t.ourServices}</h2>
+            <p style={{ color:"rgba(255,255,255,0.6)", fontSize:15, marginTop:12, maxWidth:560, marginLeft:"auto", marginRight:"auto", lineHeight:1.6 }}>{t.servicesSub}</p>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))", gap:20 }}>
-            {[
-              { icon:"search", title:"Property Sourcing", desc:"Tell us your budget, location, and needs — we search the market and bring you the best matching properties, including off-market deals." },
-              { icon:"bulb", title:"Consultation", desc:"Expert advice on buying, renting, or investing in Thai real estate. We guide you through pricing, areas, legal steps, and more." },
-              { icon:"target", title:"Buyer & Tenant Matching", desc:"Looking for something specific? Share your requirements and we'll find exactly what you're looking for — saving you time and effort." }
-            ].map((s,i)=>(
+            {[ { icon:"search" }, { icon:"bulb" }, { icon:"target" } ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(201,169,110,0.25)", borderRadius:16, padding:"28px 24px", transition:"all 0.22s" }}
                 onMouseEnter={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.08)"; e.currentTarget.style.transform="translateY(-4px)"; }}
                 onMouseLeave={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.05)"; e.currentTarget.style.transform="translateY(0)"; }}>
                 <div style={{ marginBottom:16, width:52, height:52, borderRadius:14, background:"rgba(201,169,110,0.12)", display:"flex", alignItems:"center", justifyContent:"center" }}><Icon n={s.icon} s={26} c="#C9A96E"/></div>
-                <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#C9A96E", margin:"0 0 10px" }}>{s.title}</h3>
-                <p style={{ color:"rgba(255,255,255,0.7)", fontSize:14, lineHeight:1.6, margin:0 }}>{s.desc}</p>
+                <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#C9A96E", margin:"0 0 10px" }}>{t.serviceCards[i].title}</h3>
+                <p style={{ color:"rgba(255,255,255,0.7)", fontSize:14, lineHeight:1.6, margin:0 }}>{t.serviceCards[i].desc}</p>
               </div>
             ))}
           </div>
           <div style={{ textAlign:"center", marginTop:40 }}>
-            <p style={{ color:"#fff", fontSize:18, fontFamily:"'Cormorant Garamond',serif", fontWeight:600, marginBottom:18 }}>Can't find what you're looking for? Let us find it for you.</p>
+            <p style={{ color:"#fff", fontSize:18, fontFamily:"'Cormorant Garamond',serif", fontWeight:600, marginBottom:18 }}>{t.cantFind}</p>
             <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
               <a href={OWNER.lineUrl} target="_blank" rel="noreferrer"
                 style={{ display:"inline-flex", alignItems:"center", gap:9, textDecoration:"none", background:"#06C755", color:"#fff", padding:"14px 30px", borderRadius:12, fontSize:15, fontWeight:700 }}>
-                <span style={{ display:"inline-flex", alignItems:"center", gap:8 }}><Icon n="line" s={16} c="#fff"/>Add LINE</span>
+                <span style={{ display:"inline-flex", alignItems:"center", gap:8 }}><Icon n="line" s={16} c="#fff"/>{t.addLine}</span>
               </a>
               <a href={"https://wa.me/" + OWNER.whatsapp} target="_blank" rel="noreferrer"
                 style={{ display:"inline-flex", alignItems:"center", gap:9, textDecoration:"none", background:"#25D366", color:"#fff", padding:"14px 30px", borderRadius:12, fontSize:15, fontWeight:700 }}>
@@ -1773,17 +1933,17 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <section id="guides" style={{ background:"#FDFAF6", padding:"72px clamp(20px,5vw,60px)" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:44 }}>
-            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:12 }}>Buyer &amp; Renter Guides</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,44px)", fontWeight:700, color:"#1C1410", marginBottom:12 }}>Know Before You <em style={{ color:"#C9A96E" }}>Rent or Buy</em></h2>
-            <p style={{ color:"#8E7E6E", fontSize:15, maxWidth:560, margin:"0 auto", lineHeight:1.7 }}>Simple, honest explainers for renting and buying property in Bangkok — so there are no surprises.</p>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:12 }}>{t.guidesTag}</div>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,44px)", fontWeight:700, color:"#1C1410", marginBottom:12 }}>{t.guidesH2a} <em style={{ color:"#C9A96E" }}>{t.guidesH2b}</em></h2>
+            <p style={{ color:"#8E7E6E", fontSize:15, maxWidth:560, margin:"0 auto", lineHeight:1.7 }}>{t.guidesSub}</p>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:18, alignItems:"start" }}>
-            {GUIDES.map((g,i)=>{
+            {guides.map((g,i)=>{
               const open = openGuide===i;
               return (
                 <div key={i} onClick={()=>setOpenGuide(open?null:i)} style={{ background:"#fff", border:"1px solid #EFE8DF", borderRadius:18, padding:"24px", boxShadow: open?"0 12px 36px rgba(28,20,16,0.1)":"0 2px 14px rgba(0,0,0,0.04)", transition:"box-shadow 0.25s", cursor:"pointer" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:13 }}>
-                    <span style={{ width:40, height:40, borderRadius:12, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={g.icon} s={19} c="#fff"/></span>
+                    <span style={{ width:40, height:40, borderRadius:12, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={GUIDE_ICONS[i]} s={19} c="#fff"/></span>
                     <span style={{ fontSize:10.5, fontWeight:800, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9B6B2A", background:"#FBF3E6", padding:"4px 10px", borderRadius:20 }}>{g.tag}</span>
                   </div>
                   <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:8, lineHeight:1.2 }}>{g.title}</h3>
@@ -1798,14 +1958,14 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                       ))}
                     </div>
                   )}
-                  <div style={{ marginTop:14, color:"#C9A96E", fontSize:13, fontWeight:700 }}>{open ? "Show less ↑" : "Read more ↓"}</div>
+                  <div style={{ marginTop:14, color:"#C9A96E", fontSize:13, fontWeight:700 }}>{open ? t.showLess : t.readMore}</div>
                 </div>
               );
             })}
           </div>
           <div style={{ textAlign:"center", marginTop:36 }}>
-            <p style={{ color:"#8E7E6E", fontSize:14, marginBottom:16 }}>Still have questions about renting or buying in Bangkok?</p>
-            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"13px 30px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", boxShadow:"0 10px 30px rgba(201,169,110,0.3)" }}>💬 Ask Annie</button>
+            <p style={{ color:"#8E7E6E", fontSize:14, marginBottom:16 }}>{t.guidesQ}</p>
+            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"13px 30px", borderRadius:30, fontSize:14, fontWeight:700, cursor:"pointer", boxShadow:"0 10px 30px rgba(201,169,110,0.3)" }}>{t.askAnnie}</button>
           </div>
         </div>
       </section>
@@ -1814,13 +1974,13 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <section id="contact" style={{ background:"#F3EEE8", padding:"72px clamp(20px,5vw,60px)" }}>
         <div style={{ maxWidth:860, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:36 }}>
-            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>Get in Touch</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>Contact Annie</h2>
-            <p style={{ color:"#7B6A5A", fontSize:14, marginTop:8 }}>Annie replies within 24 hours</p>
+            <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>{t.getInTouch}</div>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.contactAnnie}</h2>
+            <p style={{ color:"#7B6A5A", fontSize:14, marginTop:8 }}>{t.replies}</p>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))", gap:26, alignItems:"start" }}>
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-              {[{e:"phone",l:"Phone",v:OWNER.phoneDisplay},{e:"mail",l:"Email",v:OWNER.email}].map((r,i)=>(
+              {[{e:"phone",l:t.lblPhone,v:OWNER.phoneDisplay},{e:"mail",l:t.lblEmail,v:OWNER.email}].map((r,i)=>(
                 <div key={i} style={{ background:"#fff", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13, boxShadow:"0 2px 10px rgba(0,0,0,0.04)" }}>
                   <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={r.e} s={18} c="#fff"/></div>
                   <div>
@@ -1858,16 +2018,16 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               {sent ? (
                 <div style={{ textAlign:"center", padding:"30px 10px" }}>
                   <div style={{ fontSize:44, marginBottom:12 }}>✅</div>
-                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, marginBottom:6 }}>Sent to WhatsApp!</div>
-                  <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:16 }}>Just press send in WhatsApp — Annie will reply within 24 hours.</p>
-                  <button onClick={()=>setSent(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"8px 18px", borderRadius:10, fontSize:13, fontWeight:600, cursor:"pointer" }}>Send Another</button>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, marginBottom:6 }}>{t.sentTitle}</div>
+                  <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:16 }}>{t.sentSub}</p>
+                  <button onClick={()=>setSent(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"8px 18px", borderRadius:10, fontSize:13, fontWeight:600, cursor:"pointer" }}>{t.sendAnother}</button>
                 </div>
               ) : (
                 <>
-                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Tell me what you're looking for</h3>
-                  <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:18 }}>Share a few details and Annie will send you matching properties.</p>
+                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:6 }}>{t.formTitle}</h3>
+                  <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:18 }}>{t.formSub}</p>
                   <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                    {[{l:"Name",k:"name",t:"text",ph:"Your name"},{l:"Email",k:"email",t:"email",ph:"your@email.com"},{l:"Phone / LINE / WhatsApp",k:"phone",t:"text",ph:"How can Annie reach you?"},{l:"Budget",k:"budget",t:"text",ph:"e.g. ฿30,000/mo or ฿5M"},{l:"Preferred location",k:"location",t:"text",ph:"e.g. Sukhumvit, Thonglor"}].map(field=>(
+                    {[{l:t.fName,k:"name",t:"text",ph:t.fNamePh},{l:t.fEmail,k:"email",t:"email",ph:t.fEmailPh},{l:t.fPhone,k:"phone",t:"text",ph:t.fPhonePh},{l:t.fBudget,k:"budget",t:"text",ph:t.fBudgetPh},{l:t.fLoc,k:"location",t:"text",ph:t.fLocPh}].map(field=>(
                       <div key={field.k}>
                         <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{field.l}</label>
                         <input type={field.t} placeholder={field.ph} value={contact[field.k]} onChange={e=>setContact({...contact,[field.k]:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
@@ -1875,22 +2035,22 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                     ))}
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
                       <div>
-                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>Bedrooms</label>
+                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t.fBeds}</label>
                         <select value={contact.beds} onChange={e=>setContact({...contact,beds:e.target.value})} style={S.inp({cursor:"pointer"})}>
                           {["Any","Studio","1","2","3","4+"].map(b=><option key={b}>{b}</option>)}
                         </select>
                       </div>
                       <div>
-                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>Move-in date</label>
-                        <input type="text" placeholder="e.g. ASAP, Mar 2026" value={contact.movein} onChange={e=>setContact({...contact,movein:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t.fMove}</label>
+                        <input type="text" placeholder={t.fMovePh} value={contact.movein} onChange={e=>setContact({...contact,movein:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
                       </div>
                     </div>
                     <div>
-                      <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>Message</label>
-                      <textarea rows={3} placeholder="Anything else I should know?" value={contact.msg} onChange={e=>setContact({...contact,msg:e.target.value})} style={{...S.inp(),resize:"vertical"}} onFocus={onFG} onBlur={onBG}/>
+                      <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t.fMsg}</label>
+                      <textarea rows={3} placeholder={t.fMsgPh} value={contact.msg} onChange={e=>setContact({...contact,msg:e.target.value})} style={{...S.inp(),resize:"vertical"}} onFocus={onFG} onBlur={onBG}/>
                     </div>
                     <button onClick={()=>{
-                      if(!contact.name || !(contact.email||contact.phone)){ alert("Please add your name and an email or phone so Annie can reach you."); return; }
+                      if(!contact.name || !(contact.email||contact.phone)){ alert(t.formAlert); return; }
                       const lines=["Hi Annie! I'm looking for a property 🏡",""];
                       lines.push("Name: "+contact.name);
                       if(contact.budget) lines.push("Budget: "+contact.budget);
@@ -1905,9 +2065,9 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                       window.open("https://wa.me/"+OWNER.whatsapp+"?text="+encodeURIComponent(lines.join("\n")), "_blank");
                       setSent(true);
                     }} style={{...S.gold,width:"100%",padding:"13px",fontSize:14}}>
-                      Send to Annie via WhatsApp →
+                      {t.sendBtn}
                     </button>
-                    <p style={{ fontSize:11, color:"#A89580", textAlign:"center" }}>Opens WhatsApp with your details ready to send.</p>
+                    <p style={{ fontSize:11, color:"#A89580", textAlign:"center" }}>{t.sendNote}</p>
                   </div>
                 </>
               )}
@@ -1919,7 +2079,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <div className="bpf-mbar" style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:600, background:"rgba(28,16,8,0.97)", backdropFilter:"blur(10px)", borderTop:"1px solid rgba(201,169,110,0.25)", padding:"8px", gap:8, boxShadow:"0 -4px 20px rgba(0,0,0,0.3)" }}>
         <a href={OWNER.lineUrl} target="_blank" rel="noreferrer" style={{ flex:1, textDecoration:"none", background:"#06C755", color:"#fff", borderRadius:11, padding:"12px", display:"flex", alignItems:"center", justifyContent:"center", gap:7, fontSize:14, fontWeight:700 }}><Icon n="line" s={18} c="#fff"/>LINE</a>
         <a href={`https://wa.me/${OWNER.whatsapp}`} target="_blank" rel="noreferrer" style={{ flex:1, textDecoration:"none", background:"#25D366", color:"#fff", borderRadius:11, padding:"12px", display:"flex", alignItems:"center", justifyContent:"center", gap:7, fontSize:14, fontWeight:700 }}><Icon n="chat" s={18} c="#fff"/>WhatsApp</a>
-        <button onClick={()=>window.scrollTo({top:0, behavior:"smooth"})} style={{ flex:1, border:"none", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", borderRadius:11, padding:"12px", display:"flex", alignItems:"center", justifyContent:"center", gap:7, fontSize:14, fontWeight:700, cursor:"pointer" }}><Icon n="search" s={17} c="#fff"/>Search</button>
+        <button onClick={()=>window.scrollTo({top:0, behavior:"smooth"})} style={{ flex:1, border:"none", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", borderRadius:11, padding:"12px", display:"flex", alignItems:"center", justifyContent:"center", gap:7, fontSize:14, fontWeight:700, cursor:"pointer" }}><Icon n="search" s={17} c="#fff"/>{t.stickySearch}</button>
       </div>
       <div className="bpf-mbar-sp" style={{ height:64 }} />
 
@@ -1928,10 +2088,10 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ maxWidth:1080, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))", gap:40, alignItems:"start" }}>
           <div>
             <img src={LOGO_IMG} alt="Bangkok Property Finder" style={{ height:46, width:"auto", objectFit:"contain", marginBottom:14 }}/>
-            <p style={{ color:"#7B6A5A", fontSize:13.5, lineHeight:1.7, maxWidth:280, margin:0 }}>Your trusted property partner in Thailand — helping you find condos, houses &amp; rentals in Bangkok with honest, personal guidance.</p>
+            <p style={{ color:"#7B6A5A", fontSize:13.5, lineHeight:1.7, maxWidth:280, margin:0 }}>{t.footerTag}</p>
           </div>
           <div>
-            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>Get in Touch</div>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>{t.getInTouch}</div>
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               {[
                 { icon:"phone", label:OWNER.phoneDisplay, href:"tel:"+OWNER.phone },
@@ -1949,11 +2109,11 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             </div>
           </div>
           <div>
-            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>Add Me on LINE</div>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>{t.addMeLine}</div>
             <div style={{ background:"#fff", padding:12, borderRadius:16, boxShadow:"0 8px 24px rgba(0,0,0,0.3)", display:"inline-block" }}>
               <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(OWNER.lineUrl)}`} alt="Scan to add Annie on LINE" width={140} height={140} style={{ display:"block", width:140, height:140 }}/>
             </div>
-            <div style={{ color:"#7B6A5A", fontSize:12.5, marginTop:11, display:"inline-flex", alignItems:"center", gap:6 }}><Icon n="line" s={14} c="#06C755"/>Scan to chat instantly</div>
+            <div style={{ color:"#7B6A5A", fontSize:12.5, marginTop:11, display:"inline-flex", alignItems:"center", gap:6 }}><Icon n="line" s={14} c="#06C755"/>{t.footerScan}</div>
           </div>
         </div>
         <div style={{ maxWidth:1080, margin:"40px auto 0", paddingTop:22, borderTop:"1px solid rgba(201,169,110,0.1)", color:"#4A3A2A", fontSize:12, textAlign:"center" }}>© 2026 Bangkok Property Finder · Real Estate By Annie · Bangkok, Thailand</div>
