@@ -1765,6 +1765,12 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 <span style={{ display:"inline-flex", alignItems:"center", gap:7, justifyContent:"center" }}><Icon n="chat" s={15} c="#fff"/>WhatsApp</span>
               </a>
             </div>
+            <div style={{ marginTop:28, display:"flex", flexDirection:"column", alignItems:"center", gap:11 }}>
+              <div style={{ background:"#fff", padding:12, borderRadius:16, boxShadow:"0 8px 24px rgba(0,0,0,0.28)" }}>
+                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(OWNER.lineUrl)}`} alt="Scan to add Annie on LINE" width={150} height={150} style={{ display:"block", width:150, height:150 }}/>
+              </div>
+              <div style={{ color:"rgba(255,255,255,0.8)", fontSize:13.5, fontWeight:600, display:"inline-flex", alignItems:"center", gap:7 }}><Icon n="line" s={16} c="#06C755"/>Scan to add me on LINE</div>
+            </div>
           </div>
         </div>
       </section>
