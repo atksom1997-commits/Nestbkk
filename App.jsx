@@ -1546,7 +1546,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       </nav>
 
       {/* HERO */}
-      <section style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", paddingTop:64 }}>
+      <section style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", paddingTop:80, paddingBottom:160 }}>
         <div style={{ position:"absolute", inset:0, backgroundImage:"url('https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1900&q=85')", backgroundSize:"cover", backgroundPosition:"center" }}/>
         <div style={{ position:"absolute", inset:0, background:"linear-gradient(160deg,rgba(28,16,8,0.85) 0%,rgba(40,24,12,0.55) 50%,rgba(20,12,6,0.9) 100%)" }}/>
         <div style={{ position:"absolute", top:"13%", right:"7%", width:200, height:200, borderRadius:"50%", border:"1px solid rgba(201,169,110,0.18)", animation:"floatBob 5s ease-in-out infinite", pointerEvents:"none" }}/>
@@ -1832,7 +1832,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <a href={`https://wa.me/${OWNER.whatsapp}`} target="_blank" rel="noreferrer"
                 style={{ textDecoration:"none", background:"#25D366", borderRadius:13, padding:"15px 17px", display:"flex", alignItems:"center", gap:13 }}>
                 <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.25)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n="chat" s={19} c="#fff"/></div>
-                <div><div style={{ fontSize:10, color:"rgba(255,255,255,0.8)", fontWeight:700, textTransform:"uppercase" }}>WhatsApp</div><div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>{OWNER.phoneDisplay}</div></div>
+                <div><div style={{ fontSize:10, color:"rgba(255,255,255,0.8)", fontWeight:700, textTransform:"uppercase" }}>WhatsApp</div><div style={{ fontSize:14, color:"#fff", fontWeight:700, marginTop:2 }}>+66 082 538 8189</div></div>
                 <span style={{ marginLeft:"auto", color:"rgba(255,255,255,0.7)", fontSize:18 }}>↗</span>
               </a>
               <a href={OWNER.lineUrl} target="_blank" rel="noreferrer"
@@ -1935,7 +1935,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               {[
                 { icon:"phone", label:OWNER.phoneDisplay, href:"tel:"+OWNER.phone },
-                { icon:"chat", label:"WhatsApp", href:"https://wa.me/"+OWNER.whatsapp },
+                { icon:"chat", label:"+66 082 538 8189", href:"https://wa.me/"+OWNER.whatsapp },
                 { icon:"line", label:"LINE "+OWNER.lineId, href:OWNER.lineUrl },
                 { icon:"mail", label:OWNER.email, href:"mailto:"+OWNER.email },
                 { icon:"instagram", label:"@"+OWNER.ig, href:OWNER.igUrl },
