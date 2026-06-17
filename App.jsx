@@ -59,6 +59,7 @@ function sbClean(d) {
   }
   if (!out.maplink) delete out.maplink;
   if (!out.agent) delete out.agent;
+  if (!out.pricesale) delete out.pricesale;
   return out;
 }
 async function sbLoad() { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?order=created_at.desc", { headers: SB_H() }); return r.ok ? await r.json() : null; } catch { return null; } }
@@ -203,6 +204,7 @@ const UI = {
     formAlert:"Please add your name and an email or phone so Annie can reach you.",
     footerTag:"Your trusted property partner in Thailand — helping you find condos, houses & rentals in Bangkok with honest, personal guidance.",
     addMeLine:"Add Me on LINE", footerScan:"Scan to chat instantly", stickySearch:"Search",
+    flt:{ filters:"Filters", type:"Type", status:"Status", price:"Price", beds:"Bedrooms", size:"Size (m\u00B2)", zone:"Zone / BTS\u2013MRT", kw:"Keyword", kwPh:"Code, name or location\u2026", clear:"Clear filters", showing:"Showing", of:"of", min:"Min", max:"Max", all:"All", studio:"Studio", statusBoth:"For Rent & Sale", apply:"Show results", listView:"List", mapView:"Map" },
   },
   th: {
     nav:["ซื้อ","เช่า","บริการ","ติดต่อ"], admin:"🔐 แอดมิน",
@@ -232,6 +234,7 @@ const UI = {
     formAlert:"กรุณากรอกชื่อ และอีเมลหรือเบอร์โทร เพื่อให้ Annie ติดต่อคุณได้",
     footerTag:"พาร์ทเนอร์อสังหาฯ ที่คุณไว้ใจในประเทศไทย — ช่วยคุณหาคอนโด บ้าน และห้องเช่าในกรุงเทพฯ ด้วยคำแนะนำที่จริงใจและเป็นกันเอง",
     addMeLine:"เพิ่มฉันใน LINE", footerScan:"สแกนเพื่อแชททันที", stickySearch:"ค้นหา",
+    flt:{ filters:"ตัวกรอง", type:"ประเภท", status:"สถานะ", price:"ราคา", beds:"ห้องนอน", size:"ขนาด (ตร.ม.)", zone:"โซน / BTS\u2013MRT", kw:"ค้นหา", kwPh:"รหัส ชื่อ หรือทำเล…", clear:"ล้างตัวกรอง", showing:"แสดง", of:"จาก", min:"ต่ำสุด", max:"สูงสุด", all:"ทั้งหมด", studio:"สตูดิโอ", statusBoth:"เช่า & ขาย", apply:"ดูผลลัพธ์", listView:"รายการ", mapView:"แผนที่" },
   },
   zh: {
     nav:["买房","租房","服务","联系"], admin:"🔐 管理",
@@ -261,6 +264,7 @@ const UI = {
     formAlert:"请填写您的姓名以及邮箱或电话，以便 Annie 联系您。",
     footerTag:"您值得信赖的泰国房产伙伴 — 以诚实、贴心的指导，帮您在曼谷寻找公寓、别墅与租房。",
     addMeLine:"在 LINE 上添加我", footerScan:"扫码即刻聊天", stickySearch:"搜索",
+    flt:{ filters:"筛选", type:"类型", status:"状态", price:"价格", beds:"卧室", size:"面积 (㎡)", zone:"区域 / BTS\u2013MRT", kw:"搜索", kwPh:"编号、名称或地点…", clear:"清除筛选", showing:"显示", of:"/", min:"最低", max:"最高", all:"全部", studio:"开间", statusBoth:"租 & 售", apply:"查看结果", listView:"列表", mapView:"地图" },
   },
 };
 
@@ -333,6 +337,7 @@ const SALE_BUDGETS = [
   {l:"฿20M+", min:20000000, max:Infinity},
 ];
 const parsePrice = (s) => parseInt((s||"").replace(/[^0-9]/g,""),10) || 0;
+function priceDisplay(p){ if((p && (p.status||"")==="For Rent & Sale") && p.pricesale){ return (p.price||"") + "  \u00B7  " + p.pricesale; } return (p && p.price) || ""; }
 
 // Thai <-> English search synonyms for bilingual search
 const SEARCH_SYNONYMS = [
@@ -461,7 +466,7 @@ function PropDetail({ p, onClose, agentContacts={} }) {
   const pdLine = (_ct.line||"").trim() || OWNER.lineUrl;
   const shareLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
   const copyLink = () => { try { navigator.clipboard && navigator.clipboard.writeText(shareLink); } catch(_) {} setLinkCopied(true); setTimeout(()=>setLinkCopied(false), 2000); };
-  const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceDisplay(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const waUrl = `https://wa.me/${pdWa}?text=${encodeURIComponent(propMsg)}`;
   const lineUrl = OWNER.lineUrl;
   const [showLine, setShowLine] = useState(false);
@@ -505,7 +510,7 @@ function PropDetail({ p, onClose, agentContacts={} }) {
               <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>{p.type} · {p.status}</div>
               <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, fontWeight:700, color:"#1C1410", lineHeight:1.2 }}>{p.title}</h2>
             </div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#B8893A" }}>{p.price}</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#B8893A" }}>{priceDisplay(p)}</div>
           </div>
 
           {/* location + maps */}
@@ -603,7 +608,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
   const _ct = (agentContacts && p.agent && agentContacts[p.agent]) || {};
   const cardWa = (_ct.whatsapp||"").trim() || OWNER.whatsapp;
   const cardLine = (_ct.line||"").trim() || OWNER.lineUrl;
-  const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${p.price}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceDisplay(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const [showLine, setShowLine] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const cardLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
@@ -667,7 +672,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
               <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:3 }}>{p.type}</div>
               <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", lineHeight:1.25 }}>{p.title}</div>
             </div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{p.price}</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#B8893A" }}>{priceDisplay(p)}</div>
           </div>
 
           <div style={{ fontSize:12, color:"#A89580", marginBottom:6, display:"flex", alignItems:"center", gap:5 }}><Icon n="pin" s={13} c="#A89580"/>{p.location}</div>
@@ -792,7 +797,7 @@ function MapPicker({ value, onChange }) {
 }
 
 function PropForm({ init, onSave, onClose, currentUser, agents=[] }) {
-  const empty = { ref:"", title:"", location:"", type:"Condo", status:"For Sale", price:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"", maplink:"", agent:"" };
+  const empty = { ref:"", title:"", location:"", type:"Condo", status:"For Sale", price:"", pricesale:"", beds:1, baths:1, sqm:0, imgs:[], img:"", tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:"", bts:"", maplink:"", agent:"" };
   const [f, setF] = useState(() => { const b = init || empty; return { ...b, agent: b.agent || (currentUser && currentUser.name) || "Annie" }; });
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState("");
@@ -877,14 +882,25 @@ function PropForm({ init, onSave, onClose, currentUser, agents=[] }) {
           </div>
 
           {/* text fields */}
-          {[{label:"Reference Code (for your photo tracking)",k:"ref",ph:"e.g. BKK-001"},{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"Price",k:"price",ph:"฿5,200,000 or ฿35,000/mo"},{label:"BTS / Transport",k:"bts",ph:"e.g. Ekkamai BTS — 5 min walk"},{label:"Facilities",k:"facilities",ph:"Pool, Gym, Security"}].map(field=>(
+          {[{label:"Reference Code (for your photo tracking)",k:"ref",ph:"e.g. BKK-001"},{label:"Title",k:"title",ph:"e.g. Condo Sukhumvit"},{label:"Location",k:"location",ph:"e.g. Sukhumvit, Bangkok"},{label:"BTS / Transport",k:"bts",ph:"e.g. Ekkamai BTS — 5 min walk"},{label:"Facilities",k:"facilities",ph:"Pool, Gym, Security"}].map(field=>(
             <div key={field.k} style={{ gridColumn:"1/-1" }}>
               <LBL t={field.label}/>
               <input value={f[field.k]||""} placeholder={field.ph} onChange={e=>set(field.k,e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
             </div>
           ))}
 
-          {[{label:"Type",k:"type",opts:["Condo","House","Apartment","Villa"]},{label:"Status",k:"status",opts:["For Sale","For Rent"]},{label:"Furnished",k:"furnished",opts:["Fully Furnished","Partially Furnished","Unfurnished"]},{label:"Pets",k:"pets",opts:["Allowed","Not allowed"]},{label:"Badge",k:"tag",opts:ALL_TAGS}].map(sel=>(
+          <div style={{ gridColumn:"1/-1" }}>
+            <LBL t={f.status==="For Sale"?"Sale Price":"Rent Price (per month)"}/>
+            <input value={f.price||""} placeholder={f.status==="For Sale"?"฿5,200,000":"฿35,000/mo"} onChange={e=>set("price",e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+          </div>
+          {f.status==="For Rent & Sale" && (
+            <div style={{ gridColumn:"1/-1" }}>
+              <LBL t="Sale Price"/>
+              <input value={f.pricesale||""} placeholder="฿8,500,000" onChange={e=>set("pricesale",e.target.value)} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
+            </div>
+          )}
+
+          {[{label:"Type",k:"type",opts:["Condo","House","Apartment","Villa"]},{label:"Status",k:"status",opts:["For Sale","For Rent","For Rent & Sale"]},{label:"Furnished",k:"furnished",opts:["Fully Furnished","Partially Furnished","Unfurnished"]},{label:"Pets",k:"pets",opts:["Allowed","Not allowed"]},{label:"Badge",k:"tag",opts:ALL_TAGS}].map(sel=>(
             <div key={sel.k}>
               <LBL t={sel.label}/>
               <select value={f[sel.k]||""} onChange={e=>set(sel.k,e.target.value)} style={S.inp({cursor:"pointer"})}>
@@ -1152,6 +1168,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             type: obj.type || "Condo",
             status: obj.status || "For Sale",
             price: obj.price || "",
+            pricesale: obj.pricesale || obj.price_sale || obj.salePrice || "",
             beds: Number(obj.beds || obj.bedrooms || 1),
             baths: Number(obj.baths || obj.bathrooms || 1),
             sqm: Number(obj.sqm || obj.size || obj.area_sqm || 0),
@@ -1205,6 +1222,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           type: obj.type || "Condo",
           status: obj.status || "For Sale",
           price: obj.price || "",
+          pricesale: obj.pricesale || obj.price_sale || obj.salePrice || "",
           beds: Number(obj.beds || obj.bedrooms || 1),
           baths: Number(obj.baths || obj.bathrooms || 1),
           sqm: Number(obj.sqm || obj.size || 0),
@@ -1548,7 +1566,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                     <td style={{ padding:"11px 15px", fontSize:12, color:"#6B5E52", whiteSpace:"nowrap" }}>{p.location}</td>
                     <td style={{ padding:"11px 15px" }}><span style={{ background:"#F3EEE8", borderRadius:20, padding:"3px 9px", fontSize:11, fontWeight:600, color:"#7B6A5A" }}>{p.type}</span></td>
                     <td style={{ padding:"11px 15px" }}><span style={{ background:p.status==="For Sale"?"#EFF6FF":"#F0FDF4", borderRadius:20, padding:"3px 9px", fontSize:11, fontWeight:600, color:p.status==="For Sale"?"#2563EB":"#16A34A" }}>{p.status}</span></td>
-                    <td style={{ padding:"11px 15px", fontSize:13, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{p.price}</td>
+                    <td style={{ padding:"11px 15px", fontSize:13, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{priceDisplay(p)}</td>
                     <td style={{ padding:"11px 15px" }}>
                       <div style={{ display:"flex", gap:7, flexWrap:"wrap", alignItems:"center" }}>
                         <button onClick={()=>{ const url = window.location.origin + window.location.pathname + "?p=" + p.id; try { navigator.clipboard && navigator.clipboard.writeText(url); } catch(_) {} setCopiedId(p.id); setTimeout(()=>setCopiedId(null), 2000); }} title="Copy this listing's link" style={{ background: copiedId===p.id?"#16A34A":"#EEF2FF", color: copiedId===p.id?"#fff":"#4F46E5", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>{copiedId===p.id ? "✓ Copied!" : "🔗 Link"}</button>
@@ -1604,23 +1622,222 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   );
 }
 
+/* ============ MAP VIEW (Part B) ============ */
+function escapeHtml(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+function parseLatLng(s){
+  if(!s) return null;
+  const m = String(s).match(/(-?\d+\.\d+|-?\d+)\s*,\s*(-?\d+\.\d+|-?\d+)/);
+  if(!m) return null;
+  const lat = parseFloat(m[1]), lng = parseFloat(m[2]);
+  if(isNaN(lat) || isNaN(lng)) return null;
+  if(lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+  return [lat, lng];
+}
+const BKK_POI = {
+  transit: { color:"#2563EB", items:[
+    ["Siam (BTS)",13.7459,100.5341],["Asok (BTS) / Sukhumvit (MRT)",13.7373,100.5601],
+    ["Phrom Phong (BTS)",13.7305,100.5697],["Thong Lo (BTS)",13.7240,100.5828],
+    ["Ekkamai (BTS)",13.7197,100.5853],["Sala Daeng (BTS) / Si Lom (MRT)",13.7286,100.5341],
+    ["Chong Nonsi (BTS)",13.7237,100.5294],["Saphan Taksin (BTS)",13.7188,100.5141],
+    ["Mo Chit (BTS) / Chatuchak (MRT)",13.8023,100.5537],["On Nut (BTS)",13.7058,100.6014],
+    ["Sam Yan (MRT)",13.7325,100.5290],["Phra Ram 9 (MRT)",13.7585,100.5655]
+  ]},
+  mall: { color:"#DB2777", items:[
+    ["Siam Paragon",13.7466,100.5347],["CentralWorld",13.7472,100.5396],
+    ["EmQuartier / Emporium",13.7305,100.5699],["Terminal 21",13.7378,100.5601],
+    ["IconSiam",13.7266,100.5100],["MBK Center",13.7444,100.5301],
+    ["Central Embassy",13.7440,100.5466],["Gateway Ekamai",13.7192,100.5853]
+  ]},
+  hospital: { color:"#DC2626", items:[
+    ["Bumrungrad International",13.7437,100.5532],["Samitivej Sukhumvit",13.7330,100.5849],
+    ["Bangkok Hospital",13.7480,100.5840],["BNH Hospital",13.7283,100.5360],
+    ["Praram 9 Hospital",13.7588,100.5667]
+  ]},
+  school: { color:"#7C3AED", items:[
+    ["NIST International School",13.7430,100.5680],["Bangkok Patana School",13.6840,100.6080],
+    ["International School Bangkok (ISB)",13.9040,100.5790],["Shrewsbury International",13.7160,100.5110],
+    ["Harrow International",13.9180,100.6010]
+  ]},
+  park: { color:"#16A34A", items:[
+    ["Lumphini Park",13.7305,100.5418],["Benjakitti Park",13.7240,100.5600],
+    ["Benjasiri Park",13.7300,100.5690],["Chatuchak Park",13.8050,100.5530],
+    ["Queen Sirikit Park",13.8120,100.5500]
+  ]}
+};
+const POI_ORDER = ["transit","mall","hospital","school","park"];
+const POI_LABELS = {
+  en: { transit:"BTS / MRT", mall:"Shopping malls", hospital:"Hospitals", school:"Int'l schools", park:"Parks", listings:"on map", title:"Nearby places", view:"View details" },
+  th: { transit:"BTS / MRT", mall:"ห้างสรรพสินค้า", hospital:"โรงพยาบาล", school:"โรงเรียนนานาชาติ", park:"สวนสาธารณะ", listings:"บนแผนที่", title:"สถานที่ใกล้เคียง", view:"ดูรายละเอียด" },
+  zh: { transit:"BTS / MRT", mall:"商场", hospital:"医院", school:"国际学校", park:"公园", listings:"在地图上", title:"周边地点", view:"查看详情" }
+};
+function listingDiv(L){
+  return L.divIcon({ className:"", iconSize:[34,34], iconAnchor:[17,34], popupAnchor:[0,-30],
+    html:"<div style='display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#C9A96E,#9B6B2A);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.45)'><span style='transform:rotate(45deg);font-size:14px;line-height:1'>\uD83C\uDFE0</span></div>" });
+}
+function poiDiv(L, color){
+  return L.divIcon({ className:"", iconSize:[16,16], iconAnchor:[8,8], popupAnchor:[0,-9],
+    html:"<div style='width:16px;height:16px;border-radius:50%;background:"+color+";border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.45)'></div>" });
+}
+const GEO_CACHE = (()=>{ try { return JSON.parse(localStorage.getItem("bpf_geocache")||"{}"); } catch(_) { return {}; } })();
+let GEO_QUEUE = Promise.resolve();
+function geocode(qstr){
+  const key = String(qstr||"").trim().toLowerCase();
+  if(!key) return Promise.resolve(null);
+  if(GEO_CACHE[key]) return Promise.resolve(GEO_CACHE[key]==="none" ? null : GEO_CACHE[key]);
+  const run = () => fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(qstr))
+    .then(r=>r.json())
+    .then(d=>{ const ll = (d && d[0]) ? [parseFloat(d[0].lat), parseFloat(d[0].lon)] : null; GEO_CACHE[key] = ll || "none"; try { localStorage.setItem("bpf_geocache", JSON.stringify(GEO_CACHE)); } catch(_){} return ll; })
+    .catch(()=>null);
+  const p = GEO_QUEUE.then(run);
+  GEO_QUEUE = p.then(()=>new Promise(r=>setTimeout(r,1100)), ()=>new Promise(r=>setTimeout(r,1100)));
+  return p;
+}
+
+function MapView({ items, onOpen, lang }){
+  const mapRef = useRef(null);
+  const objRef = useRef(null);
+  const [ready, setReady] = useState(false);
+  const [show, setShow] = useState({ transit:true, mall:false, hospital:false, school:false, park:false });
+  const P = POI_LABELS[lang] || POI_LABELS.en;
+  const showRef = useRef(show);
+  showRef.current = show;
+
+  const popupHtml = (p) => {
+    const img = p.img || (Array.isArray(p.imgs) && p.imgs[0]) || "";
+    const bits = [];
+    if(p.beds!=null && p.beds!=="") bits.push(escapeHtml(p.beds)+" bd");
+    if(p.baths!=null && p.baths!=="") bits.push(escapeHtml(p.baths)+" ba");
+    if(p.sqm) bits.push(escapeHtml(p.sqm)+" m\u00B2");
+    return (img ? "<img src='"+escapeHtml(img)+"' style='width:100%;height:118px;object-fit:cover;border-radius:8px;margin-bottom:8px'/>" : "")
+      + (p.ref ? "<div style='font:700 10px Outfit,sans-serif;letter-spacing:.08em;color:#9B6B2A;text-transform:uppercase'>"+escapeHtml(p.ref)+"</div>" : "")
+      + "<div style='font:700 16px \"Cormorant Garamond\",serif;color:#1C1410;line-height:1.2;margin:2px 0 3px'>"+escapeHtml(p.title||"")+"</div>"
+      + "<div style='font:700 14px \"Cormorant Garamond\",serif;color:#B8893A;margin-bottom:4px'>"+escapeHtml(priceDisplay(p))+"</div>"
+      + (bits.length ? "<div style='font:500 11px Outfit,sans-serif;color:#6B5E52;margin-bottom:9px'>"+bits.join(" \u00B7 ")+"</div>" : "")
+      + "<button class='bpf-open' type='button' style='width:100%;border:none;cursor:pointer;background:linear-gradient(135deg,#C9A96E,#9B6B2A);color:#fff;border-radius:8px;padding:7px 8px;font:700 12px Outfit,sans-serif'>"+escapeHtml(P.view)+"</button>";
+  };
+
+  useEffect(()=>{
+    let cancelled = false;
+    const ensureCss = (id, href) => { if(!document.getElementById(id)){ const l=document.createElement("link"); l.id=id; l.rel="stylesheet"; l.href=href; document.head.appendChild(l); } };
+    const ensureJs = (id, src) => new Promise((res)=>{
+      const done = () => res();
+      let s = document.getElementById(id);
+      if(s){ if(window.L && (id!=="leaflet-cluster-js" || window.L.markerClusterGroup)) return done(); s.addEventListener("load", done); s.addEventListener("error", done); return; }
+      s = document.createElement("script"); s.id=id; s.src=src; s.onload=done; s.onerror=done; document.head.appendChild(s);
+    });
+    (async ()=>{
+      ensureCss("leaflet-css","https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+      ensureCss("leaflet-cluster-css","https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css");
+      ensureCss("leaflet-cluster-default-css","https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css");
+      await ensureJs("leaflet-js","https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
+      await ensureJs("leaflet-cluster-js","https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js");
+      const L = window.L;
+      if(cancelled || !L || !mapRef.current || objRef.current) return;
+      const map = L.map(mapRef.current, { scrollWheelZoom:true }).setView([13.7563,100.5018], 11);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:19, attribution:"\u00A9 OpenStreetMap" }).addTo(map);
+      const listingLayer = (typeof L.markerClusterGroup === "function") ? L.markerClusterGroup({ maxClusterRadius:50, showCoverageOnHover:false }) : L.layerGroup();
+      map.addLayer(listingLayer);
+      const poiLayers = {};
+      POI_ORDER.forEach(cat=>{
+        const lg = L.layerGroup();
+        (BKK_POI[cat].items||[]).forEach(([name,lat,lng])=>{
+          const mk = L.marker([lat,lng], { icon: poiDiv(L, BKK_POI[cat].color) });
+          mk.bindPopup("<div style='font:600 13px Outfit,sans-serif;color:#1C1410'>"+escapeHtml(name)+"</div><div style='font:600 11px Outfit,sans-serif;color:"+BKK_POI[cat].color+"'>"+escapeHtml(P[cat])+"</div>");
+          lg.addLayer(mk);
+        });
+        poiLayers[cat] = lg;
+        if(showRef.current[cat]) map.addLayer(lg);
+      });
+      objRef.current = { map, listingLayer, poiLayers };
+      setReady(true);
+      setTimeout(()=>{ try { map.invalidateSize(); } catch(_){} }, 250);
+    })();
+    return ()=>{ cancelled = true; if(objRef.current && objRef.current.map){ try { objRef.current.map.remove(); } catch(_){} objRef.current = null; } };
+  }, []);
+
+  useEffect(()=>{
+    let cancelled = false;
+    const o = objRef.current, L = window.L;
+    if(!o || !L) return;
+    o.listingLayer.clearLayers();
+    const pts = [];
+    const addMarker = (p, ll) => {
+      if(cancelled || !objRef.current) return;
+      const mk = L.marker(ll, { icon: listingDiv(L) });
+      mk.bindPopup(popupHtml(p), { minWidth:200, maxWidth:240 });
+      mk.on("popupopen", (e)=>{ try { const b = e.popup._contentNode.querySelector(".bpf-open"); if(b) b.onclick = ()=>onOpen(p); } catch(_){} });
+      o.listingLayer.addLayer(mk);
+    };
+    items.forEach(p=>{ const ll = parseLatLng(p.maplink); if(ll){ pts.push(ll); addMarker(p, ll); } });
+    if(pts.length && ready){ try { o.map.fitBounds(pts, { padding:[45,45], maxZoom:15 }); } catch(_){} }
+    const missing = items.filter(p=>!parseLatLng(p.maplink) && p.location).slice(0,12);
+    missing.forEach(p=>{ geocode(p.location + ", Bangkok, Thailand").then(ll=>{ if(ll) addMarker(p, ll); }); });
+    return ()=>{ cancelled = true; };
+  }, [items, ready, lang]);
+
+  const toggle = (cat) => {
+    setShow(prev=>{
+      const nv = { ...prev, [cat]: !prev[cat] };
+      const o = objRef.current;
+      if(o && window.L){ if(nv[cat]) o.map.addLayer(o.poiLayers[cat]); else o.map.removeLayer(o.poiLayers[cat]); }
+      return nv;
+    });
+  };
+
+  const counted = items.filter(p=>parseLatLng(p.maplink)).length;
+  return (
+    <div style={{ position:"relative", borderRadius:18, overflow:"hidden", border:"1px solid #EFE8DF", boxShadow:"0 4px 20px rgba(0,0,0,0.06)" }}>
+      <div ref={mapRef} style={{ height:"clamp(440px,70vh,720px)", width:"100%", background:"#E8E4DD" }} />
+      <div style={{ position:"absolute", top:12, right:12, zIndex:600, background:"rgba(255,255,255,0.97)", borderRadius:12, padding:"11px 13px", boxShadow:"0 4px 16px rgba(0,0,0,0.18)" }}>
+        <div style={{ fontSize:10, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase", color:"#9B6B2A", marginBottom:9 }}>{P.title}</div>
+        {POI_ORDER.map(cat=>(
+          <label key={cat} style={{ display:"flex", alignItems:"center", gap:8, fontSize:12.5, color:"#1C1410", cursor:"pointer", marginBottom:6, fontWeight:500 }}>
+            <input type="checkbox" checked={!!show[cat]} onChange={()=>toggle(cat)} style={{ accentColor: BKK_POI[cat].color, width:15, height:15 }} />
+            <span style={{ width:10, height:10, borderRadius:"50%", background:BKK_POI[cat].color, display:"inline-block", flexShrink:0 }} />
+            {P[cat]}
+          </label>
+        ))}
+      </div>
+      <div style={{ position:"absolute", bottom:14, left:14, zIndex:600, background:"rgba(28,16,8,0.92)", color:"#F5E9D0", borderRadius:20, padding:"6px 15px", fontSize:12.5, fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
+        <span style={{ width:12, height:12, borderRadius:"50% 50% 50% 0", transform:"rotate(-45deg)", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-block" }} />
+        {counted} {P.listings}
+      </div>
+    </div>
+  );
+}
+
 function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGoAdmin, agentContacts={} }) {
   const [city, setCity]       = useState("Bangkok");
   const [area, setArea]       = useState("All Areas");
   const [line, setLine]       = useState("All Lines");
   const [station, setStation] = useState("All Stations");
-  const [budget, setBudget]   = useState("Any Budget");
-  const [type, setType]       = useState("All");
+  const [types, setTypes]     = useState([]);
+  const [beds, setBeds]       = useState([]);
   const [status, setStatus]   = useState("All");
+  const [priceMin, setPriceMin] = useState("");
+  const [priceMax, setPriceMax] = useState("");
+  const [sizeMin, setSizeMin]   = useState("");
+  const [sizeMax, setSizeMax]   = useState("");
   const [q, setQ]             = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [view, setView] = useState("list");
+  const toggleIn = (setter) => (v) => setter(prev => prev.includes(v) ? prev.filter(x=>x!==v) : [...prev, v]);
+  const clearFilters = () => { setTypes([]); setBeds([]); setStatus("All"); setPriceMin(""); setPriceMax(""); setSizeMin(""); setSizeMax(""); setLine("All Lines"); setStation("All Stations"); setArea("All Areas"); setQ(""); };
+  const fLabel = { fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8, display:"block" };
+  const fChip = (on) => ({ padding:"6px 13px", borderRadius:20, border:"1.5px solid", borderColor: on?"#C9A96E":"#E5DDD3", background: on?"#C9A96E":"transparent", color: on?"#fff":"#7B6A5A", fontSize:12, fontWeight:600, cursor:"pointer", transition:"all 0.15s" });
+  const fNum = { width:"100%", padding:"9px 10px", borderRadius:9, border:"1px solid #E5DDD3", fontSize:13, background:"#FDFAF6", color:"#1C1410" };
   const [heroOn, setHeroOn]   = useState(false);
   const [contact, setContact] = useState({ name:"", email:"", phone:"", budget:"", location:"", beds:"Any", movein:"", msg:"" });
   const [sent, setSent]       = useState(false);
 
   const [selectedId, setSelectedId] = useState(null);
   const [openGuide, setOpenGuide] = useState(null);
+  const [lang, setLang] = useState(()=>{ try { return localStorage.getItem("bpf_lang") || "en"; } catch(_) { return "en"; } });
+  useEffect(()=>{ try { localStorage.setItem("bpf_lang", lang); } catch(_) {} }, [lang]);
+  const t = UI[lang] || UI.en;
+  const guides = GUIDES_I18N[lang] || GUIDES_I18N.en;
 
-  useEffect(() => { const t = setTimeout(() => setHeroOn(true), 80); return () => clearTimeout(t); }, []);
+  useEffect(() => { const tm = setTimeout(() => setHeroOn(true), 80); return () => clearTimeout(tm); }, []);
   useEffect(() => {
     const readParam = () => { try { setSelectedId(new URLSearchParams(window.location.search).get("p")); } catch(_) {} };
     readParam();
@@ -1630,11 +1847,22 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const openDetail = (p) => { setSelectedId(String(p.id)); try { window.history.pushState({}, "", "?p=" + p.id); } catch(_) {} };
   const closeDetail = () => { setSelectedId(null); try { window.history.pushState({}, "", window.location.pathname); } catch(_) {} };
 
+  const _pmin = parseInt(String(priceMin).replace(/[^0-9]/g,""),10) || 0;
+  const _pmax = parseInt(String(priceMax).replace(/[^0-9]/g,""),10) || Infinity;
+  const _smin = parseInt(String(sizeMin).replace(/[^0-9]/g,""),10) || 0;
+  const _smax = parseInt(String(sizeMax).replace(/[^0-9]/g,""),10) || Infinity;
+  const bedKey = (b) => { const n = parseInt(b,10); if (!n || n<=0) return "Studio"; if (n>=3) return "3+"; return String(n); };
+  const matchStatus = (ps) => {
+    if (status === "All") return true;
+    if (status === "For Rent & Sale") return ps === "For Rent & Sale";
+    return ps === status || ps === "For Rent & Sale";
+  };
+  const priceForFilter = (p) => (status === "For Sale" && (p.status||"") === "For Rent & Sale") ? parsePrice(p.pricesale || p.price) : parsePrice(p.price);
   const shown = props.filter(p => {
-    if (p.active === false) return false; // Hide sold/rented listings
-    if (p.approved === "0") return false; // Hide listings awaiting Annie\u2019s approval
-    if (type !== "All" && p.type !== type) return false;
-    if (status !== "All" && p.status !== status) return false;
+    if (p.active === false) return false;
+    if (p.approved === "0") return false;
+    if (types.length && !types.includes(p.type)) return false;
+    if (!matchStatus(p.status || "")) return false;
     if (!p.location.toLowerCase().includes(city.toLowerCase())) return false;
     if (area !== "All Areas") {
       const keys = area.split("/").map(a => a.trim().toLowerCase());
@@ -1649,20 +1877,27 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
     if (station !== "All Stations") {
       if (!(p.bts||"").toLowerCase().includes(station.toLowerCase())) return false;
     }
-    if (budget !== "Any Budget") {
-      const opt = [...RENT_BUDGETS, ...SALE_BUDGETS].find(b => b.l === budget);
-      if (opt) { const pr = parsePrice(p.price); if (pr < opt.min || pr > opt.max) return false; }
-    }
+    if (beds.length && !beds.includes(bedKey(p.beds))) return false;
+    const pr = priceForFilter(p);
+    if (pr < _pmin || pr > _pmax) return false;
+    const sz = parseInt(p.sqm,10) || 0;
+    if (sz < _smin || sz > _smax) return false;
     if (q && !matchSearch(p, q)) return false;
     return true;
   });
+  const totalActive = props.filter(p => p.active!==false && p.approved!=="0").length;
+  const activeChips = [];
+  types.forEach(tp => activeChips.push({ k:"type:"+tp, label:tp, on:()=>setTypes(prev=>prev.filter(x=>x!==tp)) }));
+  beds.forEach(b => activeChips.push({ k:"bed:"+b, label:(b==="Studio"?t.flt.studio:b)+" "+t.fBeds, on:()=>setBeds(prev=>prev.filter(x=>x!==b)) }));
+  if (status !== "All") activeChips.push({ k:"status", label:(status==="For Rent"?t.sRent:status==="For Sale"?t.sSale:t.flt.statusBoth), on:()=>setStatus("All") });
+  if (area !== "All Areas") activeChips.push({ k:"area", label:area, on:()=>setArea("All Areas") });
+  if (line !== "All Lines") activeChips.push({ k:"line", label:line, on:()=>{ setLine("All Lines"); setStation("All Stations"); } });
+  if (station !== "All Stations") activeChips.push({ k:"station", label:station, on:()=>setStation("All Stations") });
+  if (priceMin || priceMax) activeChips.push({ k:"price", label:t.flt.price+": "+(priceMin||"0")+"\u2013"+(priceMax||"\u221E"), on:()=>{ setPriceMin(""); setPriceMax(""); } });
+  if (sizeMin || sizeMax) activeChips.push({ k:"size", label:t.flt.size+": "+(sizeMin||"0")+"\u2013"+(sizeMax||"\u221E"), on:()=>{ setSizeMin(""); setSizeMax(""); } });
+  if (q) activeChips.push({ k:"q", label:"\u201C"+q+"\u201D", on:()=>setQ("") });
   const areaOptions = CITY_AREAS[city] ? ["All Areas", ...CITY_AREAS[city]] : null;
   const lineOptions = ["All Lines", ...Object.keys(TRANSIT_LINES)];
-  const budgetOptions = status === "For Sale" ? SALE_BUDGETS : RENT_BUDGETS;
-  const [lang, setLang] = useState(()=>{ try { return localStorage.getItem("bpf_lang") || "en"; } catch(_) { return "en"; } });
-  useEffect(()=>{ try { localStorage.setItem("bpf_lang", lang); } catch(_) {} }, [lang]);
-  const t = UI[lang] || UI.en;
-  const guides = GUIDES_I18N[lang] || GUIDES_I18N.en;
 
   const fadeUp = (d=0) => ({ opacity:heroOn?1:0, transform:heroOn?"translateY(0)":"translateY(24px)", transition:`opacity 0.75s ease ${d}s, transform 0.75s ease ${d}s` });
 
@@ -1678,6 +1913,14 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         @keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
         .bpf-mbar{display:flex}.bpf-mbar-sp{display:none}
         @media(max-width:820px){.bpf-navlinks{display:none}}
+        @media(max-width:820px){
+          .bpf-fbtn{display:inline-flex !important}
+          .bpf-filterwrap{position:fixed;inset:0;z-index:700;background:rgba(15,10,4,0.55);display:none}
+          .bpf-filterwrap[data-open="true"]{display:block}
+          .bpf-filterpanel{position:absolute;top:0;right:0;bottom:0;width:min(90%,370px);max-width:90%;overflow-y:auto;border-radius:0 !important;margin:0 !important;border:none !important}
+          .bpf-fclose{display:flex !important}
+          .bpf-fapply{display:inline-flex !important}
+        }
         @media(min-width:900px){.bpf-mbar{display:none}}
         @media(max-width:899px){.bpf-mbar-sp{display:block}}
       `}</style>
@@ -1732,7 +1975,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <div style={{ background:"rgba(253,250,246,0.97)", borderRadius:18, padding:"17px", boxShadow:"0 28px 70px rgba(0,0,0,0.38)", display:"flex", gap:9, alignItems:"center", flexWrap:"wrap" }}>
               <div style={{ display:"flex", gap:4, background:"#F3EEE8", padding:4, borderRadius:10 }}>
                 {["All","For Sale","For Rent"].map(s=>(
-                  <button key={s} onClick={()=>{ setStatus(s); setBudget("Any Budget"); }} style={{ padding:"6px 11px", borderRadius:7, border:"none", background:status===s?"#1C1410":"transparent", color:status===s?"#C9A96E":"#7B6A5A", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>
+                  <button key={s} onClick={()=>setStatus(s)} style={{ padding:"6px 11px", borderRadius:7, border:"none", background:status===s?"#1C1410":"transparent", color:status===s?"#C9A96E":"#7B6A5A", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>
                     {s==="All"?t.sBuyRent:(s==="For Sale"?t.sSale:t.sRent)}
                   </button>
                 ))}
@@ -1764,11 +2007,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 </select>
                 </>
               )}
-              <select value={type} onChange={e=>setType(e.target.value)} style={S.inp({ minWidth:110, cursor:"pointer", padding:"9px 10px" })}>
-                {ALL_TYPES.map(t=><option key={t}>{t}</option>)}
-              </select>
-              <select value={budget} onChange={e=>setBudget(e.target.value)} style={S.inp({ minWidth:150, cursor:"pointer", padding:"9px 10px" })}>
-                {budgetOptions.map(b=><option key={b.l}>{b.l}</option>)}
+              <select value={types.length===1?types[0]:"All"} onChange={e=>{ const v=e.target.value; setTypes(v==="All"?[]:[v]); }} style={S.inp({ minWidth:110, cursor:"pointer", padding:"9px 10px" })}>
+                {ALL_TYPES.map(tp=><option key={tp} value={tp}>{tp}</option>)}
               </select>
               <input value={q} onChange={e=>setQ(e.target.value)} placeholder={t.searchPh} style={S.inp({ flex:2, minWidth:130 })} onFocus={onFG} onBlur={onBG}/>
               <button onClick={()=>document.getElementById("buy")?.scrollIntoView({behavior:"smooth"})} style={{...S.gold, whiteSpace:"nowrap"}}>{t.searchBtn}</button>
@@ -1799,13 +2039,98 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:8 }}>{t.live}</div>
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.propsIn} {city}</h2>
           </div>
-          <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-            {ALL_TYPES.map(t=>(
-              <button key={t} onClick={()=>setType(t)} style={{ padding:"6px 14px", borderRadius:20, border:"1.5px solid", borderColor:type===t?"#C9A96E":"#E5DDD3", background:type===t?"#C9A96E":"transparent", color:type===t?"#fff":"#7B6A5A", fontSize:11, fontWeight:600, cursor:"pointer", transition:"all 0.15s" }}>{t}</button>
-            ))}
+          <div style={{ display:"flex", alignItems:"center", gap:12, flexWrap:"wrap" }}>
+            <div style={{ fontSize:13, color:"#7B6A5A", fontWeight:600 }}>{t.flt.showing} <strong style={{ color:"#1C1410" }}>{shown.length}</strong> {t.flt.of} {totalActive}</div>
+            <div style={{ display:"flex", gap:3, background:"#F3EEE8", padding:3, borderRadius:10 }}>
+              {[["list",t.flt.listView,"layers"],["map",t.flt.mapView,"pin"]].map(([v,lbl,ic])=>(
+                <button key={v} onClick={()=>setView(v)} style={{ display:"inline-flex", alignItems:"center", gap:6, border:"none", cursor:"pointer", borderRadius:8, padding:"7px 13px", fontSize:12.5, fontWeight:700, background: view===v?"#1C1410":"transparent", color: view===v?"#C9A96E":"#7B6A5A", transition:"all 0.15s", whiteSpace:"nowrap" }}><Icon n={ic} s={14} c={view===v?"#C9A96E":"#7B6A5A"}/>{lbl}</button>
+              ))}
+            </div>
+            <button className="bpf-fbtn" onClick={()=>setShowFilters(true)} style={{ display:"none", alignItems:"center", gap:7, background:"#1C1410", color:"#C9A96E", border:"none", borderRadius:12, padding:"9px 16px", fontSize:13, fontWeight:700, cursor:"pointer" }}><Icon n="search" s={15} c="#C9A96E"/>{t.flt.filters}</button>
           </div>
         </div>
-        {shown.length===0 ? (
+
+        <div className="bpf-filterwrap" data-open={showFilters} onClick={()=>setShowFilters(false)}>
+          <div className="bpf-filterpanel" onClick={e=>e.stopPropagation()} style={{ background:"#fff", border:"1px solid #EFE8DF", borderRadius:18, padding:"20px 22px", marginBottom:22, boxShadow:"0 4px 20px rgba(0,0,0,0.05)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="search" s={18} c="#C9A96E"/>{t.flt.filters}</div>
+              <button onClick={()=>setShowFilters(false)} className="bpf-fclose" style={{ display:"none", background:"#F3EEE8", border:"none", borderRadius:8, width:30, height:30, fontSize:18, cursor:"pointer", color:"#6B5E52" }}>×</button>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:18 }}>
+              <div>
+                <label style={fLabel}>{t.flt.type}</label>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>
+                  {["Condo","House","Apartment","Villa","Townhouse"].map(tp=>{ const on=types.includes(tp); return (
+                    <button key={tp} onClick={()=>setTypes(prev=>prev.includes(tp)?prev.filter(x=>x!==tp):[...prev,tp])} style={fChip(on)}>{tp}</button>
+                  );})}
+                </div>
+              </div>
+              <div>
+                <label style={fLabel}>{t.flt.status}</label>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>
+                  {[["All",t.flt.all],["For Rent",t.sRent],["For Sale",t.sSale],["For Rent & Sale",t.flt.statusBoth]].map(([val,lbl])=>(
+                    <button key={val} onClick={()=>setStatus(val)} style={fChip(status===val)}>{lbl}</button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label style={fLabel}>{t.fBeds}</label>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>
+                  {["Studio","1","2","3+"].map(b=>{ const on=beds.includes(b); return (
+                    <button key={b} onClick={()=>setBeds(prev=>prev.includes(b)?prev.filter(x=>x!==b):[...prev,b])} style={fChip(on)}>{b==="Studio"?t.flt.studio:b}</button>
+                  );})}
+                </div>
+              </div>
+              <div>
+                <label style={fLabel}>{t.flt.price}<span style={{ fontWeight:500, color:"#A89580", textTransform:"none", letterSpacing:0 }}> ({status==="For Sale"?"฿":"฿/mo"})</span></label>
+                <div style={{ display:"flex", gap:8 }}>
+                  <input type="text" inputMode="numeric" placeholder={t.flt.min} value={priceMin} onChange={e=>setPriceMin(e.target.value)} style={fNum}/>
+                  <input type="text" inputMode="numeric" placeholder={t.flt.max} value={priceMax} onChange={e=>setPriceMax(e.target.value)} style={fNum}/>
+                </div>
+              </div>
+              <div>
+                <label style={fLabel}>{t.flt.size}</label>
+                <div style={{ display:"flex", gap:8 }}>
+                  <input type="text" inputMode="numeric" placeholder={t.flt.min} value={sizeMin} onChange={e=>setSizeMin(e.target.value)} style={fNum}/>
+                  <input type="text" inputMode="numeric" placeholder={t.flt.max} value={sizeMax} onChange={e=>setSizeMax(e.target.value)} style={fNum}/>
+                </div>
+              </div>
+              <div>
+                <label style={fLabel}>{t.flt.zone}</label>
+                <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                  <select value={line} onChange={e=>{ setLine(e.target.value); setStation("All Stations"); }} style={{...fNum, cursor:"pointer"}}>
+                    {lineOptions.map(l=><option key={l}>{l}</option>)}
+                  </select>
+                  <select value={station} onChange={e=>setStation(e.target.value)} style={{...fNum, cursor:"pointer"}}>
+                    <option>All Stations</option>
+                    {line!=="All Lines" ? (TRANSIT_LINES[line]||[]).map(st=><option key={st}>{st}</option>) : null}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style={fLabel}>{t.flt.kw}</label>
+                <input type="text" placeholder={t.flt.kwPh} value={q} onChange={e=>setQ(e.target.value)} style={fNum}/>
+              </div>
+            </div>
+            <div style={{ display:"flex", justifyContent:"flex-end", gap:10, marginTop:18 }}>
+              <button onClick={clearFilters} style={{ background:"transparent", border:"1px solid #E5DDD3", color:"#7B6A5A", borderRadius:10, padding:"9px 18px", fontSize:13, fontWeight:700, cursor:"pointer" }}>{t.flt.clear}</button>
+              <button onClick={()=>setShowFilters(false)} className="bpf-fapply" style={{ display:"none", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", borderRadius:10, padding:"9px 22px", fontSize:13, fontWeight:700, cursor:"pointer" }}>{t.flt.apply}</button>
+            </div>
+          </div>
+        </div>
+
+        {activeChips.length>0 && (
+          <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:22, alignItems:"center" }}>
+            {activeChips.map(ch=>(
+              <button key={ch.k} onClick={ch.on} style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#FBF3E6", color:"#9B6B2A", border:"1px solid #E8D9BE", borderRadius:20, padding:"5px 12px", fontSize:12, fontWeight:600, cursor:"pointer" }}>{ch.label} <span style={{ fontSize:15, lineHeight:1 }}>×</span></button>
+            ))}
+            <button onClick={clearFilters} style={{ background:"transparent", border:"none", color:"#7B6A5A", fontSize:12, fontWeight:700, cursor:"pointer", textDecoration:"underline" }}>{t.flt.clear}</button>
+          </div>
+        )}
+
+        {view==="map" ? (
+          <MapView items={shown} onOpen={openDetail} lang={lang} />
+        ) : shown.length===0 ? (
           <div style={{ textAlign:"center", padding:"60px 20px", color:"#A89580" }}>
             <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><Icon n="search" s={42} c="#D9CFC2"/></div>
             <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, marginBottom:6 }}>{t.emptyTitle}</div>
@@ -1814,9 +2139,9 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:22 }}>
             {shown.map((p,i)=><Card key={p.id} p={p} idx={i} isAdmin={isAdmin} onEdit={onEditProp} onDel={onDelProp} agentContacts={agentContacts} onOpen={openDetail}/>)}
-            {selectedId && (()=>{ const sp = props.find(p => String(p.id)===String(selectedId) && p.active!==false && p.approved!=="0"); return sp ? <PropDetail p={sp} onClose={closeDetail} agentContacts={agentContacts}/> : null; })()}
           </div>
         )}
+        {selectedId && (()=>{ const sp = props.find(p => String(p.id)===String(selectedId) && p.active!==false && p.approved!=="0"); return sp ? <PropDetail p={sp} onClose={closeDetail} agentContacts={agentContacts}/> : null; })()}
       </section>
 
       {/* ABOUT */}
