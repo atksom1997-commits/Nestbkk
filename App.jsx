@@ -1059,6 +1059,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const [aSearch, setASearch] = useState("");
   const [aType, setAType] = useState("All");
   const [aBudget, setABudget] = useState("Any Price");
+  const [aNoPin, setANoPin] = useState(false);
   const [aPage, setAPage] = useState(1);
   const PER = 20;
   const ADMIN_BUDGETS = [
@@ -1075,6 +1076,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     if (aType !== "All" && p.type !== aType) return false;
     if (aBudget !== "Any Price") { const o = ADMIN_BUDGETS.find(b=>b.l===aBudget); if (o) { const pr = parsePrice(p.price); if (pr < o.min || pr > o.max) return false; } }
     if (aSearch) { const q = aSearch.toLowerCase(); const hay = [p.ref,p.title,p.location,p.type,p.price].filter(Boolean).join(" ").toLowerCase(); if (!hay.includes(q)) return false; }
+    if (aNoPin) { if (p.active===false || parseLatLng(p.maplink)) return false; }
     return true;
   });
   const aPages = Math.max(1, Math.ceil(aFiltered.length / PER));
@@ -1082,6 +1084,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const aPaged = aFiltered.slice((aPageSafe-1)*PER, aPageSafe*PER);
   const [geo, setGeo] = useState({ running:false, done:0, total:0, failed:0, msg:"" });
   const geoMissing = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
+  const noPinList = props.filter(p => p.active!==false && !parseLatLng(p.maplink));
   const runGeocode = async () => {
     const list = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
     if (!list.length) { setGeo({ running:false, done:0, total:0, failed:0, msg:"All listings already have a map location \u2713" }); return; }
@@ -1557,8 +1560,10 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           <select value={aBudget} onChange={e=>{ setABudget(e.target.value); setAPage(1); }} style={{ padding:"10px 12px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, background:"#fff", color:"#1C1410", cursor:"pointer" }}>
             {ADMIN_BUDGETS.map(b=><option key={b.l}>{b.l}</option>)}
           </select>
-          {(aSearch||aType!=="All"||aBudget!=="Any Price") && (
-            <button onClick={()=>{ setASearch(""); setAType("All"); setABudget("Any Price"); setAPage(1); }}
+          <button onClick={()=>{ setANoPin(!aNoPin); setAPage(1); }} title="Show only listings missing a map pin"
+            style={{ padding:"10px 14px", border:"1.5px solid " + (aNoPin?"#F59E0B":"#E8DECF"), borderRadius:11, fontSize:13, background: aNoPin?"#FEF3C7":"#fff", color: aNoPin?"#92400E":"#6B5E52", cursor:"pointer", fontWeight:700, whiteSpace:"nowrap" }}>⚠ No map pin ({noPinList.length})</button>
+          {(aSearch||aType!=="All"||aBudget!=="Any Price"||aNoPin) && (
+            <button onClick={()=>{ setASearch(""); setAType("All"); setABudget("Any Price"); setANoPin(false); setAPage(1); }}
               style={{ padding:"10px 14px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, background:"#F3EEE8", color:"#6B5E52", cursor:"pointer", fontWeight:600 }}>Clear</button>
           )}
         </div>
@@ -1599,7 +1604,12 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding:"11px 15px", fontSize:12, color:"#6B5E52", whiteSpace:"nowrap" }}>{p.location}</td>
+                    <td style={{ padding:"11px 15px", fontSize:12, color:"#6B5E52" }}>
+                      <div style={{ whiteSpace:"nowrap" }}>{p.location}</div>
+                      {parseLatLng(p.maplink)
+                        ? <div style={{ fontSize:10, color:"#16A34A", fontWeight:700, marginTop:3 }}>📍 On map</div>
+                        : <div style={{ display:"inline-block", fontSize:10, color:"#92400E", background:"#FEF3C7", border:"1px solid #FCD34D", padding:"1px 7px", borderRadius:5, marginTop:3, fontWeight:700, whiteSpace:"nowrap" }}>⚠ No map pin</div>}
+                    </td>
                     <td style={{ padding:"11px 15px" }}><span style={{ background:"#F3EEE8", borderRadius:20, padding:"3px 9px", fontSize:11, fontWeight:600, color:"#7B6A5A" }}>{p.type}</span></td>
                     <td style={{ padding:"11px 15px" }}><span style={{ background:p.status==="For Sale"?"#EFF6FF":"#F0FDF4", borderRadius:20, padding:"3px 9px", fontSize:11, fontWeight:600, color:p.status==="For Sale"?"#2563EB":"#16A34A" }}>{p.status}</span></td>
                     <td style={{ padding:"11px 15px", fontSize:13, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{priceDisplay(p)}</td>
