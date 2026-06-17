@@ -1683,7 +1683,7 @@ function parseLatLng(s){
   return [lat, lng];
 }
 const BKK_POI = {
-  transit: { color:"#2563EB", items:[
+  transit: { color:"#5B7C9D", items:[
     ["Siam (BTS)",13.7459,100.5341],["Asok (BTS) / Sukhumvit (MRT)",13.7373,100.5601],
     ["Phrom Phong (BTS)",13.7305,100.5697],["Thong Lo (BTS)",13.7240,100.5828],
     ["Ekkamai (BTS)",13.7197,100.5853],["Sala Daeng (BTS) / Si Lom (MRT)",13.7286,100.5341],
@@ -1691,23 +1691,23 @@ const BKK_POI = {
     ["Mo Chit (BTS) / Chatuchak (MRT)",13.8023,100.5537],["On Nut (BTS)",13.7058,100.6014],
     ["Sam Yan (MRT)",13.7325,100.5290],["Phra Ram 9 (MRT)",13.7585,100.5655]
   ]},
-  mall: { color:"#DB2777", items:[
+  mall: { color:"#B06A8F", items:[
     ["Siam Paragon",13.7466,100.5347],["CentralWorld",13.7472,100.5396],
     ["EmQuartier / Emporium",13.7305,100.5699],["Terminal 21",13.7378,100.5601],
     ["IconSiam",13.7266,100.5100],["MBK Center",13.7444,100.5301],
     ["Central Embassy",13.7440,100.5466],["Gateway Ekamai",13.7192,100.5853]
   ]},
-  hospital: { color:"#DC2626", items:[
+  hospital: { color:"#C46B6B", items:[
     ["Bumrungrad International",13.7437,100.5532],["Samitivej Sukhumvit",13.7330,100.5849],
     ["Bangkok Hospital",13.7480,100.5840],["BNH Hospital",13.7283,100.5360],
     ["Praram 9 Hospital",13.7588,100.5667]
   ]},
-  school: { color:"#7C3AED", items:[
+  school: { color:"#8A7BB0", items:[
     ["NIST International School",13.7430,100.5680],["Bangkok Patana School",13.6840,100.6080],
     ["International School Bangkok (ISB)",13.9040,100.5790],["Shrewsbury International",13.7160,100.5110],
     ["Harrow International",13.9180,100.6010]
   ]},
-  park: { color:"#16A34A", items:[
+  park: { color:"#6FA07A", items:[
     ["Lumphini Park",13.7305,100.5418],["Benjakitti Park",13.7240,100.5600],
     ["Benjasiri Park",13.7300,100.5690],["Chatuchak Park",13.8050,100.5530],
     ["Queen Sirikit Park",13.8120,100.5500]
@@ -1719,14 +1719,44 @@ const POI_LABELS = {
   th: { transit:"BTS / MRT", mall:"ห้างสรรพสินค้า", hospital:"โรงพยาบาล", school:"โรงเรียนนานาชาติ", park:"สวนสาธารณะ", listings:"บนแผนที่", title:"สถานที่ใกล้เคียง", view:"ดูรายละเอียด" },
   zh: { transit:"BTS / MRT", mall:"商场", hospital:"医院", school:"国际学校", park:"公园", listings:"在地图上", title:"周边地点", view:"查看详情" }
 };
-function listingDiv(L){
-  return L.divIcon({ className:"", iconSize:[34,34], iconAnchor:[17,34], popupAnchor:[0,-30],
-    html:"<div style='display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#C9A96E,#9B6B2A);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.45)'><span style='transform:rotate(45deg);font-size:14px;line-height:1'>\uD83C\uDFE0</span></div>" });
+const POI_ICONS = {
+  transit:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="13" rx="3"/><path d="M5 11h14M9 19l-2 2M15 19l2 2"/><circle cx="8.5" cy="13" r=".7" fill="currentColor" stroke="none"/><circle cx="15.5" cy="13" r=".7" fill="currentColor" stroke="none"/></svg>',
+  mall:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+  hospital:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>',
+  school:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-4 9 4-9 4-9-4Z"/><path d="M7 11v4c0 1 2 2 5 2s5-1 5-2v-4"/></svg>',
+  park:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M12 17c-3 0-5-2-5-5 0-1-2-2-2-4 0-2 2-3 3-3 0-2 2-3 4-3s4 1 4 3c1 0 3 1 3 3 0 2-2 3-2 4 0 3-2 5-5 5Z"/></svg>'
+};
+function pillPrice(p){
+  const status = p.status||"";
+  const n = parsePrice(p.price);
+  const sale = status==="For Sale";
+  if(!n) return "\u0E3F\u2014";
+  if(sale || n>=1000000){ let m=n/1e6; let s=m.toFixed(1); if(s.endsWith(".0")) s=s.slice(0,-2); return "\u0E3F"+s+"M"; }
+  let k=n/1000; let s=k.toFixed(n>=10000?0:1); if(s.endsWith(".0")) s=s.slice(0,-2); return "\u0E3F"+s+"K";
 }
-function poiDiv(L, color){
-  return L.divIcon({ className:"", iconSize:[16,16], iconAnchor:[8,8], popupAnchor:[0,-9],
-    html:"<div style='width:16px;height:16px;border-radius:50%;background:"+color+";border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.45)'></div>" });
+function pillDiv(L, p, sel){
+  return L.divIcon({ className:"", iconSize:[0,0], iconAnchor:[0,0], popupAnchor:[0,-14],
+    html:"<div class='bpf-pin"+(sel?" sel":"")+"'>"+escapeHtml(pillPrice(p))+"</div>" });
 }
+function poiDiv(L, cat){
+  return L.divIcon({ className:"", iconSize:[26,26], iconAnchor:[13,13], popupAnchor:[0,-13],
+    html:"<div class='bpf-poi' style='color:"+(BKK_POI[cat]?BKK_POI[cat].color:"#777")+"'>"+(POI_ICONS[cat]||"")+"</div>" });
+}
+const BPF_MAP_CSS = `
+.bpf-pin{position:absolute;left:0;top:0;transform:translate(-50%,calc(-100% - 7px));font:700 13px Outfit,sans-serif;white-space:nowrap;background:#fff;color:#1C1410;border:1.5px solid #C9A96E;border-radius:20px;padding:5px 11px;box-shadow:0 4px 14px rgba(28,20,4,.22);cursor:pointer;transition:transform .14s,box-shadow .14s;}
+.bpf-pin::after{content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #C9A96E;}
+.bpf-pin::before{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #fff;z-index:1;}
+.bpf-pin:hover{transform:translate(-50%,calc(-100% - 10px)) scale(1.05);box-shadow:0 8px 22px rgba(28,20,4,.30);z-index:1000;}
+.bpf-pin.sel{background:linear-gradient(135deg,#C9A96E,#9B6B2A);color:#fff;border-color:#9B6B2A;box-shadow:0 8px 24px rgba(155,107,42,.45);transform:translate(-50%,calc(-100% - 10px)) scale(1.08);z-index:1000;}
+.bpf-pin.sel::after{border-top-color:#9B6B2A;}
+.bpf-pin.sel::before{border-top-color:#9B6B2A;}
+.bpf-cl{display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#C9A96E,#9B6B2A);color:#fff;font:700 15px Outfit,sans-serif;box-shadow:0 4px 16px rgba(155,107,42,.4);border:2.5px solid #fff;position:relative;}
+.bpf-cl::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:1.5px solid rgba(201,169,110,.45);}
+.bpf-poi{width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 7px rgba(28,20,4,.18);display:flex;align-items:center;justify-content:center;}
+.bpf-poi svg{width:14px;height:14px;}
+.leaflet-popup-content-wrapper{border-radius:16px;box-shadow:0 14px 40px rgba(28,20,4,.22);border:1px solid #E8DECF;}
+.leaflet-container a.leaflet-popup-close-button{color:#9B6B2A;}
+`;
 const GEO_CACHE = (()=>{ try { return JSON.parse(localStorage.getItem("bpf_geocache")||"{}"); } catch(_) { return {}; } })();
 let GEO_QUEUE = Promise.resolve();
 function geocode(qstr){
@@ -1774,6 +1804,7 @@ function MapView({ items, onOpen, lang }){
       if(s){ if(window.L && (id!=="leaflet-cluster-js" || window.L.markerClusterGroup)) return done(); s.addEventListener("load", done); s.addEventListener("error", done); return; }
       s = document.createElement("script"); s.id=id; s.src=src; s.onload=done; s.onerror=done; document.head.appendChild(s);
     });
+    const ensureStyle = (id, css) => { if(!document.getElementById(id)){ const st=document.createElement("style"); st.id=id; st.textContent=css; document.head.appendChild(st); } };
     (async ()=>{
       ensureCss("leaflet-css","https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
       ensureCss("leaflet-cluster-css","https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css");
@@ -1782,15 +1813,16 @@ function MapView({ items, onOpen, lang }){
       await ensureJs("leaflet-cluster-js","https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js");
       const L = window.L;
       if(cancelled || !L || !mapRef.current || objRef.current) return;
+      ensureStyle("bpf-map-style", BPF_MAP_CSS);
       const map = L.map(mapRef.current, { scrollWheelZoom:true }).setView([13.7563,100.5018], 11);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:19, attribution:"\u00A9 OpenStreetMap" }).addTo(map);
-      const listingLayer = (typeof L.markerClusterGroup === "function") ? L.markerClusterGroup({ maxClusterRadius:50, showCoverageOnHover:false }) : L.layerGroup();
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", { subdomains:"abcd", maxZoom:20, attribution:"\u00A9 OpenStreetMap \u00A9 CARTO" }).addTo(map);
+      const listingLayer = (typeof L.markerClusterGroup === "function") ? L.markerClusterGroup({ maxClusterRadius:58, showCoverageOnHover:false, spiderfyOnMaxZoom:true, iconCreateFunction:function(c){ const n=c.getChildCount(); const sz=n<6?40:n<20?48:56; return L.divIcon({ className:"", iconSize:[sz,sz], html:"<div class='bpf-cl' style='width:"+sz+"px;height:"+sz+"px'>"+n+"</div>" }); } }) : L.layerGroup();
       map.addLayer(listingLayer);
       const poiLayers = {};
       POI_ORDER.forEach(cat=>{
         const lg = L.layerGroup();
         (BKK_POI[cat].items||[]).forEach(([name,lat,lng])=>{
-          const mk = L.marker([lat,lng], { icon: poiDiv(L, BKK_POI[cat].color) });
+          const mk = L.marker([lat,lng], { icon: poiDiv(L, cat) });
           mk.bindPopup("<div style='font:600 13px Outfit,sans-serif;color:#1C1410'>"+escapeHtml(name)+"</div><div style='font:600 11px Outfit,sans-serif;color:"+BKK_POI[cat].color+"'>"+escapeHtml(P[cat])+"</div>");
           lg.addLayer(mk);
         });
@@ -1812,9 +1844,10 @@ function MapView({ items, onOpen, lang }){
     const pts = [];
     const addMarker = (p, ll) => {
       if(cancelled || !objRef.current) return;
-      const mk = L.marker(ll, { icon: listingDiv(L) });
+      const mk = L.marker(ll, { icon: pillDiv(L, p, false) });
       mk.bindPopup(popupHtml(p), { minWidth:200, maxWidth:240 });
-      mk.on("popupopen", (e)=>{ try { const b = e.popup._contentNode.querySelector(".bpf-open"); if(b) b.onclick = ()=>onOpen(p); } catch(_){} });
+      mk.on("popupopen", (e)=>{ try { mk.setIcon(pillDiv(L,p,true)); const b = e.popup._contentNode.querySelector(".bpf-open"); if(b) b.onclick = ()=>onOpen(p); } catch(_){} });
+      mk.on("popupclose", ()=>{ try { mk.setIcon(pillDiv(L,p,false)); } catch(_){} });
       o.listingLayer.addLayer(mk);
     };
     items.forEach(p=>{ const ll = parseLatLng(p.maplink); if(ll){ pts.push(ll); addMarker(p, ll); } });
@@ -1836,19 +1869,26 @@ function MapView({ items, onOpen, lang }){
   const counted = items.filter(p=>parseLatLng(p.maplink)).length;
   return (
     <div style={{ position:"relative", borderRadius:18, overflow:"hidden", border:"1px solid #EFE8DF", boxShadow:"0 4px 20px rgba(0,0,0,0.06)" }}>
-      <div ref={mapRef} style={{ height:"clamp(440px,70vh,720px)", width:"100%", background:"#E8E4DD" }} />
-      <div style={{ position:"absolute", top:12, right:12, zIndex:600, background:"rgba(255,255,255,0.97)", borderRadius:12, padding:"11px 13px", boxShadow:"0 4px 16px rgba(0,0,0,0.18)" }}>
-        <div style={{ fontSize:10, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase", color:"#9B6B2A", marginBottom:9 }}>{P.title}</div>
-        {POI_ORDER.map(cat=>(
-          <label key={cat} style={{ display:"flex", alignItems:"center", gap:8, fontSize:12.5, color:"#1C1410", cursor:"pointer", marginBottom:6, fontWeight:500 }}>
-            <input type="checkbox" checked={!!show[cat]} onChange={()=>toggle(cat)} style={{ accentColor: BKK_POI[cat].color, width:15, height:15 }} />
-            <span style={{ width:10, height:10, borderRadius:"50%", background:BKK_POI[cat].color, display:"inline-block", flexShrink:0 }} />
-            {P[cat]}
-          </label>
-        ))}
+      <div ref={mapRef} style={{ height:"clamp(440px,70vh,720px)", width:"100%", background:"#F5F3EF" }} />
+      <div style={{ position:"absolute", top:12, right:12, zIndex:600, width:212, maxWidth:"calc(100% - 24px)", background:"rgba(255,255,255,0.82)", backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)", border:"1px solid rgba(201,169,110,0.28)", borderRadius:16, padding:"12px 12px 10px", boxShadow:"0 10px 30px rgba(28,20,4,0.14)" }}>
+        <div style={{ fontSize:10, fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9B6B2A", marginBottom:9, paddingLeft:2 }}>{P.title}</div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
+          {POI_ORDER.map(cat=>{
+            const on = !!show[cat];
+            return (
+              <button key={cat} type="button" onClick={()=>toggle(cat)} style={{ display:"flex", alignItems:"center", gap:6, border:"1.4px solid "+(on?BKK_POI[cat].color:"#E8DECF"), background:on?"#fff":"#FBF9F6", borderRadius:11, padding:"7px 8px", cursor:"pointer", textAlign:"left", opacity:on?1:0.68, transition:"all .15s", fontFamily:"'Outfit',sans-serif" }}>
+                <span style={{ width:21, height:21, borderRadius:7, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", background:"#F3EEE8", color:BKK_POI[cat].color, filter:on?"none":"grayscale(0.6)" }} dangerouslySetInnerHTML={{ __html: POI_ICONS[cat]||"" }} />
+                <span style={{ display:"flex", flexDirection:"column", lineHeight:1.12, overflow:"hidden" }}>
+                  <span style={{ fontSize:11, fontWeight:600, color:"#1C1410", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{P[cat]}</span>
+                  <span style={{ fontSize:9.5, fontWeight:600, color:"#A89580" }}>{(BKK_POI[cat].items||[]).length}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
-      <div style={{ position:"absolute", bottom:14, left:14, zIndex:600, background:"rgba(28,16,8,0.92)", color:"#F5E9D0", borderRadius:20, padding:"6px 15px", fontSize:12.5, fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
-        <span style={{ width:12, height:12, borderRadius:"50% 50% 50% 0", transform:"rotate(-45deg)", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-block" }} />
+      <div style={{ position:"absolute", bottom:14, left:14, zIndex:600, background:"rgba(28,16,8,0.92)", color:"#F5E9D0", borderRadius:20, padding:"6px 15px", fontSize:12.5, fontWeight:700, display:"flex", alignItems:"center", gap:7 }}>
+        <span style={{ width:11, height:11, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-block", border:"2px solid #F5E9D0" }} />
         {counted} {P.listings}
       </div>
     </div>
