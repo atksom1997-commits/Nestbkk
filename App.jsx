@@ -1739,21 +1739,22 @@ function pillDiv(L, p, sel){
     html:"<div class='bpf-pin"+(sel?" sel":"")+"'>"+escapeHtml(pillPrice(p))+"</div>" });
 }
 function poiDiv(L, cat){
-  return L.divIcon({ className:"", iconSize:[26,26], iconAnchor:[13,13], popupAnchor:[0,-13],
-    html:"<div class='bpf-poi' style='color:"+(BKK_POI[cat]?BKK_POI[cat].color:"#777")+"'>"+(POI_ICONS[cat]||"")+"</div>" });
+  const c = BKK_POI[cat] ? BKK_POI[cat].color : "#777777";
+  return L.divIcon({ className:"", iconSize:[22,22], iconAnchor:[11,11], popupAnchor:[0,-11],
+    html:"<div class='bpf-poi' style='width:22px;height:22px;background:"+c+"26;border:1.5px solid "+c+"73;color:"+c+"'>"+(POI_ICONS[cat]||"")+"</div>" });
 }
 const BPF_MAP_CSS = `
-.bpf-pin{position:absolute;left:0;top:0;transform:translate(-50%,calc(-100% - 7px));font:700 13px Outfit,sans-serif;white-space:nowrap;background:#fff;color:#1C1410;border:1.5px solid #C9A96E;border-radius:20px;padding:5px 11px;box-shadow:0 4px 14px rgba(28,20,4,.22);cursor:pointer;transition:transform .14s,box-shadow .14s;}
+.bpf-pin{position:absolute;left:0;top:0;transform:translate(-50%,calc(-100% - 7px));font:700 13.5px Outfit,sans-serif;letter-spacing:-0.01em;white-space:nowrap;background:#fff;color:#1C1410;border:1.5px solid #C9A96E;border-radius:20px;padding:5px 12px;box-shadow:0 5px 16px rgba(28,20,4,.26);cursor:pointer;transition:transform .14s,box-shadow .14s;}
 .bpf-pin::after{content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #C9A96E;}
 .bpf-pin::before{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #fff;z-index:1;}
-.bpf-pin:hover{transform:translate(-50%,calc(-100% - 10px)) scale(1.05);box-shadow:0 8px 22px rgba(28,20,4,.30);z-index:1000;}
-.bpf-pin.sel{background:linear-gradient(135deg,#C9A96E,#9B6B2A);color:#fff;border-color:#9B6B2A;box-shadow:0 8px 24px rgba(155,107,42,.45);transform:translate(-50%,calc(-100% - 10px)) scale(1.08);z-index:1000;}
+.bpf-pin:hover{transform:translate(-50%,calc(-100% - 10px)) scale(1.05);box-shadow:0 9px 24px rgba(28,20,4,.32);z-index:1000;}
+.bpf-pin.sel{background:linear-gradient(135deg,#C9A96E,#9B6B2A);color:#fff;border-color:#9B6B2A;box-shadow:0 9px 26px rgba(155,107,42,.5);transform:translate(-50%,calc(-100% - 10px)) scale(1.08);z-index:1000;}
 .bpf-pin.sel::after{border-top-color:#9B6B2A;}
 .bpf-pin.sel::before{border-top-color:#9B6B2A;}
-.bpf-cl{display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#C9A96E,#9B6B2A);color:#fff;font:700 15px Outfit,sans-serif;box-shadow:0 4px 16px rgba(155,107,42,.4);border:2.5px solid #fff;position:relative;}
-.bpf-cl::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:1.5px solid rgba(201,169,110,.45);}
-.bpf-poi{width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 7px rgba(28,20,4,.18);display:flex;align-items:center;justify-content:center;}
-.bpf-poi svg{width:14px;height:14px;}
+.bpf-cl{display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#C9A96E,#9B6B2A);color:#fff;font:800 16px Outfit,sans-serif;letter-spacing:-0.02em;text-shadow:0 1px 2px rgba(80,50,10,.35);box-shadow:0 7px 20px rgba(155,107,42,.5),0 2px 6px rgba(28,20,4,.3);border:2.5px solid #fff;position:relative;}
+.bpf-cl::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:1.5px solid rgba(201,169,110,.5);}
+.bpf-poi{border-radius:50%;box-shadow:0 2px 6px rgba(28,20,4,.16);display:flex;align-items:center;justify-content:center;}
+.bpf-poi svg{width:12px;height:12px;}
 .leaflet-popup-content-wrapper{border-radius:16px;box-shadow:0 14px 40px rgba(28,20,4,.22);border:1px solid #E8DECF;}
 .leaflet-container a.leaflet-popup-close-button{color:#9B6B2A;}
 `;
@@ -1870,17 +1871,18 @@ function MapView({ items, onOpen, lang }){
   return (
     <div style={{ position:"relative", borderRadius:18, overflow:"hidden", border:"1px solid #EFE8DF", boxShadow:"0 4px 20px rgba(0,0,0,0.06)" }}>
       <div ref={mapRef} style={{ height:"clamp(440px,70vh,720px)", width:"100%", background:"#F5F3EF" }} />
-      <div style={{ position:"absolute", top:12, right:12, zIndex:600, width:212, maxWidth:"calc(100% - 24px)", background:"rgba(255,255,255,0.82)", backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)", border:"1px solid rgba(201,169,110,0.28)", borderRadius:16, padding:"12px 12px 10px", boxShadow:"0 10px 30px rgba(28,20,4,0.14)" }}>
+      <div style={{ position:"absolute", top:12, right:12, zIndex:600, width:230, maxWidth:"calc(100% - 24px)", background:"rgba(255,255,255,0.82)", backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)", border:"1px solid rgba(201,169,110,0.28)", borderRadius:16, padding:"12px 12px 10px", boxShadow:"0 10px 30px rgba(28,20,4,0.14)" }}>
         <div style={{ fontSize:10, fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9B6B2A", marginBottom:9, paddingLeft:2 }}>{P.title}</div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
+        <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
           {POI_ORDER.map(cat=>{
-            const on = !!show[cat];
+            const on = !!show[cat]; const c = BKK_POI[cat].color;
             return (
-              <button key={cat} type="button" onClick={()=>toggle(cat)} style={{ display:"flex", alignItems:"center", gap:6, border:"1.4px solid "+(on?BKK_POI[cat].color:"#E8DECF"), background:on?"#fff":"#FBF9F6", borderRadius:11, padding:"7px 8px", cursor:"pointer", textAlign:"left", opacity:on?1:0.68, transition:"all .15s", fontFamily:"'Outfit',sans-serif" }}>
-                <span style={{ width:21, height:21, borderRadius:7, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", background:"#F3EEE8", color:BKK_POI[cat].color, filter:on?"none":"grayscale(0.6)" }} dangerouslySetInnerHTML={{ __html: POI_ICONS[cat]||"" }} />
-                <span style={{ display:"flex", flexDirection:"column", lineHeight:1.12, overflow:"hidden" }}>
-                  <span style={{ fontSize:11, fontWeight:600, color:"#1C1410", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{P[cat]}</span>
-                  <span style={{ fontSize:9.5, fontWeight:600, color:"#A89580" }}>{(BKK_POI[cat].items||[]).length}</span>
+              <button key={cat} type="button" onClick={()=>toggle(cat)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", border:"1px solid "+(on?c+"66":"#EFE8DF"), background:on?c+"14":"transparent", borderRadius:11, padding:"7px 9px", cursor:"pointer", textAlign:"left", transition:"all .15s", fontFamily:"'Outfit',sans-serif" }}>
+                <span style={{ width:24, height:24, borderRadius:7, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", background:on?c+"24":"#F1ECE5", color:on?c:"#B8AEA2", transition:"all .15s" }} dangerouslySetInnerHTML={{ __html: POI_ICONS[cat]||"" }} />
+                <span style={{ flex:1, minWidth:0, fontSize:12, fontWeight:600, color:on?"#1C1410":"#A89580", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{P[cat]}</span>
+                <span style={{ fontSize:10, fontWeight:700, color:on?c:"#C9BEB0", flexShrink:0 }}>{(BKK_POI[cat].items||[]).length}</span>
+                <span style={{ width:30, height:17, borderRadius:9, flexShrink:0, position:"relative", background:on?c:"#DDD4C8", transition:"background .18s" }}>
+                  <span style={{ position:"absolute", top:2, left:on?15:2, width:13, height:13, borderRadius:"50%", background:"#fff", boxShadow:"0 1px 3px rgba(0,0,0,0.25)", transition:"left .18s" }} />
                 </span>
               </button>
             );
