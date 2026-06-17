@@ -1766,6 +1766,11 @@ const POI_LABELS = {
   th: { transit:"BTS / MRT", mall:"ห้างสรรพสินค้า", hospital:"โรงพยาบาล", school:"โรงเรียนนานาชาติ", park:"สวนสาธารณะ", listings:"บนแผนที่", title:"สถานที่ใกล้เคียง", view:"ดูรายละเอียด" },
   zh: { transit:"BTS / MRT", mall:"商场", hospital:"医院", school:"国际学校", park:"公园", listings:"在地图上", title:"周边地点", view:"查看详情" }
 };
+const POI_SHORT = {
+  en: { transit:"BTS", mall:"Mall", hospital:"Hosp", school:"School", park:"Park" },
+  th: { transit:"BTS", mall:"ห้าง", hospital:"รพ.", school:"ร.ร.", park:"สวน" },
+  zh: { transit:"地铁", mall:"商场", hospital:"医院", school:"学校", park:"公园" }
+};
 const POI_ICONS = {
   transit:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="13" rx="3"/><path d="M5 11h14M9 19l-2 2M15 19l2 2"/><circle cx="8.5" cy="13" r=".7" fill="currentColor" stroke="none"/><circle cx="15.5" cy="13" r=".7" fill="currentColor" stroke="none"/></svg>',
   mall:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
@@ -1879,7 +1884,10 @@ function MapView({ items, onOpen, lang }){
   const objRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [show, setShow] = useState({ transit:true, mall:false, hospital:false, school:false, park:false });
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 640);
+  useEffect(() => { const onR = () => setIsMobile(window.innerWidth < 640); window.addEventListener("resize", onR); return () => window.removeEventListener("resize", onR); }, []);
   const P = POI_LABELS[lang] || POI_LABELS.en;
+  const PS = POI_SHORT[lang] || POI_SHORT.en;
   const showRef = useRef(show);
   showRef.current = show;
 
@@ -1979,24 +1987,38 @@ function MapView({ items, onOpen, lang }){
   return (
     <div style={{ position:"relative", borderRadius:18, overflow:"hidden", border:"1px solid #EFE8DF", boxShadow:"0 4px 20px rgba(0,0,0,0.06)" }}>
       <div ref={mapRef} style={{ height:"clamp(440px,70vh,720px)", width:"100%", background:"#F5F3EF" }} />
-      <div style={{ position:"absolute", top:12, right:12, zIndex:600, width:230, maxWidth:"calc(100% - 24px)", background:"rgba(255,255,255,0.82)", backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)", border:"1px solid rgba(201,169,110,0.28)", borderRadius:16, padding:"12px 12px 10px", boxShadow:"0 10px 30px rgba(28,20,4,0.14)" }}>
-        <div style={{ fontSize:10, fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9B6B2A", marginBottom:9, paddingLeft:2 }}>{P.title}</div>
-        <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
+      {isMobile ? (
+        <div style={{ position:"absolute", top:10, right:10, zIndex:600, maxWidth:"calc(100% - 20px)", display:"flex", gap:4, overflowX:"auto", WebkitOverflowScrolling:"touch", background:"rgba(255,255,255,0.9)", backdropFilter:"blur(12px)", WebkitBackdropFilter:"blur(12px)", border:"1px solid rgba(201,169,110,0.3)", borderRadius:14, padding:"6px 7px", boxShadow:"0 6px 20px rgba(28,20,4,0.18)" }}>
           {POI_ORDER.map(cat=>{
             const on = !!show[cat]; const c = BKK_POI[cat].color;
             return (
-              <button key={cat} type="button" onClick={()=>toggle(cat)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", border:"1px solid "+(on?c+"66":"#EFE8DF"), background:on?c+"14":"transparent", borderRadius:11, padding:"7px 9px", cursor:"pointer", textAlign:"left", transition:"all .15s", fontFamily:"'Outfit',sans-serif" }}>
-                <span style={{ width:24, height:24, borderRadius:7, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", background:on?c+"24":"#F1ECE5", color:on?c:"#B8AEA2", transition:"all .15s" }} dangerouslySetInnerHTML={{ __html: POI_ICONS[cat]||"" }} />
-                <span style={{ flex:1, minWidth:0, fontSize:12, fontWeight:600, color:on?"#1C1410":"#A89580", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{P[cat]}</span>
-                <span style={{ fontSize:10, fontWeight:700, color:on?c:"#C9BEB0", flexShrink:0 }}>{(BKK_POI[cat].items||[]).length}</span>
-                <span style={{ width:30, height:17, borderRadius:9, flexShrink:0, position:"relative", background:on?c:"#DDD4C8", transition:"background .18s" }}>
-                  <span style={{ position:"absolute", top:2, left:on?15:2, width:13, height:13, borderRadius:"50%", background:"#fff", boxShadow:"0 1px 3px rgba(0,0,0,0.25)", transition:"left .18s" }} />
-                </span>
+              <button key={cat} type="button" onClick={()=>toggle(cat)} title={P[cat]} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:2, border:"none", background:"transparent", cursor:"pointer", padding:"1px 2px", flex:"0 0 auto", minWidth:42 }}>
+                <span style={{ width:34, height:34, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", background:on?c+"22":"#F1ECE5", color:on?c:"#B0A595", border:"1.5px solid "+(on?c+"66":"transparent"), transition:"all .15s" }} dangerouslySetInnerHTML={{ __html: POI_ICONS[cat]||"" }} />
+                <span style={{ fontSize:9, fontWeight:700, color:on?c:"#A89580", whiteSpace:"nowrap" }}>{PS[cat]}</span>
               </button>
             );
           })}
         </div>
-      </div>
+      ) : (
+        <div style={{ position:"absolute", top:12, right:12, zIndex:600, width:230, maxWidth:"calc(100% - 24px)", background:"rgba(255,255,255,0.82)", backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)", border:"1px solid rgba(201,169,110,0.28)", borderRadius:16, padding:"12px 12px 10px", boxShadow:"0 10px 30px rgba(28,20,4,0.14)" }}>
+          <div style={{ fontSize:10, fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9B6B2A", marginBottom:9, paddingLeft:2 }}>{P.title}</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
+            {POI_ORDER.map(cat=>{
+              const on = !!show[cat]; const c = BKK_POI[cat].color;
+              return (
+                <button key={cat} type="button" onClick={()=>toggle(cat)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", border:"1px solid "+(on?c+"66":"#EFE8DF"), background:on?c+"14":"transparent", borderRadius:11, padding:"7px 9px", cursor:"pointer", textAlign:"left", transition:"all .15s", fontFamily:"'Outfit',sans-serif" }}>
+                  <span style={{ width:24, height:24, borderRadius:7, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", background:on?c+"24":"#F1ECE5", color:on?c:"#B8AEA2", transition:"all .15s" }} dangerouslySetInnerHTML={{ __html: POI_ICONS[cat]||"" }} />
+                  <span style={{ flex:1, minWidth:0, fontSize:12, fontWeight:600, color:on?"#1C1410":"#A89580", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{P[cat]}</span>
+                  <span style={{ fontSize:10, fontWeight:700, color:on?c:"#C9BEB0", flexShrink:0 }}>{(BKK_POI[cat].items||[]).length}</span>
+                  <span style={{ width:30, height:17, borderRadius:9, flexShrink:0, position:"relative", background:on?c:"#DDD4C8", transition:"background .18s" }}>
+                    <span style={{ position:"absolute", top:2, left:on?15:2, width:13, height:13, borderRadius:"50%", background:"#fff", boxShadow:"0 1px 3px rgba(0,0,0,0.25)", transition:"left .18s" }} />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <div style={{ position:"absolute", bottom:14, left:14, zIndex:600, background:"rgba(28,16,8,0.92)", color:"#F5E9D0", borderRadius:20, padding:"6px 15px", fontSize:12.5, fontWeight:700, display:"flex", alignItems:"center", gap:7 }}>
         <span style={{ width:11, height:11, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-block", border:"2px solid #F5E9D0" }} />
         {counted} {P.listings}
