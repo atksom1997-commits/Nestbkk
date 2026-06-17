@@ -1345,20 +1345,39 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           ))}
         </div>
 
-        {/* IMPORT SECTION */}
-        <div style={{ background:"#fff", borderRadius:18, padding:"22px 24px", marginBottom:22, border:"1px solid #EDE8E0", boxShadow:"0 3px 18px rgba(0,0,0,0.04)" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showImport ? 20 : 0 }}>
-            <div>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410" }}>📥 Import Listings</div>
-              <div style={{ color:"#A89580", fontSize:12, marginTop:2 }}>Upload from Excel/CSV or sync from Google Sheets</div>
-            </div>
-            <button onClick={()=>setShowImport(!showImport)}
-              style={{ background: showImport?"#F3EEE8":"linear-gradient(135deg,#C9A96E,#9B6B2A)", color: showImport?"#6B5E52":"#fff", border:"none", padding:"8px 18px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>
-              {showImport ? "✕ Close" : "Open Import ↓"}
+        {/* QUICK ACTIONS — compact 2x2 grid */}
+        {(() => {
+          const QA = ({emoji, title, sub, active, onClick, badge}) => (
+            <button type="button" onClick={onClick}
+              onMouseEnter={e=>{ if(!active){ e.currentTarget.style.borderColor="#D8C7A8"; e.currentTarget.style.boxShadow="0 4px 16px rgba(201,169,110,0.15)"; e.currentTarget.style.transform="translateY(-1px)"; } }}
+              onMouseLeave={e=>{ if(!active){ e.currentTarget.style.borderColor="#EFE8DF"; e.currentTarget.style.boxShadow="0 2px 10px rgba(0,0,0,0.03)"; e.currentTarget.style.transform="none"; } }}
+              style={{ display:"flex", alignItems:"center", gap:11, textAlign:"left", width:"100%", background: active?"linear-gradient(135deg,#FBF3E6,#F4E9D7)":"#fff", border:"1px solid "+(active?"#C9A96E":"#EFE8DF"), borderRadius:14, padding:"13px 15px", cursor:"pointer", boxShadow: active?"0 4px 16px rgba(201,169,110,0.2)":"0 2px 10px rgba(0,0,0,0.03)", transition:"all .15s", fontFamily:"'Outfit',sans-serif", position:"relative" }}>
+              <span style={{ fontSize:23, flexShrink:0, lineHeight:1 }}>{emoji}</span>
+              <span style={{ minWidth:0, flex:1 }}>
+                <span style={{ display:"block", fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#1C1410", lineHeight:1.15 }}>{title}</span>
+                <span style={{ display:"block", fontSize:11, color:"#A89580", marginTop:1, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{sub}</span>
+              </span>
+              {badge ? <span style={{ position:"absolute", top:7, right:9, background:"#DC2626", color:"#fff", fontSize:10, fontWeight:800, minWidth:17, height:17, borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 4px" }}>{badge}</span> : null}
+              <span style={{ color: active?"#9B6B2A":"#C9BEB0", fontSize:18, fontWeight:400, flexShrink:0, lineHeight:1 }}>{active?"\u2212":"+"}</span>
             </button>
-          </div>
+          );
+          return (
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12, marginBottom:18 }}>
+              <QA emoji="📥" title="Import Listings" sub="Excel, CSV or Google Sheets" active={showImport} onClick={()=>setShowImport(!showImport)} />
+              <QA emoji="📷" title="City Photos" sub="Homepage city images" active={showCityPhotos} onClick={()=>setShowCityPhotos(!showCityPhotos)} />
+              {currentUser && <QA emoji="👤" title="My Profile" sub="Name, login & contact" active={showMyAccount} onClick={()=> showMyAccount ? setShowMyAccount(false) : openMyAccount()} />}
+              {currentUser && currentUser.role === "owner" && <QA emoji="👥" title="Team Accounts" sub="Manage team logins" active={showTeam} badge={(pending||[]).length||0} onClick={()=>setShowTeam(!showTeam)} />}
+            </div>
+          );
+        })()}
 
-          {showImport && (
+        {/* PANEL: Import */}
+        {showImport && (
+          <div style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18 }}>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410" }}>📥 Import Listings</div>
+              <button onClick={()=>setShowImport(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
+            </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:18 }}>
 
               {/* CSV / Excel Upload */}
@@ -1406,22 +1425,16 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
               </div>
 
             </div>
-          )}
-        </div>
-
-        {/* CITY PHOTOS */}
-        <div style={{ background:"#fff", borderRadius:16, padding:"22px 24px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 2px 14px rgba(0,0,0,0.04)" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showCityPhotos ? 20 : 0 }}>
-            <div>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="pin" s={18} c="#C9A96E"/>City Photos</div>
-              <div style={{ color:"#A89580", fontSize:12, marginTop:2 }}>Upload a photo for each city shown on your homepage</div>
-            </div>
-            <button onClick={()=>setShowCityPhotos(!showCityPhotos)}
-              style={{ background: showCityPhotos?"#F3EEE8":"linear-gradient(135deg,#C9A96E,#9B6B2A)", color: showCityPhotos?"#6B5E52":"#fff", border:"none", padding:"8px 18px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>
-              {showCityPhotos ? "Close" : "Manage Photos"}
-            </button>
           </div>
-          {showCityPhotos && (
+        )}
+
+        {/* PANEL: City Photos */}
+        {showCityPhotos && (
+          <div style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18 }}>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="pin" s={18} c="#C9A96E"/>City Photos</div>
+              <button onClick={()=>setShowCityPhotos(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
+            </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:14 }}>
               {CITY_LIST.map(cn=>(
                 <div key={cn} style={{ border:"1px solid #EFE8DF", borderRadius:12, overflow:"hidden", background:"#FDFAF6" }}>
@@ -1440,97 +1453,85 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                 </div>
               ))}
             </div>
-          )}
-        </div>
-
-        {currentUser && (
-        <div id="my-profile" style={{ background:"#fff", borderRadius:16, padding:"22px 24px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 2px 14px rgba(0,0,0,0.04)", scrollMarginTop:"72px" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showMyAccount ? 18 : 0 }}>
-            <div>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👤 My Profile</div>
-              <div style={{ color:"#A89580", fontSize:12, marginTop:2 }}>Edit your name, login &amp; contact{currentUser ? " · signed in as " + currentUser.name : ""}</div>
-            </div>
-            <button onClick={()=> showMyAccount ? setShowMyAccount(false) : openMyAccount()} style={{ background: showMyAccount?"#F3EEE8":"linear-gradient(135deg,#C9A96E,#9B6B2A)", color: showMyAccount?"#6B5E52":"#fff", border:"none", padding:"8px 18px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>{showMyAccount ? "Close" : "Edit Profile"}</button>
           </div>
-          {showMyAccount && (
-            <div>
-              <div style={{ marginBottom:10 }}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Display name (shown on your listings)</div>
-                <input value={maName} onChange={e=>setMaName(e.target.value)} placeholder="Your name" style={S.inp()}/>
-              </div>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:10, marginBottom:10 }}>
-                <div><div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Username</div><input value={maUser} onChange={e=>setMaUser(e.target.value)} placeholder="Your username" style={S.inp()}/></div>
-                <div><div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>New password</div><input value={maPass} onChange={e=>setMaPass(e.target.value)} placeholder="Leave blank to keep current" style={S.inp()}/></div>
-              </div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Contact shown on your listings</div>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:12 }}>
-                <input value={maWhats} onChange={e=>setMaWhats(e.target.value)} placeholder="WhatsApp (66...)" style={S.inp()}/>
-                <input value={maLine} onChange={e=>setMaLine(e.target.value)} placeholder="LINE link" style={S.inp()}/>
-                <input value={maPhone} onChange={e=>setMaPhone(e.target.value)} placeholder="Phone" style={S.inp()}/>
-              </div>
-              <button onClick={saveMyAccount} style={{...S.gold, padding:"10px 20px"}}>Save Changes</button>
-              <div style={{ fontSize:11.5, color:"#A89580", marginTop:8 }}>Your contact links to your own listings. Any login change applies next time you sign in.</div>
-            </div>
-          )}
-        </div>
         )}
 
-        {currentUser && currentUser.role === "owner" && (
-        <div style={{ background:"#fff", borderRadius:16, padding:"22px 24px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 2px 14px rgba(0,0,0,0.04)" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showTeam ? 18 : 0 }}>
-            <div>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👥 Team Accounts</div>
-              <div style={{ color:"#A89580", fontSize:12, marginTop:2 }}>Create logins for your team — they can add, edit &amp; delete listings{(pending||[]).length ? " · 🔔 "+pending.length+" pending request"+(pending.length>1?"s":"") : ""}</div>
+        {/* PANEL: My Profile */}
+        {currentUser && showMyAccount && (
+          <div id="my-profile" style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)", scrollMarginTop:"72px" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👤 My Profile</div>
+              <button onClick={()=>setShowMyAccount(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
             </div>
-            <button onClick={()=>setShowTeam(!showTeam)} style={{ background: showTeam?"#F3EEE8":"linear-gradient(135deg,#C9A96E,#9B6B2A)", color: showTeam?"#6B5E52":"#fff", border:"none", padding:"8px 18px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>{showTeam ? "Close" : "Manage Team"}</button>
+            <div style={{ marginBottom:10 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Display name (shown on your listings)</div>
+              <input value={maName} onChange={e=>setMaName(e.target.value)} placeholder="Your name" style={S.inp()}/>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:10, marginBottom:10 }}>
+              <div><div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Username</div><input value={maUser} onChange={e=>setMaUser(e.target.value)} placeholder="Your username" style={S.inp()}/></div>
+              <div><div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>New password</div><input value={maPass} onChange={e=>setMaPass(e.target.value)} placeholder="Leave blank to keep current" style={S.inp()}/></div>
+            </div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#A89580", marginBottom:5 }}>Contact shown on your listings</div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:10, marginBottom:12 }}>
+              <input value={maWhats} onChange={e=>setMaWhats(e.target.value)} placeholder="WhatsApp (66...)" style={S.inp()}/>
+              <input value={maLine} onChange={e=>setMaLine(e.target.value)} placeholder="LINE link" style={S.inp()}/>
+              <input value={maPhone} onChange={e=>setMaPhone(e.target.value)} placeholder="Phone" style={S.inp()}/>
+            </div>
+            <button onClick={saveMyAccount} style={{...S.gold, padding:"10px 20px"}}>Save Changes</button>
+            <div style={{ fontSize:11.5, color:"#A89580", marginTop:8 }}>Your contact links to your own listings. Any login change applies next time you sign in.</div>
           </div>
-          {showTeam && (
-            <div>
-              {(pending||[]).length > 0 && (
-                <div style={{ marginBottom:18, background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:12, padding:"14px 16px" }}>
-                  <div style={{ fontWeight:700, fontSize:13.5, color:"#92400E", marginBottom:10 }}>⏳ Pending Approval ({pending.length})</div>
-                  {pending.map((a,i)=>(
-                    <div key={i} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 12px", background:"#fff", borderRadius:10, marginBottom:8, border:"1px solid #FDE68A" }}>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>{a.name}</div>
-                        <div style={{ fontSize:12, color:"#A89580" }}>username: {a.user}{a.phone?" · "+a.phone:""}</div>
-                      </div>
-                      <button onClick={()=>onApprove(i)} style={{ background:"#16A34A", color:"#fff", border:"none", padding:"7px 13px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>✓ Approve</button>
-                      <button onClick={()=>{ if(confirm("Reject "+a.name+"\u2019s application?")) onReject(i); }} style={{ background:"#FEE2E2", color:"#DC2626", border:"none", padding:"7px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>✕</button>
+        )}
+
+        {/* PANEL: Team Accounts */}
+        {currentUser && currentUser.role === "owner" && showTeam && (
+          <div style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👥 Team Accounts</div>
+              <button onClick={()=>setShowTeam(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
+            </div>
+            {(pending||[]).length > 0 && (
+              <div style={{ marginBottom:18, background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:12, padding:"14px 16px" }}>
+                <div style={{ fontWeight:700, fontSize:13.5, color:"#92400E", marginBottom:10 }}>⏳ Pending Approval ({pending.length})</div>
+                {pending.map((a,i)=>(
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 12px", background:"#fff", borderRadius:10, marginBottom:8, border:"1px solid #FDE68A" }}>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>{a.name}</div>
+                      <div style={{ fontSize:12, color:"#A89580" }}>username: {a.user}{a.phone?" · "+a.phone:""}</div>
                     </div>
-                  ))}
-                </div>
-              )}
-              <div style={{ marginBottom:16 }}>
-                <div style={{ fontSize:12, fontWeight:700, color:"#A89580", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Active accounts</div>
-                <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#FBF7F0", borderRadius:10, marginBottom:8, border:"1px solid #EFE8DF" }}>
-                  <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:14 }}>A</div>
-                  <div style={{ flex:1 }}><div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>Annie <span style={{ fontSize:11, color:"#9B6B2A", background:"#FBF3E6", padding:"1px 7px", borderRadius:5, marginLeft:4 }}>Owner</span></div><div style={{ fontSize:12, color:"#A89580" }}>username: annie</div></div>
-                </div>
-                {(agents||[]).length === 0 && <div style={{ fontSize:12.5, color:"#A89580", padding:"4px 2px" }}>No team members yet — add one below.</div>}
-                {(agents||[]).map((a,i)=>(
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#FDFAF6", borderRadius:10, marginBottom:8, border:"1px solid #EFE8DF" }}>
-                    <div style={{ width:34, height:34, borderRadius:"50%", background:"#E8DECF", color:"#6B5E52", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:14 }}>{(a.name||"?").charAt(0).toUpperCase()}</div>
-                    <div style={{ flex:1 }}><div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>{a.name}</div><div style={{ fontSize:12, color:"#A89580" }}>username: {a.user}</div></div>
-                    <button onClick={()=>{ if(confirm("Remove "+a.name+"'s account?")) onAgentsChange(agents.filter((_,j)=>j!==i)); }} style={{ background:"#FEE2E2", color:"#DC2626", border:"none", padding:"6px 12px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>Remove</button>
+                    <button onClick={()=>onApprove(i)} style={{ background:"#16A34A", color:"#fff", border:"none", padding:"7px 13px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>✓ Approve</button>
+                    <button onClick={()=>{ if(confirm("Reject "+a.name+"\u2019s application?")) onReject(i); }} style={{ background:"#FEE2E2", color:"#DC2626", border:"none", padding:"7px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>✕</button>
                   </div>
                 ))}
               </div>
-              <div style={{ borderTop:"1px solid #EFE8DF", paddingTop:14 }}>
-                <div style={{ fontWeight:700, fontSize:13, color:"#1C1410", marginBottom:10 }}>➕ Add a team member</div>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:10, marginBottom:10 }}>
-                  <input value={naName} onChange={e=>setNaName(e.target.value)} placeholder="Full name" style={S.inp()}/>
-                  <input value={naUser} onChange={e=>setNaUser(e.target.value)} placeholder="Username (for login)" style={S.inp()}/>
-                  <input value={naPass} onChange={e=>setNaPass(e.target.value)} placeholder="Password" style={S.inp()}/>
-                  <input value={naWhats} onChange={e=>setNaWhats(e.target.value)} placeholder="WhatsApp (e.g. 66812345678)" style={S.inp()}/>
-                  <input value={naLine} onChange={e=>setNaLine(e.target.value)} placeholder="LINE link (lin.ee/...)" style={S.inp()}/>
-                  <input value={naPhone} onChange={e=>setNaPhone(e.target.value)} placeholder="Phone (081...)" style={S.inp()}/>
-                </div>
-                <button onClick={()=>{ const name=naName.trim(), user=naUser.trim(), pass=naPass.trim(); if(!name||!user||!pass){ alert("Please fill at least name, username and password."); return; } if(user==="annie" || (agents||[]).some(a=>a.user===user)){ alert("That username is taken — please choose another."); return; } onAgentsChange([...(agents||[]), {name,user,pass,whatsapp:naWhats.trim(),line:naLine.trim(),phone:naPhone.trim()}]); setNaName(""); setNaUser(""); setNaPass(""); setNaWhats(""); setNaLine(""); setNaPhone(""); }} style={{...S.gold, padding:"10px 20px"}}>Create Account</button>
+            )}
+            <div style={{ marginBottom:16 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:"#A89580", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Active accounts</div>
+              <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#FBF7F0", borderRadius:10, marginBottom:8, border:"1px solid #EFE8DF" }}>
+                <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:14 }}>A</div>
+                <div style={{ flex:1 }}><div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>Annie <span style={{ fontSize:11, color:"#9B6B2A", background:"#FBF3E6", padding:"1px 7px", borderRadius:5, marginLeft:4 }}>Owner</span></div><div style={{ fontSize:12, color:"#A89580" }}>username: annie</div></div>
               </div>
+              {(agents||[]).length === 0 && <div style={{ fontSize:12.5, color:"#A89580", padding:"4px 2px" }}>No team members yet — add one below.</div>}
+              {(agents||[]).map((a,i)=>(
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#FDFAF6", borderRadius:10, marginBottom:8, border:"1px solid #EFE8DF" }}>
+                  <div style={{ width:34, height:34, borderRadius:"50%", background:"#E8DECF", color:"#6B5E52", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:14 }}>{(a.name||"?").charAt(0).toUpperCase()}</div>
+                  <div style={{ flex:1 }}><div style={{ fontWeight:700, fontSize:14, color:"#1C1410" }}>{a.name}</div><div style={{ fontSize:12, color:"#A89580" }}>username: {a.user}</div></div>
+                  <button onClick={()=>{ if(confirm("Remove "+a.name+"'s account?")) onAgentsChange(agents.filter((_,j)=>j!==i)); }} style={{ background:"#FEE2E2", color:"#DC2626", border:"none", padding:"6px 12px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer" }}>Remove</button>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+            <div style={{ borderTop:"1px solid #EFE8DF", paddingTop:14 }}>
+              <div style={{ fontWeight:700, fontSize:13, color:"#1C1410", marginBottom:10 }}>➕ Add a team member</div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:10, marginBottom:10 }}>
+                <input value={naName} onChange={e=>setNaName(e.target.value)} placeholder="Full name" style={S.inp()}/>
+                <input value={naUser} onChange={e=>setNaUser(e.target.value)} placeholder="Username (for login)" style={S.inp()}/>
+                <input value={naPass} onChange={e=>setNaPass(e.target.value)} placeholder="Password" style={S.inp()}/>
+                <input value={naWhats} onChange={e=>setNaWhats(e.target.value)} placeholder="WhatsApp (e.g. 66812345678)" style={S.inp()}/>
+                <input value={naLine} onChange={e=>setNaLine(e.target.value)} placeholder="LINE link (lin.ee/...)" style={S.inp()}/>
+                <input value={naPhone} onChange={e=>setNaPhone(e.target.value)} placeholder="Phone (081...)" style={S.inp()}/>
+              </div>
+              <button onClick={()=>{ const name=naName.trim(), user=naUser.trim(), pass=naPass.trim(); if(!name||!user||!pass){ alert("Please fill at least name, username and password."); return; } if(user==="annie" || (agents||[]).some(a=>a.user===user)){ alert("That username is taken — please choose another."); return; } onAgentsChange([...(agents||[]), {name,user,pass,whatsapp:naWhats.trim(),line:naLine.trim(),phone:naPhone.trim()}]); setNaName(""); setNaUser(""); setNaPass(""); setNaWhats(""); setNaLine(""); setNaPhone(""); }} style={{...S.gold, padding:"10px 20px"}}>Create Account</button>
+            </div>
+          </div>
         )}
 
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18, flexWrap:"wrap", gap:12 }}>
