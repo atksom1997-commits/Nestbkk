@@ -64,7 +64,7 @@ function sbClean(d) {
 }
 async function sbLoad() { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?order=created_at.desc", { headers: SB_H() }); return r.ok ? await r.json() : null; } catch { return null; } }
 async function sbAdd(d) { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(sbClean(d)) }); if (!r.ok) { console.error("sbAdd failed:", await r.text()); return null; } return (await r.json())[0]; } catch(e) { console.error("sbAdd error:", e); return null; } }
-async function sbUpdate(id, d) { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "PATCH", headers: SB_H(), body: JSON.stringify(sbClean(d)) }); if (!r.ok) console.error("sbUpdate failed:", await r.text()); } catch(e) { console.error("sbUpdate error:", e); } }
+async function sbUpdate(id, d) { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "PATCH", headers: SB_H(), body: JSON.stringify(sbClean(d)) }); if (!r.ok) console.error("sbUpdate failed:", await r.text()); return r.ok; } catch(e) { console.error("sbUpdate error:", e); return false; } }
 async function sbDelete(id) { try { await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "DELETE", headers: SB_H() }); } catch {} }
 async function sbBulk(list) { try { await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(list.map(sbClean)) }); } catch(e) { console.error("sbBulk error:", e); } }
 
@@ -1089,17 +1089,20 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     const list = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
     if (!list.length) { setGeo({ running:false, done:0, total:0, failed:0, msg:"All listings already have a map location \u2713" }); return; }
     setGeo({ running:true, done:0, total:list.length, failed:0, msg:"" });
-    let ok=0, bad=0;
+    let ok=0, bad=0, saveFail=0;
     for (const p of list) {
       const loc = (p.location||"").trim();
       const qy = /thailand/i.test(loc) ? loc : loc + ", Thailand";
       let ll = null;
       try { ll = await geocode(qy); } catch(_) { ll = null; }
-      if (ll) { try { await onSetMaplink(p.id, ll[0].toFixed(6) + "," + ll[1].toFixed(6)); } catch(_){} ok++; }
+      if (ll) { let saved=true; try { saved = await onSetMaplink(p.id, ll[0].toFixed(6) + "," + ll[1].toFixed(6)); } catch(_){ saved=false; } if (saved===false) saveFail++; ok++; }
       else { bad++; }
       setGeo({ running:true, done:ok+bad, total:list.length, failed:bad, msg:"" });
     }
-    setGeo({ running:false, done:ok+bad, total:list.length, failed:bad, msg:"Placed " + ok + " on the map" + (bad ? (" \u00B7 " + bad + " not found (set those manually with the map pin)") : "") + "." });
+    const finalMsg = saveFail > 0
+      ? ("\u26A0 Found locations, but could NOT save " + saveFail + " to the database. Your \u2018maplink\u2019 column is likely missing in Supabase \u2014 run the SQL command (ALTER TABLE), then click Auto-locate again.")
+      : ("Placed " + ok + " on the map" + (bad ? (" \u00B7 " + bad + " not found (set those manually with the map pin)") : "") + ". \u2705 Saved to the database \u2014 you won't need to run this again.");
+    setGeo({ running:false, done:ok+bad, total:list.length, failed:bad, msg: finalMsg });
   };
   const [cityUploading, setCityUploading] = useState("");
   const CITY_LIST = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
@@ -2572,7 +2575,8 @@ export default function App() {
 
   const handleSetMaplink = async (id, maplink) => {
     setProps(prev => prev.map(p => p.id === id ? { ...p, maplink } : p));
-    if (SB_ON) await sbUpdate(id, { maplink });
+    if (SB_ON) return await sbUpdate(id, { maplink });
+    return true;
   };
 
   const handleAIFill = (data) => {
