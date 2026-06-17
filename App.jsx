@@ -177,7 +177,7 @@ const GUIDES_I18N = {
 
 const UI = {
   en: {
-    nav:["Buy","Rent","Services","Contact"], admin:"🔐 Admin",
+    nav:["Buy","Rent","Services","Contact"], admin:"🔐 Admin", navHome:"Home", navGuide:"Guide", navAbout:"About Me",
     heroBadge:"Thailand Property Specialist", heroH1a:"Find Your Perfect", heroH1b:"Home in Bangkok",
     heroSub1:"Luxury condos, houses & rentals matched to your lifestyle — guided personally by ", heroSub2:", your trusted Bangkok property partner.",
     sBuyRent:"Buy & Rent", sSale:"For Sale", sRent:"For Rent", searchPh:"Search by name or location...", searchBtn:"Search",
@@ -207,7 +207,7 @@ const UI = {
     flt:{ filters:"Filters", type:"Type", status:"Status", price:"Price", beds:"Bedrooms", size:"Size (m\u00B2)", zone:"Zone / BTS\u2013MRT", kw:"Keyword", kwPh:"Code, name or location\u2026", clear:"Clear filters", showing:"Showing", of:"of", min:"Min", max:"Max", all:"All", studio:"Studio", statusBoth:"For Rent & Sale", apply:"Show results", listView:"List", mapView:"Map" },
   },
   th: {
-    nav:["ซื้อ","เช่า","บริการ","ติดต่อ"], admin:"🔐 แอดมิน",
+    nav:["ซื้อ","เช่า","บริการ","ติดต่อ"], admin:"🔐 แอดมิน", navHome:"หน้าแรก", navGuide:"คู่มือ", navAbout:"เกี่ยวกับเรา",
     heroBadge:"ผู้เชี่ยวชาญอสังหาฯ ประเทศไทย", heroH1a:"ค้นหาบ้านในฝัน", heroH1b:"ของคุณในกรุงเทพฯ",
     heroSub1:"คอนโด บ้าน และห้องเช่าระดับพรีเมียม คัดสรรให้เข้ากับไลฟ์สไตล์ของคุณ — ดูแลโดย ", heroSub2:" ที่ปรึกษาอสังหาฯ กรุงเทพฯ ที่คุณไว้วางใจได้",
     sBuyRent:"ซื้อ & เช่า", sSale:"ขาย", sRent:"เช่า", searchPh:"ค้นหาด้วยชื่อหรือทำเล...", searchBtn:"ค้นหา",
@@ -237,7 +237,7 @@ const UI = {
     flt:{ filters:"ตัวกรอง", type:"ประเภท", status:"สถานะ", price:"ราคา", beds:"ห้องนอน", size:"ขนาด (ตร.ม.)", zone:"โซน / BTS\u2013MRT", kw:"ค้นหา", kwPh:"รหัส ชื่อ หรือทำเล…", clear:"ล้างตัวกรอง", showing:"แสดง", of:"จาก", min:"ต่ำสุด", max:"สูงสุด", all:"ทั้งหมด", studio:"สตูดิโอ", statusBoth:"เช่า & ขาย", apply:"ดูผลลัพธ์", listView:"รายการ", mapView:"แผนที่" },
   },
   zh: {
-    nav:["买房","租房","服务","联系"], admin:"🔐 管理",
+    nav:["买房","租房","服务","联系"], admin:"🔐 管理", navHome:"首页", navGuide:"指南", navAbout:"关于",
     heroBadge:"泰国房产专家", heroH1a:"在曼谷找到", heroH1b:"您的理想之家",
     heroSub1:"高级公寓、别墅与租房，量身匹配您的生活方式 — 由 ", heroSub2:" 亲自为您服务，您值得信赖的曼谷房产伙伴。",
     sBuyRent:"买 & 租", sSale:"出售", sRent:"出租", searchPh:"按名称或地点搜索...", searchBtn:"搜索",
@@ -2059,6 +2059,14 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const t = UI[lang] || UI.en;
   const guides = GUIDES_I18N[lang] || GUIDES_I18N.en;
 
+  const [navOpen, setNavOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const navLink = { color:"#6B5E52", fontSize:13, fontWeight:500, letterSpacing:"0.04em", background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", padding:0, whiteSpace:"nowrap" };
+  const mItem = { display:"flex", alignItems:"center", gap:9, width:"100%", textAlign:"left", background:"none", border:"none", borderBottom:"1px solid #EFE7DA", padding:"13px 4px", fontSize:15, fontWeight:600, color:"#3A2E22", cursor:"pointer", fontFamily:"'Outfit',sans-serif" };
+  const navGo = (id) => { setNavOpen(false); if(id==="__top"){ window.scrollTo({ top:0, behavior:"smooth" }); return; } const d = navOpen?200:0; setTimeout(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({ behavior:"smooth" }); }, d); };
+  const navSearch = (st) => { setNavOpen(false); setStatus(st); const d = navOpen?200:0; setTimeout(()=>{ const el=document.getElementById("buy"); if(el) el.scrollIntoView({ behavior:"smooth" }); }, d); };
+  const goGuide = (i) => { setNavOpen(false); setGuideOpen(false); setOpenGuide(i); setTimeout(()=>{ const el=document.getElementById("guides"); if(el) el.scrollIntoView({ behavior:"smooth" }); }, 200); };
+
   useEffect(() => { const tm = setTimeout(() => setHeroOn(true), 80); return () => clearTimeout(tm); }, []);
   useEffect(() => {
     const readParam = () => { try { setSelectedId(new URLSearchParams(window.location.search).get("p")); } catch(_) {} };
@@ -2135,6 +2143,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         @keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
         .bpf-mbar{display:flex}.bpf-mbar-sp{display:none}
         @media(max-width:820px){.bpf-navlinks{display:none}}
+        .bpf-burger{display:none;align-items:center;justify-content:center}
+        @media(max-width:820px){.bpf-burger{display:inline-flex !important}}
         @media(max-width:820px){
           .bpf-fbtn{display:inline-flex !important}
           .bpf-filterwrap{position:fixed;inset:0;z-index:700;background:rgba(15,10,4,0.55);display:none}
@@ -2154,25 +2164,77 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                         <img src={LOGO_IMG} alt="Bangkok Property Finder" style={{ height:52, width:"auto", objectFit:"contain", flexShrink:0 }}/>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-            <div className="bpf-navlinks" style={{ display:"flex", alignItems:"center", gap:20 }}>
-              {[["buy",t.nav[0]],["rent",t.nav[1]],["services",t.nav[2]],["contact",t.nav[3]]].map(([href,l])=>(
-                <a key={href} href={`#${href}`} style={{ color:"#6B5E52", fontSize:13, fontWeight:500, textDecoration:"none", letterSpacing:"0.04em" }}
-                  onMouseEnter={e=>e.target.style.color="#C9A96E"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>{l}</a>
-              ))}
-              <a href={OWNER.igUrl} target="_blank" rel="noreferrer" style={{ color:"#6B5E52", fontSize:12, fontWeight:500, textDecoration:"none" }}
-                onMouseEnter={e=>e.target.style.color="#E1306C"} onMouseLeave={e=>e.target.style.color="#6B5E52"}>
-                <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="instagram" s={14} c="#6B5E52"/>@{OWNER.ig}</span>
-              </a>
+            <div className="bpf-navlinks" style={{ display:"flex", alignItems:"center", gap:18 }}>
+              <button onClick={()=>navGo("__top")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.navHome}</button>
+              <button onClick={()=>navSearch("For Sale")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.nav[0]}</button>
+              <button onClick={()=>navSearch("For Rent")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.nav[1]}</button>
+              <button onClick={()=>navGo("services")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.nav[2]}</button>
+              <div style={{ position:"relative" }} onMouseEnter={()=>setGuideOpen(true)} onMouseLeave={()=>setGuideOpen(false)}>
+                <button onClick={()=>navGo("guides")} style={{ ...navLink, display:"inline-flex", alignItems:"center", gap:4 }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.navGuide}<span style={{ fontSize:9, display:"inline-block", transform: guideOpen?"rotate(180deg)":"none", transition:"transform .2s" }}>▾</span></button>
+                <div style={{ position:"absolute", top:"100%", left:"50%", transform:"translateX(-50%)", paddingTop:12, opacity: guideOpen?1:0, visibility: guideOpen?"visible":"hidden", pointerEvents: guideOpen?"auto":"none", transition:"opacity .18s" }}>
+                  <div style={{ background:"#FFFDF9", border:"1px solid rgba(201,169,110,0.3)", borderRadius:13, boxShadow:"0 14px 34px rgba(28,20,4,0.16)", padding:6, width:246 }}>
+                    {guides.map((g,i)=>(
+                      <button key={i} onClick={()=>goGuide(i)} style={{ display:"flex", alignItems:"center", gap:10, width:"100%", textAlign:"left", border:"none", background:"transparent", borderRadius:9, padding:"8px 10px", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.background="#F7F0E5"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                        <span style={{ width:27, height:27, borderRadius:8, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={GUIDE_ICONS[i]} s={13} c="#fff"/></span>
+                        <span style={{ fontSize:12.5, color:"#5A4A3A", lineHeight:1.25 }}>{g.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <button onClick={()=>navGo("contact")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.nav[3]}</button>
+              <button onClick={()=>navGo("rent")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.navAbout}</button>
+              <div style={{ display:"flex", gap:2, background:"#F3EEE8", borderRadius:20, padding:3 }}>
+                {[["en","EN"],["th","ไทย"],["zh","中文"]].map(([code,lbl])=>(
+                  <button key={code} onClick={()=>setLang(code)} style={{ border:"none", cursor:"pointer", borderRadius:16, padding:"5px 9px", fontSize:11, fontWeight:700, background: lang===code?"#1C1410":"transparent", color: lang===code?"#C9A96E":"#7B6A5A", whiteSpace:"nowrap" }}>{lbl}</button>
+                ))}
+              </div>
+              <button onClick={onGoAdmin} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"7px 16px", borderRadius:20, fontSize:12, fontWeight:600, cursor:"pointer", letterSpacing:"0.03em", whiteSpace:"nowrap" }}>{t.admin}</button>
             </div>
-            <div style={{ display:"flex", gap:2, background:"#F3EEE8", borderRadius:20, padding:3 }}>
-              {[["en","EN"],["th","ไทย"],["zh","中文"]].map(([code,lbl])=>(
-                <button key={code} onClick={()=>setLang(code)} style={{ border:"none", cursor:"pointer", borderRadius:16, padding:"5px 9px", fontSize:11, fontWeight:700, background: lang===code?"#1C1410":"transparent", color: lang===code?"#C9A96E":"#7B6A5A", whiteSpace:"nowrap" }}>{lbl}</button>
-              ))}
-            </div>
-            <button onClick={onGoAdmin} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"7px 16px", borderRadius:20, fontSize:12, fontWeight:600, cursor:"pointer", letterSpacing:"0.03em", whiteSpace:"nowrap" }}>{t.admin}</button>
+            <button className="bpf-burger" onClick={()=>setNavOpen(true)} aria-label="Menu" style={{ width:42, height:42, borderRadius:11, border:"1px solid rgba(201,169,110,0.35)", background:"#fff", cursor:"pointer", flexShrink:0 }}>
+              <span style={{ display:"flex", flexDirection:"column", gap:4, alignItems:"center" }}>
+                <span style={{ width:18, height:2, background:"#9B6B2A", borderRadius:2 }}/>
+                <span style={{ width:18, height:2, background:"#9B6B2A", borderRadius:2 }}/>
+                <span style={{ width:18, height:2, background:"#9B6B2A", borderRadius:2 }}/>
+              </span>
+            </button>
           </div>
         </div>
       </nav>
+
+      {navOpen && (
+        <div onClick={()=>setNavOpen(false)} style={{ position:"fixed", inset:0, zIndex:300, background:"rgba(15,10,4,0.5)", backdropFilter:"blur(2px)" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ position:"absolute", top:0, right:0, bottom:0, width:"min(82%,330px)", background:"#FDFAF6", boxShadow:"-12px 0 44px rgba(0,0,0,0.28)", padding:"18px 18px 26px", overflowY:"auto", display:"flex", flexDirection:"column" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
+              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#1C1410" }}>Menu</span>
+              <button onClick={()=>setNavOpen(false)} aria-label="Close" style={{ width:34, height:34, borderRadius:"50%", border:"none", background:"#F3EEE8", color:"#6B5E52", fontSize:17, cursor:"pointer" }}>✕</button>
+            </div>
+            <button onClick={()=>navGo("__top")} style={mItem}>{t.navHome}</button>
+            <button onClick={()=>navSearch("For Sale")} style={mItem}>{t.nav[0]}</button>
+            <button onClick={()=>navSearch("For Rent")} style={mItem}>{t.nav[1]}</button>
+            <button onClick={()=>navGo("services")} style={mItem}>{t.nav[2]}</button>
+            <button onClick={()=>navGo("guides")} style={{ ...mItem, borderBottom:"none", paddingBottom:6 }}>{t.navGuide}</button>
+            <div style={{ borderLeft:"2px solid #EADFCB", marginLeft:10, paddingLeft:8, marginBottom:6 }}>
+              {guides.map((g,i)=>(
+                <button key={i} onClick={()=>goGuide(i)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", textAlign:"left", background:"none", border:"none", padding:"9px 4px", fontSize:13, fontWeight:500, color:"#6B5E52", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                  <span style={{ width:24, height:24, borderRadius:7, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={GUIDE_ICONS[i]} s={12} c="#fff"/></span>
+                  <span style={{ lineHeight:1.25 }}>{g.title}</span>
+                </button>
+              ))}
+            </div>
+            <button onClick={()=>navGo("contact")} style={mItem}>{t.nav[3]}</button>
+            <button onClick={()=>navGo("rent")} style={mItem}>{t.navAbout}</button>
+            <div style={{ marginTop:"auto", paddingTop:18 }}>
+              <div style={{ display:"flex", gap:3, background:"#F3EEE8", borderRadius:14, padding:4, marginBottom:12 }}>
+                {[["en","EN"],["th","ไทย"],["zh","中文"]].map(([code,lbl])=>(
+                  <button key={code} onClick={()=>setLang(code)} style={{ flex:1, border:"none", cursor:"pointer", borderRadius:10, padding:"8px 0", fontSize:12, fontWeight:700, background: lang===code?"#1C1410":"transparent", color: lang===code?"#C9A96E":"#7B6A5A" }}>{lbl}</button>
+                ))}
+              </div>
+              <button onClick={()=>{ setNavOpen(false); onGoAdmin(); }} style={{ width:"100%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"12px", borderRadius:12, fontSize:13.5, fontWeight:700, cursor:"pointer" }}>{t.admin}</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* HERO */}
       <section style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", paddingTop:80, paddingBottom:160 }}>
