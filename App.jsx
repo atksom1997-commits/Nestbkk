@@ -730,6 +730,11 @@ function MapPicker({ value, onChange }) {
   const [ready, setReady] = useState(!!(typeof window !== "undefined" && window.L));
   const [q, setQ] = useState("");
   const [searching, setSearching] = useState(false);
+  const [err, setErr] = useState("");
+  const [sugg, setSugg] = useState([]);
+  const [open, setOpen] = useState(false);
+  const tRef = useRef(null);
+  const reqRef = useRef(0);
 
   useEffect(() => {
     if (window.L) { setReady(true); return; }
@@ -764,27 +769,62 @@ function MapPicker({ value, onChange }) {
     setTimeout(() => map.invalidateSize(), 250);
   }, [ready]);
 
-  const search = async () => {
-    if (!q.trim() || !objRef.current.map) return;
-    setSearching(true);
+  const shortName = (s) => String(s.display_name||"").split(",").slice(0,3).join(", ").trim() || (s.display_name||"");
+  const applyPin = (lat, lng) => {
+    if(objRef.current.map){ objRef.current.map.setView([lat,lng],16); objRef.current.marker.setLatLng([lat,lng]); }
+    onChange(lat.toFixed(6) + "," + lng.toFixed(6));
+  };
+  const pick = (s) => { const lat=parseFloat(s.lat), lng=parseFloat(s.lon); applyPin(lat,lng); setQ(shortName(s)); setSugg([]); setOpen(false); setErr(""); };
+  const fetchSugg = async (text) => {
+    const query = text.trim();
+    if(query.length < 3){ setSugg([]); setOpen(false); return; }
+    const myReq = ++reqRef.current;
     try {
-      const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q + ", Thailand"));
+      const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=th&q=" + encodeURIComponent(query));
       const d = await r.json();
-      if (d && d[0]) {
-        const lat = parseFloat(d[0].lat), lng = parseFloat(d[0].lon);
-        objRef.current.map.setView([lat, lng], 16);
-        objRef.current.marker.setLatLng([lat, lng]);
-        onChange(lat.toFixed(6) + "," + lng.toFixed(6));
-      } else { alert("Place not found. Try the building name + area, e.g. 'Noble Ora Thonglor'."); }
-    } catch (_) { alert("Search failed — check your connection and try again."); }
+      if(myReq !== reqRef.current) return;
+      const list = Array.isArray(d) ? d : [];
+      setSugg(list); setOpen(list.length>0);
+    } catch(_) { if(myReq === reqRef.current){ setSugg([]); setOpen(false); } }
+  };
+  const onInput = (text) => { setQ(text); setErr(""); clearTimeout(tRef.current); tRef.current = setTimeout(()=>fetchSugg(text), 450); };
+  const search = async () => {
+    const query = q.trim();
+    if(!query || !objRef.current.map) return;
+    if(sugg.length){ pick(sugg[0]); return; }
+    setSearching(true); setErr("");
+    try {
+      const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=th&q=" + encodeURIComponent(query));
+      const d = await r.json();
+      if(d && d[0]){ pick(d[0]); }
+      else { setErr("We couldn\u2019t find that exact building. Try searching by area or road instead \u2014 e.g. \u201CThonglor\u201D or \u201CSukhumvit 24\u201D."); setOpen(false); }
+    } catch(_){ setErr("Search failed \u2014 please check your connection and try again."); }
     setSearching(false);
   };
 
   return (
     <div>
-      <div style={{ display:"flex", gap:8, marginBottom:8 }}>
-        <input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>{ if(e.key==="Enter"){ e.preventDefault(); search(); } }} placeholder="Search building or address…" style={S.inp({ flex:1 })}/>
-        <button type="button" onClick={search} style={{ ...S.gold, padding:"0 18px", whiteSpace:"nowrap" }}>{searching ? "…" : "Search"}</button>
+      <div style={{ position:"relative", marginBottom:8 }}>
+        <div style={{ display:"flex", gap:8 }}>
+          <input value={q} onChange={e=>onInput(e.target.value)} onFocus={()=>{ if(sugg.length) setOpen(true); }} onBlur={()=>setTimeout(()=>setOpen(false),180)} onKeyDown={e=>{ if(e.key==="Enter"){ e.preventDefault(); search(); } else if(e.key==="Escape"){ setOpen(false); } }} placeholder="Search building or address…" style={S.inp({ flex:1 })}/>
+          <button type="button" onClick={search} style={{ ...S.gold, padding:"0 18px", whiteSpace:"nowrap" }}>{searching ? "…" : "Search"}</button>
+        </div>
+        {open && sugg.length>0 && (
+          <div style={{ position:"absolute", top:"100%", left:0, right:0, marginTop:6, background:"#fff", border:"1px solid #E8DECF", borderRadius:12, boxShadow:"0 12px 32px rgba(28,20,4,0.16)", overflow:"hidden", zIndex:30, maxHeight:230, overflowY:"auto" }}>
+            {sugg.map((s,i)=>(
+              <div key={i} onMouseDown={e=>{ e.preventDefault(); pick(s); }} style={{ display:"flex", alignItems:"flex-start", gap:9, padding:"9px 12px", cursor:"pointer", borderTop: i===0?"none":"1px solid #F3EEE8", fontSize:13, color:"#1C1410", lineHeight:1.3, background:"#fff" }} onMouseEnter={e=>e.currentTarget.style.background="#FBF3E6"} onMouseLeave={e=>e.currentTarget.style.background="#fff"}>
+                <span style={{ color:"#C9A96E", flexShrink:0, marginTop:1 }}>📍</span>
+                <span>{shortName(s)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {err && (
+          <div style={{ marginTop:7, background:"#FBF1E7", border:"1px solid #EAD3B8", borderRadius:10, padding:"9px 12px", fontSize:12.5, color:"#9A5B2A", display:"flex", alignItems:"flex-start", gap:7, lineHeight:1.35 }}>
+            <span style={{ flexShrink:0 }}>⚠️</span>
+            <span>{err}</span>
+          </div>
+        )}
       </div>
       <div ref={mapRef} style={{ width:"100%", height:240, borderRadius:12, border:"1px solid #E5DDD3", background:"#F3EEE8", overflow:"hidden" }}>
         {!ready && <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100%", color:"#A89580", fontSize:13 }}>Loading map…</div>}
@@ -1836,8 +1876,15 @@ function MapView({ items, onOpen, lang }){
       ensureStyle("bpf-map-style", BPF_MAP_CSS);
       const map = L.map(mapRef.current, { scrollWheelZoom:true }).setView([13.7563,100.5018], 11);
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", { subdomains:"abcd", maxZoom:20, attribution:"\u00A9 OpenStreetMap \u00A9 CARTO" }).addTo(map);
-      const listingLayer = (typeof L.markerClusterGroup === "function") ? L.markerClusterGroup({ maxClusterRadius:58, showCoverageOnHover:false, spiderfyOnMaxZoom:true, iconCreateFunction:function(c){ const n=c.getChildCount(); const sz=n<6?40:n<20?48:56; return L.divIcon({ className:"", iconSize:[sz,sz], html:"<div class='bpf-cl' style='width:"+sz+"px;height:"+sz+"px'>"+n+"</div>" }); } }) : L.layerGroup();
+      const listingLayer = (typeof L.markerClusterGroup === "function") ? L.markerClusterGroup({ maxClusterRadius:58, showCoverageOnHover:false, spiderfyOnMaxZoom:false, zoomToBoundsOnClick:false, spiderfyDistanceMultiplier:2, iconCreateFunction:function(c){ const n=c.getChildCount(); const sz=n<6?40:n<20?48:56; return L.divIcon({ className:"", iconSize:[sz,sz], html:"<div class='bpf-cl' style='width:"+sz+"px;height:"+sz+"px'>"+n+"</div>" }); } }) : L.layerGroup();
       map.addLayer(listingLayer);
+      if(typeof L.markerClusterGroup === "function"){
+        listingLayer.on("clusterclick", function(a){
+          const cl=a.layer, ms=cl.getAllChildMarkers(); let same=false;
+          if(ms.length>1){ const z=ms[0].getLatLng(); same=ms.every(m=>{ const l=m.getLatLng(); return Math.abs(l.lat-z.lat)<1.5e-4 && Math.abs(l.lng-z.lng)<1.5e-4; }); }
+          if(same){ cl.spiderfy(); } else { try{ cl.zoomToBounds({ padding:[40,40] }); }catch(_){ cl.spiderfy(); } }
+        });
+      }
       const poiLayers = {};
       POI_ORDER.forEach(cat=>{
         const lg = L.layerGroup();
