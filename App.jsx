@@ -1131,13 +1131,8 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     setGeo({ running:true, done:0, total:list.length, failed:0, msg:"" });
     let ok=0, bad=0, saveFail=0;
     for (const p of list) {
-      const loc = (p.location||"").trim();
-      const nq = geoName(p);
-      const q1 = /thailand/i.test(nq) ? nq : nq + ", Thailand";
-      const q2 = /thailand/i.test(loc) ? loc : loc + ", Thailand";
       let ll = null;
-      try { ll = await geocode(q1); } catch(_) { ll = null; }
-      if (!ll && q2 !== q1) { try { ll = await geocode(q2); } catch(_) { ll = null; } }
+      try { ll = await geocodeSmart(p); } catch(_) { ll = null; }
       if (ll) { let saved=true; try { saved = await onSetMaplink(p.id, ll[0].toFixed(6) + "," + ll[1].toFixed(6)); } catch(_){ saved=false; } if (saved===false) saveFail++; ok++; }
       else { bad++; }
       setGeo({ running:true, done:ok+bad, total:list.length, failed:bad, msg:"" });
@@ -1149,7 +1144,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   };
   const reLocateAll = () => {
     const n = props.filter(p => p.active!==false && (p.location||"").trim()).length;
-    if (window.confirm("Re-place ALL " + n + " listings on the map using their project name (title)?\n\nThis updates every pin (takes about " + Math.ceil(n*1.2/60) + " min) and overwrites pins set earlier.")) runGeocode(true);
+    if (window.confirm("Re-place ALL " + n + " listings on the map using their building name, then Soi / BTS / district as fallback?\n\nThis updates every pin (takes about " + Math.ceil(n*1.5/60) + "-" + Math.ceil(n*2.5/60) + " min) and overwrites pins set earlier.")) runGeocode(true);
   };
   const [cityUploading, setCityUploading] = useState("");
   const CITY_LIST = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
@@ -1812,11 +1807,12 @@ const BPF_MAP_CSS = `
 `;
 const GEO_CACHE = (()=>{ try { return JSON.parse(localStorage.getItem("bpf_geocache")||"{}"); } catch(_) { return {}; } })();
 let GEO_QUEUE = Promise.resolve();
+const BKK_VIEWBOX = "100.25,14.05,101.05,13.45"; // Greater Bangkok bias box (lonW,latN,lonE,latS)
 function geocode(qstr){
   const key = String(qstr||"").trim().toLowerCase();
   if(!key) return Promise.resolve(null);
   if(GEO_CACHE[key]) return Promise.resolve(GEO_CACHE[key]==="none" ? null : GEO_CACHE[key]);
-  const run = () => fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(qstr))
+  const run = () => fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=th&viewbox="+BKK_VIEWBOX+"&q="+encodeURIComponent(qstr))
     .then(r=>r.json())
     .then(d=>{ const ll = (d && d[0]) ? [parseFloat(d[0].lat), parseFloat(d[0].lon)] : null; GEO_CACHE[key] = ll || "none"; try { localStorage.setItem("bpf_geocache", JSON.stringify(GEO_CACHE)); } catch(_){} return ll; })
     .catch(()=>null);
@@ -1830,6 +1826,52 @@ function geoName(p){
   const loc = String((p&&p.location)||"").trim();
   if(t && loc) return t + ", " + loc;
   return t || loc;
+}
+const BKK_AREAS = ["Thonglor","Thong Lo","Ekkamai","Asoke","Asok","Phrom Phong","Prompong","Nana","Ploenchit","Phloen Chit","Chidlom","Chit Lom","Sukhumvit","Silom","Sathorn","Sathon","Surawong","Siam","Ratchathewi","Phaya Thai","Ari","Ladprao","Lat Phrao","Ratchadaphisek","Ratchada","Huai Khwang","Din Daeng","Chatuchak","On Nut","Bang Na","Udom Suk","Bearing","Phra Khanong","Bang Rak","Khlong Toei","Watthana","Wireless","Witthayu","Rama 9","Rama IX","Rama 4","Rama 3","Charoenkrung","Charoen Nakhon","Thonburi","Riverside","Bang Sue","Wongwian Yai","Phetchaburi","Pinklao","Sukhumvit 24","Sukhumvit 11","Sukhumvit 31","Sukhumvit 39"];
+function _gclean(s){ return String(s||"").replace(/[\u2014\u2013|\u2022]+/g," ").replace(/\s+/g," ").trim(); }
+function extractSoi(text){
+  const t=_gclean(text);
+  let m=t.match(/(?:soi|\u0E0B\u0E2D\u0E22)\s*([0-9]{1,3}(?:\/[0-9]{1,3})?)/i);
+  if(m) return "Soi "+m[1];
+  m=t.match(/\b(sukhumvit|thonglor|thong\s?lo|ekkamai|silom|sathorn|sathon|ladprao|lat\s?phrao|ratchadaphisek|ratchada|phaholyothin|phahonyothin|charoenkrung|narathiwat|ratchadamri|petchaburi|phetchaburi)\s*(\d{1,3})\b/i);
+  if(m) return _gclean(m[1]).replace(/\b\w/g,c=>c.toUpperCase())+" "+m[2];
+  return "";
+}
+function extractStation(text){
+  const t=_gclean(text);
+  let m=t.match(/\b([A-Za-z\u0E00-\u0E7F][A-Za-z\u0E00-\u0E7F'.]{1,18})\s+(BTS|MRT|ARL)\b/i);
+  if(m && !/^(near|the|min|walk|to|from|bangkok|thailand|condo|apartment|in|at|soi)$/i.test(m[1])) return m[2].toUpperCase()+" "+m[1].trim();
+  m=t.match(/\b(BTS|MRT|ARL)\s+([A-Za-z\u0E00-\u0E7F][A-Za-z\u0E00-\u0E7F'.]{1,18})/i);
+  if(m && !/^(station|near|min|walk|to|the)$/i.test(m[2])) return m[1].toUpperCase()+" "+m[2].trim();
+  return "";
+}
+function extractArea(text){
+  const t=_gclean(text);
+  for(const a of BKK_AREAS){ const re=new RegExp("\\b"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","i"); if(re.test(t)) return a; }
+  return "";
+}
+function geoCandidates(p){
+  let title=String((p&&p.title)||"").split(/[\u2014\u2013|]/)[0].replace(/\b(for\s+rent\s*&\s*sale|for\s+rent|for\s+sale)\b/ig,"").replace(/\s+/g," ").trim();
+  const loc=String((p&&p.location)||"").trim();
+  const blob=[p&&p.title,p&&p.location,p&&p.bts,p&&p.facilities].filter(Boolean).join("  ");
+  const out=[];
+  // Layer 1 — exact building name (+ area), and a shortened name for partial/typo tolerance
+  if(title){ out.push(loc?(title+", "+loc):(title+", Bangkok")); out.push(title+", Bangkok"); const w=title.split(/\s+/); if(w.length>2) out.push(w.slice(0,2).join(" ")+", "+(loc||"Bangkok")); }
+  // Layer 2 — Soi / sub-street
+  const soi=extractSoi(blob); if(soi) out.push(soi+(loc?(", "+loc):"")+", Bangkok");
+  // Layer 3 — nearest BTS/MRT station (from the bts field first, then any text)
+  let btsRaw=String((p&&p.bts)||"").replace(/^\s*(near|close to|next to|\u0E43\u0E01\u0E25\u0E49)\s+/i,"").split(/[\u2014\u2013(]|\d/)[0].replace(/\s+/g," ").replace(/[\s\-\u2013\u2014,.:|]+$/,"").trim();
+  if(btsRaw && btsRaw.length>=3) out.push(btsRaw+(/(bts|mrt|arl|station|\u0E2A\u0E16\u0E32\u0E19\u0E35)/i.test(btsRaw)?"":" BTS")+", Bangkok");
+  const st=extractStation(blob); if(st) out.push(st+", Bangkok");
+  // Layer 4 — district / area centre
+  const area=extractArea(blob); if(area) out.push(area+", Bangkok");
+  if(loc) out.push(/thailand/i.test(loc)?loc:(loc+", Thailand"));
+  const seen={},res=[]; out.forEach(q=>{ const k=String(q).toLowerCase().trim(); if(q&&!seen[k]){seen[k]=1;res.push(q);} }); return res;
+}
+async function geocodeSmart(p){
+  const cands=geoCandidates(p);
+  for(const q of cands){ try{ const ll=await geocode(q); if(ll) return ll; }catch(_){} }
+  return null;
 }
 
 function MapView({ items, onOpen, lang }){
@@ -1920,7 +1962,7 @@ function MapView({ items, onOpen, lang }){
     items.forEach(p=>{ const ll = parseLatLng(p.maplink); if(ll){ pts.push(ll); addMarker(p, ll); } });
     if(pts.length && ready){ try { o.map.fitBounds(pts, { padding:[45,45], maxZoom:15 }); } catch(_){} }
     const missing = items.filter(p=>!parseLatLng(p.maplink) && p.location).slice(0,12);
-    missing.forEach(p=>{ const loc=(p.location||"").trim(); const nq=geoName(p); const q1=/thailand/i.test(nq)?nq:nq+", Thailand"; const q2=/thailand/i.test(loc)?loc:loc+", Thailand"; geocode(q1).then(ll=>ll||(q2!==q1?geocode(q2):null)).then(ll=>{ if(ll) addMarker(p, ll); }); });
+    missing.forEach(p=>{ geocodeSmart(p).then(ll=>{ if(ll) addMarker(p, ll); }); });
     return ()=>{ cancelled = true; };
   }, [items, ready, lang]);
 
