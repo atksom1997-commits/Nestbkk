@@ -1013,7 +1013,7 @@ function AdminLogin({ onLogin, agents=[], pending=[], onApply, ownerCreds }) {
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0, currentUser, agents=[], onAgentsChange, pending=[], onApprove, onReject, onApproveListing, ownerCreds, onSaveOwnerProfile, onAgentSelfUpdate }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0, currentUser, agents=[], onAgentsChange, pending=[], onApprove, onReject, onApproveListing, ownerCreds, onSaveOwnerProfile, onAgentSelfUpdate, onSetMaplink }) {
   const [sheetsUrl, setSheetsUrl] = useState("");
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [sheetsMsg, setSheetsMsg] = useState("");
@@ -1080,6 +1080,24 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const aPages = Math.max(1, Math.ceil(aFiltered.length / PER));
   const aPageSafe = Math.min(aPage, aPages);
   const aPaged = aFiltered.slice((aPageSafe-1)*PER, aPageSafe*PER);
+  const [geo, setGeo] = useState({ running:false, done:0, total:0, failed:0, msg:"" });
+  const geoMissing = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
+  const runGeocode = async () => {
+    const list = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
+    if (!list.length) { setGeo({ running:false, done:0, total:0, failed:0, msg:"All listings already have a map location \u2713" }); return; }
+    setGeo({ running:true, done:0, total:list.length, failed:0, msg:"" });
+    let ok=0, bad=0;
+    for (const p of list) {
+      const loc = (p.location||"").trim();
+      const qy = /thailand/i.test(loc) ? loc : loc + ", Thailand";
+      let ll = null;
+      try { ll = await geocode(qy); } catch(_) { ll = null; }
+      if (ll) { try { await onSetMaplink(p.id, ll[0].toFixed(6) + "," + ll[1].toFixed(6)); } catch(_){} ok++; }
+      else { bad++; }
+      setGeo({ running:true, done:ok+bad, total:list.length, failed:bad, msg:"" });
+    }
+    setGeo({ running:false, done:ok+bad, total:list.length, failed:bad, msg:"Placed " + ok + " on the map" + (bad ? (" \u00B7 " + bad + " not found (set those manually with the map pin)") : "") + "." });
+  };
   const [cityUploading, setCityUploading] = useState("");
   const CITY_LIST = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
   const uploadCityPhoto = async (cityName, e) => {
@@ -1473,12 +1491,30 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             <p style={{ color:"#A89580", fontSize:13, marginTop:2 }}>{currentUser ? "Signed in as " + currentUser.name + (currentUser.role==="owner"?" (Owner)":"") + " · " : ""}Add, edit or remove your properties</p>
           </div>
           <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+            {geoMissing.length > 0 && (
+              <button onClick={runGeocode} disabled={geo.running} style={{ display:"flex", alignItems:"center", gap:7, background: geo.running?"#9B6B2A":"linear-gradient(135deg,#2563EB,#1D4ED8)", color:"#fff", border:"none", padding:"10px 18px", borderRadius:11, fontSize:13, fontWeight:700, cursor: geo.running?"default":"pointer", opacity: geo.running?0.85:1 }}>
+                📍 {geo.running ? ("Locating " + geo.done + "/" + geo.total + "\u2026") : ("Auto-locate on map (" + geoMissing.length + ")")}
+              </button>
+            )}
             <button onClick={()=>setShowAI(!showAI)} style={{ display:"flex", alignItems:"center", gap:7, background: showAI?"#7C3AED":"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"#fff", border:"none", padding:"10px 20px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
               🤖 AI Assistant
             </button>
             <button onClick={onAdd} style={{...S.gold, display:"flex", alignItems:"center", gap:7, padding:"10px 20px"}}>＋ Add New Property</button>
           </div>
         </div>
+
+        {(geo.running || geo.msg) && (
+          <div style={{ marginBottom:16, background:"#F3EEE8", border:"1px solid #E8DECF", borderRadius:12, padding:"12px 16px" }}>
+            {geo.running && (
+              <div style={{ height:8, background:"#E5DDD3", borderRadius:5, overflow:"hidden", marginBottom:8 }}>
+                <div style={{ height:"100%", width:(geo.total?Math.round(geo.done/geo.total*100):0)+"%", background:"linear-gradient(90deg,#C9A96E,#9B6B2A)", transition:"width 0.3s" }} />
+              </div>
+            )}
+            <div style={{ fontSize:13, color:"#6B5E52", fontWeight:600 }}>
+              {geo.running ? ("Finding map locations\u2026 " + geo.done + " / " + geo.total + "  (please keep this page open)") : geo.msg}
+            </div>
+          </div>
+        )}
 
         {/* AI LISTING ASSISTANT */}
         {showAI && (
@@ -1771,7 +1807,7 @@ function MapView({ items, onOpen, lang }){
     items.forEach(p=>{ const ll = parseLatLng(p.maplink); if(ll){ pts.push(ll); addMarker(p, ll); } });
     if(pts.length && ready){ try { o.map.fitBounds(pts, { padding:[45,45], maxZoom:15 }); } catch(_){} }
     const missing = items.filter(p=>!parseLatLng(p.maplink) && p.location).slice(0,12);
-    missing.forEach(p=>{ geocode(p.location + ", Bangkok, Thailand").then(ll=>{ if(ll) addMarker(p, ll); }); });
+    missing.forEach(p=>{ const loc=(p.location||"").trim(); const qy=/thailand/i.test(loc)?loc:loc+", Thailand"; geocode(qy).then(ll=>{ if(ll) addMarker(p, ll); }); });
     return ()=>{ cancelled = true; };
   }, [items, ready, lang]);
 
@@ -2524,6 +2560,11 @@ export default function App() {
     flash(newActive ? "🟢 Listing is now Visible!" : "🔴 Listing is now Hidden!");
   };
 
+  const handleSetMaplink = async (id, maplink) => {
+    setProps(prev => prev.map(p => p.id === id ? { ...p, maplink } : p));
+    if (SB_ON) await sbUpdate(id, { maplink });
+  };
+
   const handleAIFill = (data) => {
     setForm({ ...data, id: null, imgs: [], img: "" });
   };
@@ -2652,7 +2693,7 @@ export default function App() {
             onView={()=>{ setScreen("site"); setAdminView(true); }}
             onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}
             onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto} visits={visits}
-            currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing} ownerCreds={ownerCreds} onSaveOwnerProfile={handleOwnerSelfUpdate} onAgentSelfUpdate={handleAgentSelfUpdate}/>
+            currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing} ownerCreds={ownerCreds} onSaveOwnerProfile={handleOwnerSelfUpdate} onAgentSelfUpdate={handleAgentSelfUpdate} onSetMaplink={handleSetMaplink}/>
         : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos} agentContacts={agentContacts}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
             onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
