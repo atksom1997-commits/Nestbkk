@@ -1085,24 +1085,31 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const [geo, setGeo] = useState({ running:false, done:0, total:0, failed:0, msg:"" });
   const geoMissing = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
   const noPinList = props.filter(p => p.active!==false && !parseLatLng(p.maplink));
-  const runGeocode = async () => {
-    const list = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
+  const runGeocode = async (overwrite) => {
+    const list = props.filter(p => p.active!==false && (p.location||"").trim() && (overwrite || !parseLatLng(p.maplink)));
     if (!list.length) { setGeo({ running:false, done:0, total:0, failed:0, msg:"All listings already have a map location \u2713" }); return; }
     setGeo({ running:true, done:0, total:list.length, failed:0, msg:"" });
     let ok=0, bad=0, saveFail=0;
     for (const p of list) {
       const loc = (p.location||"").trim();
-      const qy = /thailand/i.test(loc) ? loc : loc + ", Thailand";
+      const nq = geoName(p);
+      const q1 = /thailand/i.test(nq) ? nq : nq + ", Thailand";
+      const q2 = /thailand/i.test(loc) ? loc : loc + ", Thailand";
       let ll = null;
-      try { ll = await geocode(qy); } catch(_) { ll = null; }
+      try { ll = await geocode(q1); } catch(_) { ll = null; }
+      if (!ll && q2 !== q1) { try { ll = await geocode(q2); } catch(_) { ll = null; } }
       if (ll) { let saved=true; try { saved = await onSetMaplink(p.id, ll[0].toFixed(6) + "," + ll[1].toFixed(6)); } catch(_){ saved=false; } if (saved===false) saveFail++; ok++; }
       else { bad++; }
       setGeo({ running:true, done:ok+bad, total:list.length, failed:bad, msg:"" });
     }
     const finalMsg = saveFail > 0
-      ? ("\u26A0 Found locations, but could NOT save " + saveFail + " to the database. Your \u2018maplink\u2019 column is likely missing in Supabase \u2014 run the SQL command (ALTER TABLE), then click Auto-locate again.")
-      : ("Placed " + ok + " on the map" + (bad ? (" \u00B7 " + bad + " not found (set those manually with the map pin)") : "") + ". \u2705 Saved to the database \u2014 you won't need to run this again.");
+      ? ("\u26A0 Found locations, but could NOT save " + saveFail + " to the database. Your \u2018maplink\u2019 column is likely missing in Supabase \u2014 run the SQL command (ALTER TABLE), then try again.")
+      : ((overwrite ? "Re-placed " : "Placed ") + ok + " on the map by project name" + (bad ? (" \u00B7 " + bad + " not found (set those manually with the map pin)") : "") + ". \u2705 Saved to the database.");
     setGeo({ running:false, done:ok+bad, total:list.length, failed:bad, msg: finalMsg });
+  };
+  const reLocateAll = () => {
+    const n = props.filter(p => p.active!==false && (p.location||"").trim()).length;
+    if (window.confirm("Re-place ALL " + n + " listings on the map using their project name (title)?\n\nThis updates every pin (takes about " + Math.ceil(n*1.2/60) + " min) and overwrites pins set earlier.")) runGeocode(true);
   };
   const [cityUploading, setCityUploading] = useState("");
   const CITY_LIST = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
@@ -1498,8 +1505,13 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           </div>
           <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
             {geoMissing.length > 0 && (
-              <button onClick={runGeocode} disabled={geo.running} style={{ display:"flex", alignItems:"center", gap:7, background: geo.running?"#9B6B2A":"linear-gradient(135deg,#2563EB,#1D4ED8)", color:"#fff", border:"none", padding:"10px 18px", borderRadius:11, fontSize:13, fontWeight:700, cursor: geo.running?"default":"pointer", opacity: geo.running?0.85:1 }}>
+              <button onClick={()=>runGeocode(false)} disabled={geo.running} style={{ display:"flex", alignItems:"center", gap:7, background: geo.running?"#9B6B2A":"linear-gradient(135deg,#2563EB,#1D4ED8)", color:"#fff", border:"none", padding:"10px 18px", borderRadius:11, fontSize:13, fontWeight:700, cursor: geo.running?"default":"pointer", opacity: geo.running?0.85:1 }}>
                 📍 {geo.running ? ("Locating " + geo.done + "/" + geo.total + "\u2026") : ("Auto-locate on map (" + geoMissing.length + ")")}
+              </button>
+            )}
+            {!geo.running && props.some(p=>p.active!==false && (p.location||"").trim() && parseLatLng(p.maplink)) && (
+              <button onClick={reLocateAll} style={{ display:"flex", alignItems:"center", gap:7, background:"#fff", color:"#9B6B2A", border:"1.5px solid #C9A96E", padding:"10px 16px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                🔁 Re-locate all by name
               </button>
             )}
             <button onClick={()=>setShowAI(!showAI)} style={{ display:"flex", alignItems:"center", gap:7, background: showAI?"#7C3AED":"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"#fff", border:"none", padding:"10px 20px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
@@ -1772,6 +1784,13 @@ function geocode(qstr){
   GEO_QUEUE = p.then(()=>new Promise(r=>setTimeout(r,1100)), ()=>new Promise(r=>setTimeout(r,1100)));
   return p;
 }
+function geoName(p){
+  let t = String((p&&p.title)||"").split(/[\u2014\u2013|]/)[0].trim();
+  t = t.replace(/\b(for\s+rent\s*&\s*sale|for\s+rent|for\s+sale)\b/ig,"").trim();
+  const loc = String((p&&p.location)||"").trim();
+  if(t && loc) return t + ", " + loc;
+  return t || loc;
+}
 
 function MapView({ items, onOpen, lang }){
   const mapRef = useRef(null);
@@ -1854,7 +1873,7 @@ function MapView({ items, onOpen, lang }){
     items.forEach(p=>{ const ll = parseLatLng(p.maplink); if(ll){ pts.push(ll); addMarker(p, ll); } });
     if(pts.length && ready){ try { o.map.fitBounds(pts, { padding:[45,45], maxZoom:15 }); } catch(_){} }
     const missing = items.filter(p=>!parseLatLng(p.maplink) && p.location).slice(0,12);
-    missing.forEach(p=>{ const loc=(p.location||"").trim(); const qy=/thailand/i.test(loc)?loc:loc+", Thailand"; geocode(qy).then(ll=>{ if(ll) addMarker(p, ll); }); });
+    missing.forEach(p=>{ const loc=(p.location||"").trim(); const nq=geoName(p); const q1=/thailand/i.test(nq)?nq:nq+", Thailand"; const q2=/thailand/i.test(loc)?loc:loc+", Thailand"; geocode(q1).then(ll=>ll||(q2!==q1?geocode(q2):null)).then(ll=>{ if(ll) addMarker(p, ll); }); });
     return ()=>{ cancelled = true; };
   }, [items, ready, lang]);
 
