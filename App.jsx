@@ -337,7 +337,48 @@ const SALE_BUDGETS = [
   {l:"฿20M+", min:20000000, max:Infinity},
 ];
 const parsePrice = (s) => parseInt((s||"").replace(/[^0-9]/g,""),10) || 0;
-function priceDisplay(p){ if((p && (p.status||"")==="For Rent & Sale") && p.pricesale){ return (p.price||"") + "  \u00B7  " + p.pricesale; } return (p && p.price) || ""; }
+
+// ---- Multi-currency display (all prices are stored in THB) ----
+const CUR = {
+  THB:{sym:"\u0E3F", per:"/mo", name:"Thai Baht"},
+  USD:{sym:"$",      per:"/mo", name:"US Dollar"},
+  EUR:{sym:"\u20AC", per:"/mo", name:"Euro"},
+  GBP:{sym:"\u00A3", per:"/mo", name:"British Pound"},
+  CNY:{sym:"\u00A5", per:"/mo", name:"Chinese Yuan"},
+  SGD:{sym:"S$",     per:"/mo", name:"Singapore $"},
+  AUD:{sym:"A$",     per:"/mo", name:"Australian $"},
+  JPY:{sym:"\u00A5", per:"/mo", name:"Japanese Yen"}
+};
+const FX_ORDER = ["THB","USD","EUR","GBP","CNY","SGD","AUD","JPY"];
+const CUR_FALLBACK = { THB:1, USD:0.029, EUR:0.027, GBP:0.023, CNY:0.205, SGD:0.039, AUD:0.045, JPY:4.5 };
+let CUR_STATE = { cur:"THB", rates:{...CUR_FALLBACK} };
+function fmtMoneyNum(v, compact){
+  if(compact){
+    if(v>=1e6){ let s=(v/1e6).toFixed(v>=1e7?0:1); return s.replace(/\.0$/,"")+"M"; }
+    if(v>=1e3){ if(v<1e4){ let s=(v/1e3).toFixed(1); return s.replace(/\.0$/,"")+"K"; } return Math.round(v/1e3)+"K"; }
+    return String(Math.round(v));
+  }
+  return Math.round(v).toLocaleString("en-US");
+}
+function money(priceStr, opts){
+  opts = opts || {};
+  const cur = CUR_STATE.cur || "THB";
+  const n = parsePrice(priceStr);
+  if(!n) return priceStr || "";                 // non-numeric (e.g. "Contact us") -> show as-is
+  const per = (!opts.noPer) && /(\/\s*(?:month|mo|mth)\b|per\s*month|\u0E40\u0E14\u0E37\u0E2D\u0E19|\u6708)/i.test(priceStr||"");
+  if(cur==="THB"){
+    if(opts.compact) return "\u0E3F"+fmtMoneyNum(n,true)+(per?CUR.THB.per:"");
+    return priceStr || "";                       // keep the original THB string exactly as entered
+  }
+  const rate = (CUR_STATE.rates && CUR_STATE.rates[cur]) || 1;
+  const c = CUR[cur] || CUR.THB;
+  return c.sym + fmtMoneyNum(n*rate, opts.compact) + (per?c.per:"");
+}
+function priceTHB(p){ if((p && (p.status||"")==="For Rent & Sale") && p.pricesale){ return (p.price||"") + "  \u00B7  " + p.pricesale; } return (p && p.price) || ""; }
+function priceDisplay(p){
+  if((p && (p.status||"")==="For Rent & Sale") && p.pricesale){ return money(p.price) + "  \u00B7  " + money(p.pricesale); }
+  return money((p && p.price) || "");
+}
 
 // Thai <-> English search synonyms for bilingual search
 const SEARCH_SYNONYMS = [
@@ -466,7 +507,7 @@ function PropDetail({ p, onClose, agentContacts={} }) {
   const pdLine = (_ct.line||"").trim() || OWNER.lineUrl;
   const shareLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
   const copyLink = () => { try { navigator.clipboard && navigator.clipboard.writeText(shareLink); } catch(_) {} setLinkCopied(true); setTimeout(()=>setLinkCopied(false), 2000); };
-  const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceDisplay(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceTHB(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const waUrl = `https://wa.me/${pdWa}?text=${encodeURIComponent(propMsg)}`;
   const lineUrl = OWNER.lineUrl;
   const [showLine, setShowLine] = useState(false);
@@ -608,7 +649,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
   const _ct = (agentContacts && p.agent && agentContacts[p.agent]) || {};
   const cardWa = (_ct.whatsapp||"").trim() || OWNER.whatsapp;
   const cardLine = (_ct.line||"").trim() || OWNER.lineUrl;
-  const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceDisplay(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceTHB(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
   const [showLine, setShowLine] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const cardLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
@@ -1663,7 +1704,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                     </td>
                     <td style={{ padding:"11px 15px" }}><span style={{ background:"#F3EEE8", borderRadius:20, padding:"3px 9px", fontSize:11, fontWeight:600, color:"#7B6A5A" }}>{p.type}</span></td>
                     <td style={{ padding:"11px 15px" }}><span style={{ background:p.status==="For Sale"?"#EFF6FF":"#F0FDF4", borderRadius:20, padding:"3px 9px", fontSize:11, fontWeight:600, color:p.status==="For Sale"?"#2563EB":"#16A34A" }}>{p.status}</span></td>
-                    <td style={{ padding:"11px 15px", fontSize:13, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{priceDisplay(p)}</td>
+                    <td style={{ padding:"11px 15px", fontSize:13, fontWeight:700, color:"#B8893A", whiteSpace:"nowrap" }}>{priceTHB(p)}</td>
                     <td style={{ padding:"11px 15px" }}>
                       <div style={{ display:"flex", gap:7, flexWrap:"wrap", alignItems:"center" }}>
                         <button onClick={()=>{ const url = window.location.origin + window.location.pathname + "?p=" + p.id; try { navigator.clipboard && navigator.clipboard.writeText(url); } catch(_) {} setCopiedId(p.id); setTimeout(()=>setCopiedId(null), 2000); }} title="Copy this listing's link" style={{ background: copiedId===p.id?"#16A34A":"#EEF2FF", color: copiedId===p.id?"#fff":"#4F46E5", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>{copiedId===p.id ? "✓ Copied!" : "🔗 Link"}</button>
@@ -1780,12 +1821,10 @@ const POI_ICONS = {
   park:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M12 17c-3 0-5-2-5-5 0-1-2-2-2-4 0-2 2-3 3-3 0-2 2-3 4-3s4 1 4 3c1 0 3 1 3 3 0 2-2 3-2 4 0 3-2 5-5 5Z"/></svg>'
 };
 function pillPrice(p){
-  const status = p.status||"";
   const n = parsePrice(p.price);
-  const sale = status==="For Sale";
-  if(!n) return "\u0E3F\u2014";
-  if(sale || n>=1000000){ let m=n/1e6; let s=m.toFixed(1); if(s.endsWith(".0")) s=s.slice(0,-2); return "\u0E3F"+s+"M"; }
-  let k=n/1000; let s=k.toFixed(n>=10000?0:1); if(s.endsWith(".0")) s=s.slice(0,-2); return "\u0E3F"+s+"K";
+  const sym = (CUR[CUR_STATE.cur] || CUR.THB).sym;
+  if(!n) return sym+"\u2014";
+  return money(p.price, {compact:true, noPer:true});
 }
 function pillDiv(L, p, sel){
   return L.divIcon({ className:"", iconSize:[0,0], iconAnchor:[0,0], popupAnchor:[0,-14],
@@ -2059,6 +2098,20 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const t = UI[lang] || UI.en;
   const guides = GUIDES_I18N[lang] || GUIDES_I18N.en;
 
+  const [currency, setCurrency] = useState(()=>{ try { return localStorage.getItem("bpf_cur")||"THB"; } catch(_){ return "THB"; } });
+  const [rates, setRates] = useState(()=>{ try { const c=JSON.parse(localStorage.getItem("bpf_rates")||"null"); return (c&&c.rates)?c.rates:{...CUR_FALLBACK}; } catch(_){ return {...CUR_FALLBACK}; } });
+  useEffect(()=>{ try { localStorage.setItem("bpf_cur", currency); } catch(_){} }, [currency]);
+  useEffect(()=>{
+    let cancel=false;
+    try { const c=JSON.parse(localStorage.getItem("bpf_rates")||"null"); if(c && c.t && (Date.now()-c.t<86400000) && c.rates) return; } catch(_){}
+    fetch("https://api.frankfurter.app/latest?from=THB&to="+FX_ORDER.filter(x=>x!=="THB").join(","))
+      .then(r=>r.json())
+      .then(d=>{ if(cancel||!d||!d.rates) return; const r={THB:1, ...d.rates}; setRates(r); try{ localStorage.setItem("bpf_rates", JSON.stringify({t:Date.now(), rates:r})); }catch(_){} })
+      .catch(()=>{});
+    return ()=>{ cancel=true; };
+  }, []);
+  CUR_STATE = { cur: currency, rates: rates || {...CUR_FALLBACK} };
+
   const [navOpen, setNavOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const navLink = { color:"#6B5E52", fontSize:13, fontWeight:500, letterSpacing:"0.04em", background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", padding:0, whiteSpace:"nowrap" };
@@ -2142,9 +2195,9 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
         @keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
         .bpf-mbar{display:flex}.bpf-mbar-sp{display:none}
-        @media(max-width:820px){.bpf-navlinks{display:none}}
+        @media(max-width:960px){.bpf-navlinks{display:none}}
         .bpf-burger{display:none;align-items:center;justify-content:center}
-        @media(max-width:820px){.bpf-burger{display:inline-flex !important}}
+        @media(max-width:960px){.bpf-burger{display:inline-flex !important}}
         @media(max-width:820px){
           .bpf-fbtn{display:inline-flex !important}
           .bpf-filterwrap{position:fixed;inset:0;z-index:700;background:rgba(15,10,4,0.55);display:none}
@@ -2184,6 +2237,9 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               </div>
               <button onClick={()=>navGo("contact")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.nav[3]}</button>
               <button onClick={()=>navGo("rent")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.navAbout}</button>
+              <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" title="Display currency" style={{ border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#5A4A3A", borderRadius:14, padding:"6px 8px", fontSize:11.5, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                {FX_ORDER.map(c=> <option key={c} value={c}>{CUR[c].sym} {c}</option>)}
+              </select>
               <div style={{ display:"flex", gap:2, background:"#F3EEE8", borderRadius:20, padding:3 }}>
                 {[["en","EN"],["th","ไทย"],["zh","中文"]].map(([code,lbl])=>(
                   <button key={code} onClick={()=>setLang(code)} style={{ border:"none", cursor:"pointer", borderRadius:16, padding:"5px 9px", fontSize:11, fontWeight:700, background: lang===code?"#1C1410":"transparent", color: lang===code?"#C9A96E":"#7B6A5A", whiteSpace:"nowrap" }}>{lbl}</button>
@@ -2225,6 +2281,9 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <button onClick={()=>navGo("contact")} style={mItem}>{t.nav[3]}</button>
             <button onClick={()=>navGo("rent")} style={mItem}>{t.navAbout}</button>
             <div style={{ marginTop:"auto", paddingTop:18 }}>
+              <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" style={{ width:"100%", border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#3A2E22", borderRadius:12, padding:"11px 12px", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginBottom:10 }}>
+                {FX_ORDER.map(c=> <option key={c} value={c}>{CUR[c].sym} {c} — {CUR[c].name}</option>)}
+              </select>
               <div style={{ display:"flex", gap:3, background:"#F3EEE8", borderRadius:14, padding:4, marginBottom:12 }}>
                 {[["en","EN"],["th","ไทย"],["zh","中文"]].map(([code,lbl])=>(
                   <button key={code} onClick={()=>setLang(code)} style={{ flex:1, border:"none", cursor:"pointer", borderRadius:10, padding:"8px 0", fontSize:12, fontWeight:700, background: lang===code?"#1C1410":"transparent", color: lang===code?"#C9A96E":"#7B6A5A" }}>{lbl}</button>
