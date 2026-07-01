@@ -197,7 +197,7 @@ const UI = {
     guidesSub:"Simple, honest explainers for renting and buying property in Bangkok — so there are no surprises.",
     readMore:"Read more ↓", showLess:"Show less ↑", guidesQ:"Still have questions about renting or buying in Bangkok?", askAnnie:"💬 Ask Annie",
     getInTouch:"Get in Touch", contactAnnie:"Contact Annie", replies:"Annie replies within 24 hours", lblPhone:"Phone", lblEmail:"Email",
-    formTitle:"Tell me what you're looking for", formSub:"Share a few details and Annie will send you matching properties.",
+    formTitle:"Tell me what you're looking for", formSub:"I'll personally help you find suitable properties — no pressure, just honest guidance.",
     fName:"Name", fNamePh:"Your name", fEmail:"Email", fEmailPh:"your@email.com", fPhone:"Phone / LINE / WhatsApp", fPhonePh:"How can Annie reach you?",
     fBudget:"Budget", fBudgetPh:"e.g. ฿30,000/mo or ฿5M", fLoc:"Preferred location", fLocPh:"e.g. Sukhumvit, Thonglor", fBeds:"Bedrooms", fMove:"Move-in date", fMovePh:"e.g. ASAP, Mar 2026", fMsg:"Message", fMsgPh:"Anything else I should know?",
     sendBtn:"Send to Annie via WhatsApp →", sendNote:"Opens WhatsApp with your details ready to send.",
@@ -205,6 +205,7 @@ const UI = {
     formAlert:"Please add your name and an email or phone so Annie can reach you.",
     footerTag:"Your trusted property partner in Thailand — helping you find condos, houses & rentals in Bangkok with honest, personal guidance.",
     addMeLine:"Add Me on LINE", footerScan:"Scan to chat instantly", stickySearch:"Search",
+    quickNav:"Explore", newsletter:"Newsletter", newsletterSoon:"Coming soon", newsletterText:"Bangkok property tips, new listings & area guides — straight to your inbox.", privacyLabel:"Privacy Policy", termsLabel:"Terms", closeLabel:"Close",
     flt:{ filters:"Filters", type:"Type", status:"Status", price:"Price", beds:"Bedrooms", size:"Size (m\u00B2)", zone:"Zone / BTS\u2013MRT", kw:"Keyword", kwPh:"Code, name or location\u2026", clear:"Clear filters", showing:"Showing", of:"of", min:"Min", max:"Max", all:"All", studio:"Studio", statusBoth:"For Rent & Sale", apply:"Show results", listView:"List", mapView:"Map" },
   },
   th: {
@@ -228,7 +229,7 @@ const UI = {
     guidesSub:"คำอธิบายง่ายๆ และตรงไปตรงมา เรื่องการเช่าและซื้ออสังหาฯ ในกรุงเทพฯ เพื่อให้ไม่มีอะไรเซอร์ไพรส์",
     readMore:"อ่านเพิ่มเติม ↓", showLess:"ย่อ ↑", guidesQ:"ยังมีคำถามเรื่องการเช่าหรือซื้อในกรุงเทพฯ ไหม?", askAnnie:"💬 ถาม Annie",
     getInTouch:"ติดต่อเรา", contactAnnie:"ติดต่อ Annie", replies:"Annie ตอบกลับภายใน 24 ชั่วโมง", lblPhone:"โทรศัพท์", lblEmail:"อีเมล",
-    formTitle:"บอกฉันว่าคุณกำลังมองหาอะไร", formSub:"บอกรายละเอียดสักเล็กน้อย แล้ว Annie จะส่งอสังหาฯ ที่ตรงใจให้คุณ",
+    formTitle:"บอกฉันว่าคุณกำลังมองหาอะไร", formSub:"ฉันจะช่วยคุณหาอสังหาฯ ที่เหมาะกับคุณด้วยตัวเอง — ไม่กดดัน มีแต่คำแนะนำที่จริงใจ",
     fName:"ชื่อ", fNamePh:"ชื่อของคุณ", fEmail:"อีเมล", fEmailPh:"your@email.com", fPhone:"โทร / LINE / WhatsApp", fPhonePh:"Annie ติดต่อคุณได้ทางไหน?",
     fBudget:"งบประมาณ", fBudgetPh:"เช่น ฿30,000/เดือน หรือ ฿5M", fLoc:"ทำเลที่ต้องการ", fLocPh:"เช่น สุขุมวิท, ทองหล่อ", fBeds:"ห้องนอน", fMove:"วันเข้าอยู่", fMovePh:"เช่น เร็วที่สุด, มี.ค. 2026", fMsg:"ข้อความ", fMsgPh:"มีอะไรอยากให้ฉันรู้เพิ่มเติมไหม?",
     sendBtn:"ส่งให้ Annie ทาง WhatsApp →", sendNote:"จะเปิด WhatsApp พร้อมรายละเอียดของคุณให้กดส่ง",
@@ -236,6 +237,7 @@ const UI = {
     formAlert:"กรุณากรอกชื่อ และอีเมลหรือเบอร์โทร เพื่อให้ Annie ติดต่อคุณได้",
     footerTag:"พาร์ทเนอร์อสังหาฯ ที่คุณไว้ใจในประเทศไทย — ช่วยคุณหาคอนโด บ้าน และห้องเช่าในกรุงเทพฯ ด้วยคำแนะนำที่จริงใจและเป็นกันเอง",
     addMeLine:"เพิ่มฉันใน LINE", footerScan:"สแกนเพื่อแชททันที", stickySearch:"ค้นหา",
+    quickNav:"สำรวจ", newsletter:"จดหมายข่าว", newsletterSoon:"เร็วๆ นี้", newsletterText:"เคล็ดลับอสังหาฯ ประกาศใหม่ และไกด์ย่าน ส่งตรงถึงอีเมลคุณ", privacyLabel:"นโยบายความเป็นส่วนตัว", termsLabel:"ข้อกำหนด", closeLabel:"ปิด",
     flt:{ filters:"ตัวกรอง", type:"ประเภท", status:"สถานะ", price:"ราคา", beds:"ห้องนอน", size:"ขนาด (ตร.ม.)", zone:"โซน / BTS\u2013MRT", kw:"ค้นหา", kwPh:"รหัส ชื่อ หรือทำเล…", clear:"ล้างตัวกรอง", showing:"แสดง", of:"จาก", min:"ต่ำสุด", max:"สูงสุด", all:"ทั้งหมด", studio:"สตูดิโอ", statusBoth:"เช่า & ขาย", apply:"ดูผลลัพธ์", listView:"รายการ", mapView:"แผนที่" },
   },
   zh: {
@@ -259,7 +261,7 @@ const UI = {
     guidesSub:"关于在曼谷租房与买房的简单、诚实的说明 — 让您没有意外。",
     readMore:"展开 ↓", showLess:"收起 ↑", guidesQ:"对在曼谷租房或买房还有疑问吗？", askAnnie:"💬 询问 Annie",
     getInTouch:"联系我们", contactAnnie:"联系 Annie", replies:"Annie 会在 24 小时内回复", lblPhone:"电话", lblEmail:"邮箱",
-    formTitle:"告诉我您在找什么", formSub:"留下一些细节，Annie 会为您发送匹配的房源。",
+    formTitle:"告诉我您在找什么", formSub:"我会亲自帮您找到合适的房产 — 不施压，只有诚实的建议。",
     fName:"姓名", fNamePh:"您的姓名", fEmail:"邮箱", fEmailPh:"your@email.com", fPhone:"电话 / LINE / WhatsApp", fPhonePh:"Annie 如何联系到您？",
     fBudget:"预算", fBudgetPh:"例如 ฿30,000/月 或 ฿5M", fLoc:"偏好地点", fLocPh:"例如 素坤逸、通罗", fBeds:"卧室", fMove:"入住日期", fMovePh:"例如 尽快、2026年3月", fMsg:"留言", fMsgPh:"还有什么需要我知道的吗？",
     sendBtn:"通过 WhatsApp 发送给 Annie →", sendNote:"将打开 WhatsApp，您的信息已准备好发送。",
@@ -267,6 +269,7 @@ const UI = {
     formAlert:"请填写您的姓名以及邮箱或电话，以便 Annie 联系您。",
     footerTag:"您值得信赖的泰国房产伙伴 — 以诚实、贴心的指导，帮您在曼谷寻找公寓、别墅与租房。",
     addMeLine:"在 LINE 上添加我", footerScan:"扫码即刻聊天", stickySearch:"搜索",
+    quickNav:"浏览", newsletter:"订阅通讯", newsletterSoon:"即将推出", newsletterText:"曼谷房产资讯、最新房源与区域指南，直接发送到您的邮箱。", privacyLabel:"隐私政策", termsLabel:"条款", closeLabel:"关闭",
     flt:{ filters:"筛选", type:"类型", status:"状态", price:"价格", beds:"卧室", size:"面积 (㎡)", zone:"区域 / BTS\u2013MRT", kw:"搜索", kwPh:"编号、名称或地点…", clear:"清除筛选", showing:"显示", of:"/", min:"最低", max:"最高", all:"全部", studio:"开间", statusBoth:"租 & 售", apply:"查看结果", listView:"列表", mapView:"地图" },
   },
 };
@@ -2078,6 +2081,41 @@ function MapView({ items, onOpen, lang }){
   );
 }
 
+const LEGAL_PRIVACY = [
+  "Bangkok Property Finder is an independent property service run by Annie. Your privacy matters, and this page explains — in plain language — how your information is handled.",
+  "When you contact us through the enquiry form, WhatsApp, LINE, email or phone, we use the details you share (such as your name, contact details and property preferences) for one purpose only: to respond to you and help you find suitable properties.",
+  "We do not sell, rent or trade your personal information to any third party. Your details are shared only where necessary to answer your enquiry or arrange a viewing you have asked for.",
+  "Property listings are provided for general information. Prices, availability and details can change and should always be confirmed directly before any agreement.",
+  "You can ask us to delete the details you have shared at any time — just email "+OWNER.email+" and we will remove them."
+];
+const LEGAL_TERMS = [
+  "These terms cover your use of the Bangkok Property Finder website. By using the site, you agree to them.",
+  "Bangkok Property Finder provides property search assistance and general guidance for properties in Thailand. Listings and information are provided in good faith for general information only and may change without notice.",
+  "Always verify the details that matter to you — price, availability, contract terms, deposits and fees — directly before entering into any agreement.",
+  "We are an independent service. Unless clearly stated, we are not the owner, developer or landlord of a listed property. Any transaction or contract is strictly between you and the relevant owner, landlord or their representative.",
+  "While we take care to keep information accurate, we cannot accept liability for decisions made based on information on this site. Our guides and articles are educational and are not legal, tax or financial advice.",
+  "If anything here is unclear, please get in touch at "+OWNER.email+" — we're happy to help."
+];
+
+function FloatField({ label, value, onChange, type="text", as="input", options, rows }) {
+  const [foc, setFoc] = useState(false);
+  const filled = value!=null && String(value).length>0;
+  const up = foc || filled || as!=="input";
+  const base = { width:"100%", boxSizing:"border-box", border:"1px solid "+(foc?"#C9A96E":"#E3DACD"), background:"#fff", borderRadius:12, padding:"20px 14px 8px", fontSize:14, color:"#1C1410", fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color .18s, box-shadow .18s", boxShadow: foc?"0 0 0 3px rgba(201,169,110,0.12)":"none" };
+  const lbl = { position:"absolute", left:14, pointerEvents:"none", transition:"all .16s ease", top: up?"7px":"50%", transform: up?"none":"translateY(-50%)", fontSize: up?10:14, fontWeight: up?700:500, letterSpacing: up?"0.06em":"normal", textTransform: up?"uppercase":"none", color: foc?"#9B6B2A":"#A89580" };
+  const onF=()=>setFoc(true), onB=()=>setFoc(false);
+  return (
+    <div style={{ position:"relative" }}>
+      {as==="textarea"
+        ? <textarea rows={rows||3} value={value} onChange={onChange} onFocus={onF} onBlur={onB} style={{ ...base, paddingTop:24, resize:"vertical" }}/>
+        : as==="select"
+        ? <select value={value} onChange={onChange} onFocus={onF} onBlur={onB} style={{ ...base, cursor:"pointer" }}>{(options||[]).map(o=> <option key={o} value={o}>{o}</option>)}</select>
+        : <input type={type} value={value} onChange={onChange} onFocus={onF} onBlur={onB} style={base}/>}
+      <label style={lbl}>{label}</label>
+    </div>
+  );
+}
+
 function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGoAdmin, agentContacts={} }) {
   const [city, setCity]       = useState("Bangkok");
   const [area, setArea]       = useState("All Areas");
@@ -2124,6 +2162,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   CUR_STATE = { cur: currency, rates: rates || {...CUR_FALLBACK} };
 
   const [navOpen, setNavOpen] = useState(false);
+  const [legal, setLegal] = useState(null);
   const [guideOpen, setGuideOpen] = useState(false);
   const navLink = { color:"#6B5E52", fontSize:13, fontWeight:500, letterSpacing:"0.04em", background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", padding:0, whiteSpace:"nowrap" };
   const mItem = { display:"flex", alignItems:"center", gap:9, width:"100%", textAlign:"left", background:"none", border:"none", borderBottom:"1px solid #EFE7DA", padding:"13px 4px", fontSize:15, fontWeight:600, color:"#3A2E22", cursor:"pointer", fontFamily:"'Outfit',sans-serif" };
@@ -2744,29 +2783,21 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 <>
                   <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:6 }}>{t.formTitle}</h3>
                   <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:18 }}>{t.formSub}</p>
-                  <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                    {[{l:t.fName,k:"name",t:"text",ph:t.fNamePh},{l:t.fEmail,k:"email",t:"email",ph:t.fEmailPh},{l:t.fPhone,k:"phone",t:"text",ph:t.fPhonePh},{l:t.fBudget,k:"budget",t:"text",ph:t.fBudgetPh},{l:t.fLoc,k:"location",t:"text",ph:t.fLocPh}].map(field=>(
-                      <div key={field.k}>
-                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{field.l}</label>
-                        <input type={field.t} placeholder={field.ph} value={contact[field.k]} onChange={e=>setContact({...contact,[field.k]:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
-                      </div>
-                    ))}
+                  <div style={{ display:"flex", flexDirection:"column", gap:13 }}>
+                    <FloatField label={t.fName} value={contact.name} onChange={e=>setContact({...contact,name:e.target.value})}/>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                      <div>
-                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t.fBeds}</label>
-                        <select value={contact.beds} onChange={e=>setContact({...contact,beds:e.target.value})} style={S.inp({cursor:"pointer"})}>
-                          {["Any","Studio","1","2","3","4+"].map(b=><option key={b}>{b}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t.fMove}</label>
-                        <input type="text" placeholder={t.fMovePh} value={contact.movein} onChange={e=>setContact({...contact,movein:e.target.value})} style={S.inp()} onFocus={onFG} onBlur={onBG}/>
-                      </div>
+                      <FloatField label={t.fEmail} type="email" value={contact.email} onChange={e=>setContact({...contact,email:e.target.value})}/>
+                      <FloatField label={t.fPhone} value={contact.phone} onChange={e=>setContact({...contact,phone:e.target.value})}/>
                     </div>
-                    <div>
-                      <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{t.fMsg}</label>
-                      <textarea rows={3} placeholder={t.fMsgPh} value={contact.msg} onChange={e=>setContact({...contact,msg:e.target.value})} style={{...S.inp(),resize:"vertical"}} onFocus={onFG} onBlur={onBG}/>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                      <FloatField label={t.fBudget} value={contact.budget} onChange={e=>setContact({...contact,budget:e.target.value})}/>
+                      <FloatField label={t.fLoc} value={contact.location} onChange={e=>setContact({...contact,location:e.target.value})}/>
                     </div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                      <FloatField label={t.fBeds} as="select" options={["Any","Studio","1","2","3","4+"]} value={contact.beds} onChange={e=>setContact({...contact,beds:e.target.value})}/>
+                      <FloatField label={t.fMove} value={contact.movein} onChange={e=>setContact({...contact,movein:e.target.value})}/>
+                    </div>
+                    <FloatField label={t.fMsg} as="textarea" rows={3} value={contact.msg} onChange={e=>setContact({...contact,msg:e.target.value})}/>
                     <button onClick={()=>{
                       if(!contact.name || !(contact.email||contact.phone)){ alert(t.formAlert); return; }
                       const lines=["Hi Annie! I'm looking for a property 🏡",""];
@@ -2782,7 +2813,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                       lines.push(""); lines.push("(Sent from bangkokpropertyfinder.vercel.app)");
                       window.open("https://wa.me/"+OWNER.whatsapp+"?text="+encodeURIComponent(lines.join("\n")), "_blank");
                       setSent(true);
-                    }} style={{...S.gold,width:"100%",padding:"13px",fontSize:14}}>
+                    }} style={{...S.gold,width:"100%",padding:"14px",fontSize:14.5,letterSpacing:"0.02em"}}>
                       {t.sendBtn}
                     </button>
                     <p style={{ fontSize:11, color:"#A89580", textAlign:"center" }}>{t.sendNote}</p>
@@ -2805,8 +2836,30 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <footer style={{ background:"#0F0A04", padding:"56px clamp(20px,5vw,60px) 26px", borderTop:"1px solid rgba(201,169,110,0.12)" }}>
         <div style={{ maxWidth:1080, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))", gap:40, alignItems:"start" }}>
           <div>
-            <img src={LOGO_IMG} alt="Bangkok Property Finder" style={{ height:46, width:"auto", objectFit:"contain", marginBottom:14 }}/>
-            <p style={{ color:"#7B6A5A", fontSize:13.5, lineHeight:1.7, maxWidth:280, margin:0 }}>{t.footerTag}</p>
+            <img src={LOGO_IMG} alt="Bangkok Property Finder — condos, houses & rentals in Bangkok" style={{ height:46, width:"auto", objectFit:"contain", marginBottom:14 }}/>
+            <p style={{ color:"#7B6A5A", fontSize:13.5, lineHeight:1.7, maxWidth:280, margin:"0 0 22px" }}>{t.footerTag}</p>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10, display:"inline-flex", alignItems:"center", gap:8 }}>{t.newsletter}<span style={{ background:"rgba(201,169,110,0.16)", color:"#C9A96E", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, letterSpacing:"0.06em" }}>{t.newsletterSoon}</span></div>
+            <p style={{ color:"#7B6A5A", fontSize:12.5, lineHeight:1.6, maxWidth:280, margin:"0 0 11px" }}>{t.newsletterText}</p>
+            <div style={{ display:"flex", gap:8, maxWidth:290 }}>
+              <input disabled placeholder="you@email.com" style={{ flex:1, minWidth:0, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(201,169,110,0.2)", borderRadius:10, padding:"9px 12px", color:"#8E7E6E", fontSize:12.5, fontFamily:"'Outfit',sans-serif", outline:"none", cursor:"not-allowed" }}/>
+              <button disabled style={{ background:"rgba(201,169,110,0.22)", color:"#C9A96E", border:"none", borderRadius:10, padding:"9px 15px", fontSize:13, fontWeight:800, cursor:"not-allowed", whiteSpace:"nowrap" }}>→</button>
+            </div>
+          </div>
+          <div>
+            <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>{t.quickNav}</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:11 }}>
+              {[
+                { l:t.navHome, fn:()=>navGo("__top") },
+                { l:t.nav[0], fn:()=>navSearch("For Sale") },
+                { l:t.nav[1], fn:()=>navSearch("For Rent") },
+                { l:t.nav[2], fn:()=>navGo("services") },
+                { l:t.navGuide, fn:()=>navGo("guides") },
+                { l:t.nav[3], fn:()=>navGo("contact") },
+                { l:t.navAbout, fn:()=>navGo("rent") }
+              ].map((m,i)=>(
+                <button key={i} onClick={m.fn} style={{ background:"none", border:"none", padding:0, textAlign:"left", cursor:"pointer", color:"#D8C8B4", fontSize:13.5, fontFamily:"'Outfit',sans-serif", transition:"color .15s", width:"fit-content" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#D8C8B4"}>{m.l}</button>
+              ))}
+            </div>
           </div>
           <div>
             <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>{t.getInTouch}</div>
@@ -2834,8 +2887,31 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <div style={{ color:"#7B6A5A", fontSize:12.5, marginTop:11, display:"inline-flex", alignItems:"center", gap:6 }}><Icon n="line" s={14} c="#06C755"/>{t.footerScan}</div>
           </div>
         </div>
-        <div style={{ maxWidth:1080, margin:"40px auto 0", paddingTop:22, borderTop:"1px solid rgba(201,169,110,0.1)", color:"#4A3A2A", fontSize:12, textAlign:"center" }}>© 2026 Bangkok Property Finder · Real Estate By Annie · Bangkok, Thailand</div>
+        <div style={{ maxWidth:1080, margin:"40px auto 0", paddingTop:22, borderTop:"1px solid rgba(201,169,110,0.1)", display:"flex", flexWrap:"wrap", justifyContent:"space-between", alignItems:"center", gap:12 }}>
+          <div style={{ color:"#4A3A2A", fontSize:12 }}>© 2026 Bangkok Property Finder · Real Estate By Annie · Bangkok, Thailand</div>
+          <div style={{ display:"flex", gap:18 }}>
+            <button onClick={()=>setLegal("privacy")} style={{ background:"none", border:"none", padding:0, cursor:"pointer", color:"#6B5A46", fontSize:12, fontFamily:"'Outfit',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5A46"}>{t.privacyLabel}</button>
+            <button onClick={()=>setLegal("terms")} style={{ background:"none", border:"none", padding:0, cursor:"pointer", color:"#6B5A46", fontSize:12, fontFamily:"'Outfit',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5A46"}>{t.termsLabel}</button>
+          </div>
+        </div>
       </footer>
+
+      {legal && (
+        <div onClick={()=>setLegal(null)} style={{ position:"fixed", inset:0, zIndex:700, background:"rgba(15,10,4,0.6)", backdropFilter:"blur(3px)", WebkitBackdropFilter:"blur(3px)", display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ background:"#FDFAF6", borderRadius:18, maxWidth:640, width:"100%", maxHeight:"84vh", overflowY:"auto", boxShadow:"0 30px 80px rgba(0,0,0,0.4)", padding:"28px clamp(20px,4vw,36px)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+              <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1C1410", margin:0 }}>{legal==="privacy"?t.privacyLabel:t.termsLabel}</h3>
+              <button onClick={()=>setLegal(null)} aria-label={t.closeLabel} style={{ width:36, height:36, borderRadius:"50%", border:"none", background:"#F3EEE8", color:"#6B5E52", fontSize:18, cursor:"pointer", flexShrink:0 }}>✕</button>
+            </div>
+            <div style={{ color:"#5A4A3A", fontSize:14, lineHeight:1.75 }}>
+              {(legal==="privacy"?LEGAL_PRIVACY:LEGAL_TERMS).map((para,i)=>(
+                <p key={i} style={{ margin:"0 0 13px" }}>{para}</p>
+              ))}
+              <p style={{ margin:"16px 0 0", fontSize:12.5, color:"#A89580" }}>Last updated: 2026 · Questions? {OWNER.email}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
