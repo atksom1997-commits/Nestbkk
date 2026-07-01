@@ -2643,29 +2643,41 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,44px)", fontWeight:700, color:"#1C1410", marginBottom:12 }}>{t.guidesH2a} <em style={{ color:"#C9A96E" }}>{t.guidesH2b}</em></h2>
             <p style={{ color:"#8E7E6E", fontSize:15, maxWidth:560, margin:"0 auto", lineHeight:1.7 }}>{t.guidesSub}</p>
           </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:18, alignItems:"start" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:20, alignItems:"start" }}>
             {guides.map((g,i)=>{
               const open = openGuide===i;
+              const thumbs = ["linear-gradient(135deg,#2E1E0E 0%,#5A3D1E 100%)","linear-gradient(135deg,#1C1410 0%,#3E2C1A 100%)","linear-gradient(135deg,#4A3418 0%,#7A5326 100%)","linear-gradient(135deg,#28201A 0%,#50361F 100%)","linear-gradient(135deg,#3A2A16 0%,#6B4A24 100%)"];
+              const txt = (g.intro||"") + " " + (g.points||[]).map(pt=>(pt.h||"")+" "+(pt.b||"")).join(" ");
+              const mins = Math.max(2, Math.round(txt.length/520));
+              const minLbl = lang==="th"?"นาที":(lang==="zh"?"分钟":"min read");
               return (
-                <div key={i} onClick={()=>setOpenGuide(open?null:i)} style={{ background:"#fff", border:"1px solid #EFE8DF", borderRadius:18, padding:"24px", boxShadow: open?"0 12px 36px rgba(28,20,16,0.1)":"0 2px 14px rgba(0,0,0,0.04)", transition:"box-shadow 0.25s", cursor:"pointer" }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:13 }}>
-                    <span style={{ width:40, height:40, borderRadius:12, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={GUIDE_ICONS[i]} s={19} c="#fff"/></span>
-                    <span style={{ fontSize:10.5, fontWeight:800, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9B6B2A", background:"#FBF3E6", padding:"4px 10px", borderRadius:20 }}>{g.tag}</span>
+                <article key={i} onClick={()=>setOpenGuide(open?null:i)} style={{ background:"#fff", border:"1px solid #EFE8DF", borderRadius:18, overflow:"hidden", boxShadow: open?"0 16px 44px rgba(28,20,16,0.13)":"0 3px 16px rgba(0,0,0,0.05)", transition:"box-shadow .25s, transform .25s, border-color .25s", cursor:"pointer" }}
+                  onMouseEnter={e=>{ if(!open){ e.currentTarget.style.transform="translateY(-5px)"; e.currentTarget.style.boxShadow="0 18px 42px rgba(201,169,110,0.18)"; e.currentTarget.style.borderColor="#E4D6BE"; } const im=e.currentTarget.querySelector(".bpf-gwm"); if(im) im.style.transform="rotate(-8deg) scale(1.08)"; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.transform="none"; e.currentTarget.style.boxShadow= open?"0 16px 44px rgba(28,20,16,0.13)":"0 3px 16px rgba(0,0,0,0.05)"; e.currentTarget.style.borderColor="#EFE8DF"; const im=e.currentTarget.querySelector(".bpf-gwm"); if(im) im.style.transform="rotate(-6deg) scale(1)"; }}>
+                  {/* magazine cover */}
+                  <div style={{ position:"relative", height:158, background:thumbs[i%thumbs.length], overflow:"hidden" }}>
+                    <span className="bpf-gwm" style={{ position:"absolute", right:-14, bottom:-22, opacity:0.18, transform:"rotate(-6deg)", transition:"transform .5s cubic-bezier(0.22,1,0.36,1)", pointerEvents:"none" }}><Icon n={GUIDE_ICONS[i]} s={128} c="#F0D9AE"/></span>
+                    <span style={{ position:"absolute", top:14, left:14, background:"rgba(255,255,255,0.92)", backdropFilter:"blur(6px)", WebkitBackdropFilter:"blur(6px)", color:"#9B6B2A", fontSize:10, fontWeight:800, letterSpacing:"0.1em", textTransform:"uppercase", padding:"4px 11px", borderRadius:20 }}>{g.tag}</span>
+                    <span style={{ position:"absolute", top:14, right:14, background:"rgba(0,0,0,0.34)", backdropFilter:"blur(6px)", WebkitBackdropFilter:"blur(6px)", border:"1px solid rgba(255,255,255,0.22)", color:"#F5E9D0", fontSize:10.5, fontWeight:600, padding:"4px 10px", borderRadius:20, display:"inline-flex", alignItems:"center", gap:5 }}>📖 {mins} {minLbl}</span>
+                    <span style={{ position:"absolute", left:16, bottom:14, width:34, height:34, borderRadius:10, background:"rgba(201,169,110,0.92)", display:"inline-flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 14px rgba(0,0,0,0.3)" }}><Icon n={GUIDE_ICONS[i]} s={17} c="#fff"/></span>
                   </div>
-                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:8, lineHeight:1.2 }}>{g.title}</h3>
-                  <p style={{ color:"#8E7E6E", fontSize:13.5, lineHeight:1.6, marginBottom: open?18:0 }}>{g.intro}</p>
-                  {open && (
-                    <div style={{ display:"flex", flexDirection:"column", gap:14, borderTop:"1px solid #EFE8DF", paddingTop:16 }}>
-                      {g.points.map((p,j)=>(
-                        <div key={j} style={{ display:"flex", gap:11 }}>
-                          <span style={{ width:24, height:24, borderRadius:"50%", background:"#FBF3E6", color:"#9B6B2A", fontSize:12, fontWeight:800, display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>{j+1}</span>
-                          <div><div style={{ fontWeight:700, fontSize:14, color:"#1C1410", marginBottom:3 }}>{p.h}</div><div style={{ color:"#6B5E52", fontSize:13.5, lineHeight:1.65 }}>{p.b}</div></div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div style={{ marginTop:14, color:"#C9A96E", fontSize:13, fontWeight:700 }}>{open ? t.showLess : t.readMore}</div>
-                </div>
+                  {/* body */}
+                  <div style={{ padding:"20px 22px 22px" }}>
+                    <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:8, lineHeight:1.22 }}>{g.title}</h3>
+                    <p style={{ color:"#8E7E6E", fontSize:13.5, lineHeight:1.65, marginBottom: open?18:14 }}>{g.intro}</p>
+                    {open && (
+                      <div style={{ display:"flex", flexDirection:"column", gap:14, borderTop:"1px solid #EFE8DF", paddingTop:16, marginBottom:4 }}>
+                        {g.points.map((pt,j)=>(
+                          <div key={j} style={{ display:"flex", gap:11 }}>
+                            <span style={{ width:24, height:24, borderRadius:"50%", background:"#FBF3E6", color:"#9B6B2A", fontSize:12, fontWeight:800, display:"inline-flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>{j+1}</span>
+                            <div><div style={{ fontWeight:700, fontSize:14, color:"#1C1410", marginBottom:3 }}>{pt.h}</div><div style={{ color:"#6B5E52", fontSize:13.5, lineHeight:1.65 }}>{pt.b}</div></div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div style={{ color:"#C9A96E", fontSize:13, fontWeight:700, display:"inline-flex", alignItems:"center", gap:6 }}>{open ? t.showLess : t.readMore} <span style={{ transition:"transform .2s", display:"inline-block", transform: open?"rotate(90deg)":"none" }}>→</span></div>
+                  </div>
+                </article>
               );
             })}
           </div>
