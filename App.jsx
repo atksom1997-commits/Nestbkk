@@ -179,17 +179,18 @@ const UI = {
   en: {
     nav:["Buy","Rent","Services","Contact"], admin:"🔐 Admin", navHome:"Home", navGuide:"Guide", navAbout:"About Me",
     heroBadge:"Thailand Property Specialist", heroH1a:"Find Your Perfect", heroH1b:"Home in Bangkok",
-    heroSub1:"Luxury condos, houses & rentals matched to your lifestyle — guided personally by ", heroSub2:", your trusted Bangkok property partner.",
+    heroSub1:"Luxury condos, family homes, and rental properties carefully matched to your lifestyle with honest local guidance.", heroSub2:"",
     sBuyRent:"Buy & Rent", sSale:"For Sale", sRent:"For Rent", searchPh:"Search by name or location...", searchBtn:"Search",
     ctaFind:"🔍 Find My Property", ctaContact:"💬 Contact Annie",
     trust:["Local Bangkok Knowledge","Property Matching","Viewing Assistance","Contract Support"],
     live:"Live Listings", propsIn:"Properties in", emptyTitle:"No properties found", emptySub:"Try adjusting your filters",
     meet:"Meet Annie", aboutH2a:"Your Bangkok", aboutH2b:"Property Specialist",
-    aboutP1:"Hi, I'm ", aboutP2:" — your dedicated Bangkok property consultant. I help expats, foreigners & investors find the right condo, house or rental, and I guide you from the very first search all the way to signing your contract — clearly explained, in English & Thai.",
+    aboutP1:"I'm ", aboutP2:", the founder of Bangkok Property Finder. I started this service because finding the right property in Bangkok shouldn't feel confusing or overwhelming. Rather than sending hundreds of listings, I focus on understanding your needs and carefully matching properties that genuinely fit your lifestyle and budget — whether you're relocating, investing, or renting your first home. My goal is simple: honest guidance at every step.",
     aboutChecks:["Personalized property matching","Verified property information","Local area expertise","English & Thai support"],
     aboutCards:[{t:"Verified Listings",d:"Every property personally checked."},{t:"Thai & English",d:"Bilingual support throughout."},{t:"Quick Response",d:"Fast, friendly replies to every enquiry."},{t:"Personal Touch",d:"Dedicated one-on-one service."}],
     explore:"Explore", browse:"Browse by City", listingOne:"listing", listingMany:"listings", exploreMore:"Explore →",
     offer:"What We Offer", ourServices:"Our Services", servicesSub:"More than just listings — we help you find, evaluate, and secure the perfect property in Thailand.",
+    whyEyebrow:"The Difference", whyTitle:"Why Work With Bangkok Property Finder", whySub:"No big agency, no sales quotas — just one specialist genuinely on your side.", whyCards:[{t:"Honest advice",d:"Straight answers on every property, including the downsides most agents skip."},{t:"Personalised matches",d:"Options chosen around your needs, not an endless list of everything for sale."},{t:"English & Thai",d:"Clear communication in both languages, from first message to signed contract."},{t:"Independent research",d:"No developer commissions steering you — my advice works for you alone."},{t:"Local knowledge",d:"On-the-ground insight into Bangkok's areas, buildings and real pricing."},{t:"Quick responses",d:"Fast, direct replies on WhatsApp or LINE — you're never left waiting."},{t:"No pressure",d:"Take all the time you need. I'm here to guide you, never to push a deal."},{t:"One dedicated contact",d:"You deal with me directly — no call centres, no being passed around."}],
     serviceCards:[{title:"Property Sourcing",desc:"Tell us your budget, location, and needs — we search the market and bring you the best matching properties, including off-market deals."},{title:"Consultation",desc:"Expert advice on buying, renting, or investing in Thai real estate. We guide you through pricing, areas, legal steps, and more."},{title:"Buyer & Tenant Matching",desc:"Looking for something specific? Share your requirements and we'll find exactly what you're looking for — saving you time and effort."}],
     cantFind:"Can't find what you're looking for? Let us find it for you.", addLine:"Add LINE",
     guidesTag:"Buyer & Renter Guides", guidesH2a:"Know Before You", guidesH2b:"Rent or Buy",
@@ -209,17 +210,18 @@ const UI = {
   th: {
     nav:["ซื้อ","เช่า","บริการ","ติดต่อ"], admin:"🔐 แอดมิน", navHome:"หน้าแรก", navGuide:"คู่มือ", navAbout:"เกี่ยวกับเรา",
     heroBadge:"ผู้เชี่ยวชาญอสังหาฯ ประเทศไทย", heroH1a:"ค้นหาบ้านในฝัน", heroH1b:"ของคุณในกรุงเทพฯ",
-    heroSub1:"คอนโด บ้าน และห้องเช่าระดับพรีเมียม คัดสรรให้เข้ากับไลฟ์สไตล์ของคุณ — ดูแลโดย ", heroSub2:" ที่ปรึกษาอสังหาฯ กรุงเทพฯ ที่คุณไว้วางใจได้",
+    heroSub1:"คอนโดหรู บ้านสำหรับครอบครัว และห้องเช่า คัดสรรให้เข้ากับไลฟ์สไตล์ของคุณอย่างพิถีพิถัน พร้อมคำแนะนำที่จริงใจจากคนท้องถิ่น", heroSub2:"",
     sBuyRent:"ซื้อ & เช่า", sSale:"ขาย", sRent:"เช่า", searchPh:"ค้นหาด้วยชื่อหรือทำเล...", searchBtn:"ค้นหา",
     ctaFind:"🔍 ค้นหาอสังหาฯ", ctaContact:"💬 ติดต่อ Annie",
     trust:["รู้ลึกทำเลกรุงเทพฯ","จับคู่อสังหาฯ ให้คุณ","พาชมห้องและบ้าน","ดูแลเรื่องสัญญา"],
     live:"ประกาศล่าสุด", propsIn:"อสังหาฯ ใน", emptyTitle:"ไม่พบอสังหาฯ", emptySub:"ลองปรับตัวกรองดูใหม่",
     meet:"รู้จัก Annie", aboutH2a:"ที่ปรึกษาอสังหาฯ", aboutH2b:"กรุงเทพฯ ของคุณ",
-    aboutP1:"สวัสดีค่ะ ฉันชื่อ ", aboutP2:" — ที่ปรึกษาอสังหาฯ กรุงเทพฯ ของคุณ ฉันช่วยชาวต่างชาติและนักลงทุนหาคอนโด บ้าน หรือห้องเช่าที่ใช่ และดูแลคุณตั้งแต่เริ่มค้นหาจนถึงเซ็นสัญญา อธิบายทุกขั้นตอนชัดเจน ทั้งภาษาอังกฤษและภาษาไทย",
+    aboutP1:"สวัสดีค่ะ ฉันคือ ", aboutP2:" ผู้ก่อตั้ง Bangkok Property Finder ฉันสร้างบริการนี้ขึ้นเพราะเชื่อว่าการหาอสังหาฯ ที่ใช่ในกรุงเทพฯ ไม่ควรเป็นเรื่องสับสนหรือหนักใจ แทนที่จะส่งประกาศเป็นร้อยรายการ ฉันเน้นทำความเข้าใจสิ่งที่คุณต้องการ แล้วคัดเฉพาะอสังหาฯ ที่เข้ากับไลฟ์สไตล์และงบของคุณจริงๆ ไม่ว่าจะย้ายมาอยู่ ลงทุน หรือเช่าบ้านหลังแรก เป้าหมายของฉันง่ายมาก คือให้คำแนะนำที่จริงใจในทุกขั้นตอน",
     aboutChecks:["จับคู่อสังหาฯ ตามความต้องการ","ข้อมูลอสังหาฯ ที่ตรวจสอบแล้ว","เชี่ยวชาญทำเลในพื้นที่","บริการภาษาไทยและอังกฤษ"],
     aboutCards:[{t:"ประกาศที่ตรวจสอบแล้ว",d:"ทุกอสังหาฯ ตรวจสอบด้วยตัวเอง"},{t:"ไทย & อังกฤษ",d:"บริการสองภาษาตลอดการดูแล"},{t:"ตอบกลับรวดเร็ว",d:"ตอบทุกข้อความอย่างเป็นมิตรและรวดเร็ว"},{t:"ดูแลใกล้ชิด",d:"บริการแบบตัวต่อตัว"}],
     explore:"สำรวจ", browse:"เลือกตามเมือง", listingOne:"ประกาศ", listingMany:"ประกาศ", exploreMore:"สำรวจ →",
     offer:"สิ่งที่เรามอบให้", ourServices:"บริการของเรา", servicesSub:"มากกว่าแค่ประกาศ — เราช่วยคุณค้นหา ประเมิน และปิดดีลอสังหาฯ ที่ใช่ในประเทศไทย",
+    whyEyebrow:"ความต่างของเรา", whyTitle:"ทำไมต้องเลือก Bangkok Property Finder", whySub:"ไม่ใช่บริษัทใหญ่ ไม่มียอดบังคับ — มีแค่ผู้เชี่ยวชาญคนเดียวที่อยู่ข้างคุณจริงๆ", whyCards:[{t:"คำแนะนำที่จริงใจ",d:"บอกตรงๆ ทุกเรื่องของแต่ละยูนิต รวมถึงข้อเสียที่หลายคนไม่พูดถึง"},{t:"คัดมาให้ตรงคุณ",d:"เลือกจากสิ่งที่คุณต้องการจริงๆ ไม่ใช่ส่งมาเป็นร้อยรายการ"},{t:"อังกฤษ & ไทย",d:"สื่อสารชัดเจนสองภาษา ตั้งแต่ทักครั้งแรกจนเซ็นสัญญา"},{t:"อิสระ ไม่มีนายหน้าเบื้องหลัง",d:"ไม่มีค่าคอมจากโครงการมาชี้นำ คำแนะนำเพื่อคุณล้วนๆ"},{t:"รู้ลึกตลาดท้องถิ่น",d:"เข้าใจย่าน อาคาร และราคาจริงในกรุงเทพฯ อย่างละเอียด"},{t:"ตอบไว",d:"ตอบเร็วตรงประเด็นทาง WhatsApp หรือ LINE ไม่ปล่อยให้รอ"},{t:"ไม่กดดัน",d:"ค่อยๆ ตัดสินใจได้เต็มที่ ฉันมาเพื่อช่วย ไม่ใช่มาเร่งปิดดีล"},{t:"ดูแลโดยคนเดียว",d:"คุยกับฉันโดยตรง ไม่มีคอลเซ็นเตอร์ ไม่โดนโยนไปมา"}],
     serviceCards:[{title:"จัดหาอสังหาฯ",desc:"บอกงบประมาณ ทำเล และความต้องการของคุณ แล้วเราจะค้นหาตลาดและนำอสังหาฯ ที่ตรงใจที่สุดมาให้ รวมถึงดีลที่ไม่ได้ลงประกาศ"},{title:"ให้คำปรึกษา",desc:"คำแนะนำจากผู้เชี่ยวชาญเรื่องการซื้อ เช่า หรือลงทุนอสังหาฯ ไทย เราพาคุณดูทั้งราคา ทำเล ขั้นตอนกฎหมาย และอื่นๆ"},{title:"จับคู่ผู้ซื้อ & ผู้เช่า",desc:"กำลังมองหาบางอย่างที่เฉพาะเจาะจง? บอกความต้องการมา แล้วเราจะหาสิ่งที่คุณต้องการให้พอดี ประหยัดเวลาและแรงของคุณ"}],
     cantFind:"หาสิ่งที่ต้องการไม่เจอ? ให้เราช่วยหาให้คุณ", addLine:"เพิ่มเพื่อน LINE",
     guidesTag:"คู่มือผู้ซื้อ & ผู้เช่า", guidesH2a:"รู้ไว้ก่อน", guidesH2b:"เช่าหรือซื้อ",
@@ -239,17 +241,18 @@ const UI = {
   zh: {
     nav:["买房","租房","服务","联系"], admin:"🔐 管理", navHome:"首页", navGuide:"指南", navAbout:"关于",
     heroBadge:"泰国房产专家", heroH1a:"在曼谷找到", heroH1b:"您的理想之家",
-    heroSub1:"高级公寓、别墅与租房，量身匹配您的生活方式 — 由 ", heroSub2:" 亲自为您服务，您值得信赖的曼谷房产伙伴。",
+    heroSub1:"高级公寓、家庭住宅与租赁房源，用心匹配您的生活方式，并提供诚实的本地指导。", heroSub2:"",
     sBuyRent:"买 & 租", sSale:"出售", sRent:"出租", searchPh:"按名称或地点搜索...", searchBtn:"搜索",
     ctaFind:"🔍 寻找房源", ctaContact:"💬 联系 Annie",
     trust:["熟悉曼谷本地","房源精准匹配","陪同看房","合同协助"],
     live:"最新房源", propsIn:"房源 ·", emptyTitle:"未找到房源", emptySub:"请调整筛选条件",
     meet:"认识 Annie", aboutH2a:"您的曼谷", aboutH2b:"房产专家",
-    aboutP1:"您好，我是 ", aboutP2:" — 您专属的曼谷房产顾问。我帮助外籍人士与投资者找到合适的公寓、别墅或租房，并从最初搜索一路陪伴到签约，每一步都清楚解释，提供英文与泰文协助。",
+    aboutP1:"我是 ", aboutP2:"，Bangkok Property Finder 的创办人。我创立这项服务，是因为在曼谷找到合适的房产不该让人感到困惑或不知所措。我不会一次发送上百个房源，而是专注了解您的需求，用心匹配真正符合您生活方式与预算的房产 — 无论您是搬迁、投资，还是租下在曼谷的第一个家。我的目标很简单：在每一步提供诚实的建议。",
     aboutChecks:["按需精准匹配房源","核实过的房源信息","本地区域专长","英文与泰文协助"],
     aboutCards:[{t:"核实房源",d:"每套房源都亲自查验。"},{t:"泰文 & 英文",d:"全程双语（英 / 泰）协助。"},{t:"快速回复",d:"每条咨询都快速友善回复。"},{t:"贴心服务",d:"专属一对一服务。"}],
     explore:"探索", browse:"按城市浏览", listingOne:"套房源", listingMany:"套房源", exploreMore:"探索 →",
     offer:"服务内容", ourServices:"我们的服务", servicesSub:"不只是房源 — 我们帮您在泰国寻找、评估并锁定理想房产。",
+    whyEyebrow:"我们的不同", whyTitle:"为什么选择 Bangkok Property Finder", whySub:"没有大型中介，没有销售指标 — 只有一位真正为您着想的专家。", whyCards:[{t:"诚实建议",d:"如实告知每套房产的情况，包括多数中介避谈的缺点。"},{t:"量身匹配",d:"依您的需求精选房源，而非罗列所有在售物件。"},{t:"英文与泰文",d:"从第一条讯息到签约，双语清楚沟通。"},{t:"独立中立",d:"没有开发商佣金左右，我的建议只为您服务。"},{t:"熟悉本地市场",d:"深入了解曼谷各区域、楼盘与真实价格。"},{t:"快速回覆",d:"WhatsApp 或 LINE 快速直接回覆，不让您久等。"},{t:"绝不施压",d:"慢慢考虑，我是来协助您，而非催促成交。"},{t:"专属一对一",d:"直接与我联系，没有客服中心，不被转来转去。"}],
     serviceCards:[{title:"房源搜寻",desc:"告诉我们您的预算、地点与需求 — 我们将搜索市场，为您带来最匹配的房源，包括未公开的内部房源。"},{title:"咨询顾问",desc:"关于在泰国买房、租房或投资的专业建议。我们带您了解价格、区域、法律流程等。"},{title:"买家 & 租客匹配",desc:"在找特定的房子？告诉我们您的要求，我们会精准找到您想要的 — 为您节省时间与精力。"}],
     cantFind:"找不到合适的？让我们为您寻找。", addLine:"添加 LINE",
     guidesTag:"买家 & 租客指南", guidesH2a:"租房或买房前", guidesH2b:"必看",
@@ -676,47 +679,55 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
   return (
     <>
       {showLine && <LineModal msg={cardMsg} lineUrl={cardLine} onClose={()=>setShowLine(false)} />}
-      <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(32px)", transition:`opacity 0.5s ease ${idx*0.07}s, transform 0.5s ease ${idx*0.07}s`, background:"#fff", borderRadius:18, overflow:"hidden", border:"1px solid #EDE8E0", boxShadow:"0 2px 14px rgba(0,0,0,0.06)", cursor:"pointer" }}
+      <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(32px)", transition:`opacity 0.5s ease ${idx*0.07}s, transform 0.5s ease ${idx*0.07}s`, background:"#fff", borderRadius:20, overflow:"hidden", border:"1px solid #EDE8E0", boxShadow:"0 2px 14px rgba(0,0,0,0.06)", cursor:"pointer" }}
         onClick={()=>onOpen && onOpen(p)}
-        onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 14px 40px rgba(0,0,0,0.13)"; e.currentTarget.style.transform="translateY(-4px)"; }}
-        onMouseLeave={e=>{ e.currentTarget.style.boxShadow="0 2px 14px rgba(0,0,0,0.06)"; e.currentTarget.style.transform="translateY(0)"; }}>
+        onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 20px 48px rgba(28,20,4,0.16)"; e.currentTarget.style.transform="translateY(-6px)"; e.currentTarget.style.borderColor="#E4D6BE"; const im=e.currentTarget.querySelector(".bpf-cardimg"); if(im) im.style.transform="scale(1.08)"; }}
+        onMouseLeave={e=>{ e.currentTarget.style.boxShadow="0 2px 14px rgba(0,0,0,0.06)"; e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.borderColor="#EDE8E0"; const im=e.currentTarget.querySelector(".bpf-cardimg"); if(im) im.style.transform="scale(1)"; }}>
 
         {/* image */}
-        <div style={{ position:"relative", height:210, overflow:"hidden" }}>
-          {imgs[0] && <img src={imgs[0]} alt={p.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>}
-          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55) 100%)" }} />
-          <span style={{ position:"absolute", top:12, left:12, background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, letterSpacing:"0.08em", textTransform:"uppercase" }}>{p.tag}</span>
-          {/* photo count badge */}
-          {imgs.length > 1 && (
-            <span style={{ position:"absolute", bottom:10, left:12, background:"rgba(0,0,0,0.55)", color:"#fff", fontSize:10, fontWeight:600, padding:"3px 8px", borderRadius:10 }}>
-              <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="area" s={11} c="#fff"/>{imgs.length} photos</span>
-            </span>
-          )}
-          <div style={{ position:"absolute", top:10, right:10, display:"flex", gap:6 }}>
-            <button onClick={copyCardLink} title="Copy link to this listing" style={{ height:30, padding:"0 11px", borderRadius:15, border:"none", background: linkCopied?"#16A34A":"rgba(255,255,255,0.92)", color: linkCopied?"#fff":"#6B5E52", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:5, fontSize:11.5, fontWeight:700, whiteSpace:"nowrap" }}>{linkCopied ? "✓ Copied!" : "🔗 Link"}</button>
+        <div style={{ position:"relative", height:238, overflow:"hidden", background:"#F1ECE4" }}>
+          {imgs[0] && <img className="bpf-cardimg" src={imgs[0]} alt={`${p.title} — ${p.type} ${p.status} in ${p.location}`} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.6s cubic-bezier(0.22,1,0.36,1)" }}/>}
+          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,rgba(0,0,0,0.12) 0%,transparent 30%,transparent 52%,rgba(0,0,0,0.64) 100%)" }} />
+
+          {/* top-left: tag + verified */}
+          <div style={{ position:"absolute", top:13, left:13, display:"flex", flexDirection:"column", gap:6, alignItems:"flex-start" }}>
+            {p.tag && <span style={{ background:TAG_COLORS[p.tag]||"#2563EB", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, letterSpacing:"0.08em", textTransform:"uppercase" }}>{p.tag}</span>}
+            <span style={{ display:"inline-flex", alignItems:"center", gap:4, background:"rgba(255,255,255,0.92)", backdropFilter:"blur(6px)", WebkitBackdropFilter:"blur(6px)", color:"#9B6B2A", fontSize:10, fontWeight:800, padding:"3px 9px 3px 7px", borderRadius:20, letterSpacing:"0.03em", boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}><Icon n="check" s={12} c="#9B6B2A"/>Verified</span>
+          </div>
+
+          {/* top-right: actions */}
+          <div style={{ position:"absolute", top:11, right:11, display:"flex", gap:6 }}>
+            <button onClick={copyCardLink} title="Copy link to this listing" style={{ height:30, padding:"0 11px", borderRadius:15, border:"none", background: linkCopied?"#16A34A":"rgba(255,255,255,0.92)", color: linkCopied?"#fff":"#6B5E52", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:5, fontSize:11.5, fontWeight:700, whiteSpace:"nowrap", boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}>{linkCopied ? "✓ Copied!" : "🔗 Link"}</button>
             {isAdmin ? (
               <>
-                <button onClick={e=>{ e.stopPropagation(); onEdit(p); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}><Icon n="edit" s={14} c="#6B5E52"/></button>
-                <button onClick={e=>{ e.stopPropagation(); onDel(p.id); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}><Icon n="trash" s={14} c="#DC2626"/></button>
+                <button onClick={e=>{ e.stopPropagation(); onEdit(p); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}><Icon n="edit" s={14} c="#6B5E52"/></button>
+                <button onClick={e=>{ e.stopPropagation(); onDel(p.id); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}><Icon n="trash" s={14} c="#DC2626"/></button>
               </>
             ) : (
-              <button onClick={e=>{e.stopPropagation();setLiked(!liked);}} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:16 }}>{liked?"❤️":"🤍"}</button>
+              <button onClick={e=>{e.stopPropagation();setLiked(!liked);}} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}>{liked?"❤️":"🤍"}</button>
             )}
           </div>
-          <span style={{ position:"absolute", top:10, right:isAdmin?80:52, background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.28)", borderRadius:20, padding:"3px 10px", color:"#fff", fontSize:11, fontWeight:600 }}>{p.status}</span>
+
+          {/* bottom: status + price badge */}
+          <div style={{ position:"absolute", left:15, right:14, bottom:13, display:"flex", alignItems:"flex-end", justifyContent:"space-between", gap:10 }}>
+            <div>
+              <span style={{ display:"inline-block", background:"rgba(255,255,255,0.16)", backdropFilter:"blur(8px)", WebkitBackdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.3)", borderRadius:20, padding:"2px 10px", color:"#fff", fontSize:10.5, fontWeight:600, marginBottom:7 }}>{p.status}</span>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#fff", lineHeight:1, textShadow:"0 2px 12px rgba(0,0,0,0.45)" }}>{priceDisplay(p)}</div>
+            </div>
+            {imgs.length > 1 && (
+              <span style={{ background:"rgba(0,0,0,0.5)", backdropFilter:"blur(4px)", WebkitBackdropFilter:"blur(4px)", color:"#fff", fontSize:10, fontWeight:600, padding:"3px 8px", borderRadius:10, whiteSpace:"nowrap", flexShrink:0 }}>
+                <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="area" s={11} c="#fff"/>{imgs.length}</span>
+              </span>
+            )}
+          </div>
         </div>
 
         {/* body */}
-        <div style={{ padding:"15px 17px 17px" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", gap:8, marginBottom:5 }}>
-            <div>
-              <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:3 }}>{p.type}</div>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", lineHeight:1.25 }}>{p.title}</div>
-            </div>
-            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#B8893A" }}>{priceDisplay(p)}</div>
-          </div>
+        <div style={{ padding:"16px 18px 18px" }}>
+          <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>{p.type}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", lineHeight:1.2, marginBottom:6 }}>{p.title}</div>
 
-          <div style={{ fontSize:12, color:"#A89580", marginBottom:6, display:"flex", alignItems:"center", gap:5 }}><Icon n="pin" s={13} c="#A89580"/>{p.location}</div>
+          <div style={{ fontSize:12.5, color:"#A89580", marginBottom:8, display:"flex", alignItems:"center", gap:5 }}><Icon n="pin" s={13} c="#A89580"/>{p.location}</div>
 
           {/* BTS badge */}
           {p.bts && <div style={{ fontSize:11, color:"#166534", background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:8, padding:"3px 8px", marginBottom:10, display:"inline-block", fontWeight:600 }}>
@@ -2307,11 +2318,11 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <span style={{ color:"#F59E0B", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase" }}>{t.heroBadge}</span>
           </div>
           <div style={fadeUp(0.2)}>
-            <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(40px,6.5vw,80px)", fontWeight:700, color:"#F5E9D0", lineHeight:1.08, marginBottom:18, textShadow:"0 4px 30px rgba(0,0,0,0.5)" }}>
+            <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(44px,7vw,88px)", fontWeight:700, color:"#F7EDD8", lineHeight:1.06, marginBottom:20, textShadow:"0 4px 34px rgba(0,0,0,0.55)" }}>
               {t.heroH1a}<br/><em style={{ color:"#F59E0B" }}>{t.heroH1b}</em>
             </h1>
-            <p style={{ color:"#B0A090", fontSize:"clamp(14px,1.8vw,17px)", lineHeight:1.8, maxWidth:500, margin:"0 auto 36px" }}>
-              {t.heroSub1}<strong style={{ color:"#C9A96E" }}>Annie</strong>{t.heroSub2}
+            <p style={{ color:"#CBBCA8", fontSize:"clamp(15px,1.9vw,18px)", lineHeight:1.75, maxWidth:560, margin:"0 auto 36px" }}>
+              {t.heroSub1}
             </p>
           </div>
           <div style={fadeUp(0.35)}>
@@ -2533,6 +2544,33 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 <div style={{ color:"#8E7E6E", fontSize:12, lineHeight:1.6 }}>{c.d}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHY WORK WITH ME */}
+      <section style={{ background:"#FBF7F0", padding:"84px clamp(20px,5vw,60px)", borderTop:"1px solid #F0E8DA" }}>
+        <div style={{ maxWidth:1160, margin:"0 auto" }}>
+          <div style={{ textAlign:"center", marginBottom:44 }}>
+            <div style={{ color:"#9B6B2A", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>{t.whyEyebrow}</div>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#1C1410", margin:0, lineHeight:1.1 }}>{t.whyTitle}</h2>
+            <p style={{ color:"#8A7A68", fontSize:15, marginTop:14, maxWidth:600, marginLeft:"auto", marginRight:"auto", lineHeight:1.7 }}>{t.whySub}</p>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))", gap:16 }}>
+            {t.whyCards.map((c,i)=>{
+              const ic = ["check","target","globe","search","pin","zap","shield","star"][i];
+              return (
+                <div key={i} style={{ background:"#fff", border:"1px solid #EEE6D8", borderRadius:16, padding:"24px 22px", transition:"transform .22s, box-shadow .22s, border-color .22s", boxShadow:"0 2px 12px rgba(28,20,4,0.04)" }}
+                  onMouseEnter={e=>{ e.currentTarget.style.transform="translateY(-5px)"; e.currentTarget.style.boxShadow="0 16px 36px rgba(201,169,110,0.2)"; e.currentTarget.style.borderColor="#D9C4A0"; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.transform="none"; e.currentTarget.style.boxShadow="0 2px 12px rgba(28,20,4,0.04)"; e.currentTarget.style.borderColor="#EEE6D8"; }}>
+                  <div style={{ width:46, height:46, borderRadius:13, background:"linear-gradient(135deg,#FBF3E6,#F0E1C8)", border:"1px solid #EAD9BB", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:15 }}>
+                    <Icon n={ic} s={22} c="#9B6B2A"/>
+                  </div>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", marginBottom:6, lineHeight:1.2 }}>{c.t}</div>
+                  <div style={{ color:"#7B6A5A", fontSize:13, lineHeight:1.65 }}>{c.d}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
