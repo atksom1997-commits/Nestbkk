@@ -689,7 +689,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
 
         {/* image */}
         <div style={{ position:"relative", height:238, overflow:"hidden", background:"#F1ECE4" }}>
-          {imgs[0] && <img className="bpf-cardimg" src={imgs[0]} alt={`${p.title} — ${p.type} ${p.status} in ${p.location}`} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.6s cubic-bezier(0.22,1,0.36,1)" }}/>}
+          {imgs[0] && <img className="bpf-cardimg" src={imgs[0]} alt={`${p.title} — ${p.type} ${p.status} in ${p.location}`} loading="lazy" decoding="async" style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.6s cubic-bezier(0.22,1,0.36,1)" }}/>}
           <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,rgba(0,0,0,0.12) 0%,transparent 30%,transparent 52%,rgba(0,0,0,0.64) 100%)" }} />
 
           {/* top-left: tag + verified */}
@@ -707,7 +707,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
                 <button onClick={e=>{ e.stopPropagation(); onDel(p.id); }} style={{ width:30, height:30, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}><Icon n="trash" s={14} c="#DC2626"/></button>
               </>
             ) : (
-              <button onClick={e=>{e.stopPropagation();setLiked(!liked);}} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}>{liked?"❤️":"🤍"}</button>
+              <button onClick={e=>{e.stopPropagation();setLiked(!liked);}} aria-label={liked?"Remove from favourites":"Save to favourites"} title={liked?"Saved":"Save"} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"rgba(255,255,255,0.92)", cursor:"pointer", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }}>{liked?"❤️":"🤍"}</button>
             )}
           </div>
 
@@ -2239,9 +2239,16 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
-        html{scroll-behavior:smooth}
+        html{scroll-behavior:smooth;scroll-padding-top:84px}
         ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#C9A96E;border-radius:4px}
         input,select,textarea,button{font-family:'Outfit',sans-serif}
+        body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overflow-x:hidden}
+        *{-webkit-tap-highlight-color:transparent}
+        img{max-width:100%}
+        ::selection{background:#C9A96E;color:#1C1410}
+        :focus{outline:none}
+        :focus-visible{outline:2px solid #C9A96E;outline-offset:2px;border-radius:6px}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}}
         @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
         @keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
         .bpf-mbar{display:flex}.bpf-mbar-sp{display:none}
@@ -2625,7 +2632,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <div key={i} onClick={()=>{ setCity(x.c); document.getElementById("buy")?.scrollIntoView({behavior:"smooth"}); }} style={{ position:"relative", borderRadius:18, overflow:"hidden", cursor:"pointer", aspectRatio:"4/5", border:city===x.c?"2px solid #C9A96E":"2px solid transparent", boxShadow:city===x.c?"0 12px 32px rgba(201,169,110,0.35)":"0 6px 20px rgba(0,0,0,0.12)", transition:"all 0.35s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e=>{ e.currentTarget.style.transform="translateY(-6px)"; e.currentTarget.style.boxShadow="0 18px 40px rgba(201,169,110,0.4)"; const img=e.currentTarget.querySelector("img"); if(img) img.style.transform="scale(1.1)"; const ex=e.currentTarget.querySelector(".explore"); if(ex) ex.style.opacity="1"; }}
               onMouseLeave={e=>{ e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=city===x.c?"0 12px 32px rgba(201,169,110,0.35)":"0 6px 20px rgba(0,0,0,0.12)"; const img=e.currentTarget.querySelector("img"); if(img) img.style.transform="scale(1)"; const ex=e.currentTarget.querySelector(".explore"); if(ex) ex.style.opacity="0"; }}>
-              <img src={cityPhotos[x.c] || x.img} alt={x.c} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.55s cubic-bezier(0.22,1,0.36,1)", filter:"saturate(1.05) brightness(0.98)" }}/>
+              <img src={cityPhotos[x.c] || x.img} alt={`Property in ${x.c}, Thailand`} loading="lazy" decoding="async" style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.55s cubic-bezier(0.22,1,0.36,1)", filter:"saturate(1.05) brightness(0.98)" }}/>
               <div style={{ position:"absolute", inset:0, background:"linear-gradient(160deg, rgba(120,72,30,0.28) 0%, rgba(40,24,12,0.15) 40%, rgba(20,12,6,0.55) 100%)", mixBlendMode:"multiply" }}/>
               <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(20,12,6,0.92) 0%, rgba(40,24,12,0.32) 48%, rgba(201,169,110,0.18) 100%)" }}/>
               <div style={{ position:"absolute", bottom:16, left:16, right:16 }}>
@@ -2836,7 +2843,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <footer style={{ background:"#0F0A04", padding:"56px clamp(20px,5vw,60px) 26px", borderTop:"1px solid rgba(201,169,110,0.12)" }}>
         <div style={{ maxWidth:1080, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))", gap:40, alignItems:"start" }}>
           <div>
-            <img src={LOGO_IMG} alt="Bangkok Property Finder — condos, houses & rentals in Bangkok" style={{ height:46, width:"auto", objectFit:"contain", marginBottom:14 }}/>
+            <img src={LOGO_IMG} alt="Bangkok Property Finder — condos, houses & rentals in Bangkok" loading="lazy" decoding="async" style={{ height:46, width:"auto", objectFit:"contain", marginBottom:14 }}/>
             <p style={{ color:"#7B6A5A", fontSize:13.5, lineHeight:1.7, maxWidth:280, margin:"0 0 22px" }}>{t.footerTag}</p>
             <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10, display:"inline-flex", alignItems:"center", gap:8 }}>{t.newsletter}<span style={{ background:"rgba(201,169,110,0.16)", color:"#C9A96E", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, letterSpacing:"0.06em" }}>{t.newsletterSoon}</span></div>
             <p style={{ color:"#7B6A5A", fontSize:12.5, lineHeight:1.6, maxWidth:280, margin:"0 0 11px" }}>{t.newsletterText}</p>
@@ -2882,7 +2889,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
           <div>
             <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:16 }}>{t.addMeLine}</div>
             <div style={{ background:"#fff", padding:12, borderRadius:16, boxShadow:"0 8px 24px rgba(0,0,0,0.3)", display:"inline-block" }}>
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(OWNER.lineUrl)}`} alt="Scan to add Annie on LINE" width={140} height={140} style={{ display:"block", width:140, height:140 }}/>
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(OWNER.lineUrl)}`} alt="Scan to add Annie on LINE" loading="lazy" decoding="async" width={140} height={140} style={{ display:"block", width:140, height:140 }}/>
             </div>
             <div style={{ color:"#7B6A5A", fontSize:12.5, marginTop:11, display:"inline-flex", alignItems:"center", gap:6 }}><Icon n="line" s={14} c="#06C755"/>{t.footerScan}</div>
           </div>
