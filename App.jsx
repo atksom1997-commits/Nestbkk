@@ -513,7 +513,7 @@ function PropDetail({ p, onClose, agentContacts={} }) {
   const pdLine = (_ct.line||"").trim() || OWNER.lineUrl;
   const shareLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
   const copyLink = () => { try { navigator.clipboard && navigator.clipboard.writeText(shareLink); } catch(_) {} setLinkCopied(true); setTimeout(()=>setLinkCopied(false), 2000); };
-  const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceTHB(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const propMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceTHB(p)}\n\nSeen on bangkokpropertyfinder.com\n\nCould you share more details?`;
   const waUrl = `https://wa.me/${pdWa}?text=${encodeURIComponent(propMsg)}`;
   const lineUrl = OWNER.lineUrl;
   const [showLine, setShowLine] = useState(false);
@@ -655,7 +655,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
   const _ct = (agentContacts && p.agent && agentContacts[p.agent]) || {};
   const cardWa = (_ct.whatsapp||"").trim() || OWNER.whatsapp;
   const cardLine = (_ct.line||"").trim() || OWNER.lineUrl;
-  const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceTHB(p)}\n\nSeen on bangkokpropertyfinder.vercel.app\n\nCould you share more details?`;
+  const cardMsg = `Hi ${p.agent || "Annie"}! I'm interested in this property:\n\n🏠 ${p.title}${p.ref ? "\n🔖 Code: "+p.ref : ""}\n📍 ${p.location}\n💰 ${priceTHB(p)}\n\nSeen on bangkokpropertyfinder.com\n\nCould you share more details?`;
   const [showLine, setShowLine] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const cardLink = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
@@ -2817,7 +2817,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                       if(contact.email) lines.push("Email: "+contact.email);
                       if(contact.phone) lines.push("Phone/LINE: "+contact.phone);
                       if(contact.msg){ lines.push(""); lines.push("Message: "+contact.msg); }
-                      lines.push(""); lines.push("(Sent from bangkokpropertyfinder.vercel.app)");
+                      lines.push(""); lines.push("(Sent from bangkokpropertyfinder.com)");
                       window.open("https://wa.me/"+OWNER.whatsapp+"?text="+encodeURIComponent(lines.join("\n")), "_blank");
                       setSent(true);
                     }} style={{...S.gold,width:"100%",padding:"14px",fontSize:14.5,letterSpacing:"0.02em"}}>
