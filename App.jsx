@@ -66,7 +66,7 @@ async function sbLoad() { try { const r = await fetch(SUPABASE_URL + "/rest/v1/p
 async function sbAdd(d) { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(sbClean(d)) }); if (!r.ok) { console.error("sbAdd failed:", await r.text()); return null; } return (await r.json())[0]; } catch(e) { console.error("sbAdd error:", e); return null; } }
 async function sbUpdate(id, d) { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "PATCH", headers: SB_H(), body: JSON.stringify(sbClean(d)) }); if (!r.ok) console.error("sbUpdate failed:", await r.text()); return r.ok; } catch(e) { console.error("sbUpdate error:", e); return false; } }
 async function sbDelete(id) { try { await fetch(SUPABASE_URL + "/rest/v1/properties?id=eq." + id, { method: "DELETE", headers: SB_H() }); } catch {} }
-async function sbBulk(list) { try { await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(list.map(sbClean)) }); } catch(e) { console.error("sbBulk error:", e); } }
+async function sbBulk(list) { try { const r = await fetch(SUPABASE_URL + "/rest/v1/properties", { method: "POST", headers: SB_H(), body: JSON.stringify(list.map(sbClean)) }); if(!r.ok) console.error("sbBulk failed:", r.status, await r.text().catch(()=>"")); return r.ok; } catch(e) { console.error("sbBulk error:", e); return false; } }
 
 const ADMIN_USER = "annie";
 const ADMIN_PASS = "annie2024";
@@ -1108,7 +1108,7 @@ function AdminLogin({ onLogin, agents=[], pending=[], onApply, ownerCreds }) {
   );
 }
 
-function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0, currentUser, agents=[], onAgentsChange, pending=[], onApprove, onReject, onApproveListing, ownerCreds, onSaveOwnerProfile, onAgentSelfUpdate, onSetMaplink }) {
+function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, onImportCSV, onImportSheets, onAIFill, cityPhotos={}, onCityPhoto, visits=0, currentUser, agents=[], onAgentsChange, pending=[], onApprove, onReject, onApproveListing, onApproveAllListings, ownerCreds, onSaveOwnerProfile, onAgentSelfUpdate, onSetMaplink }) {
   const [sheetsUrl, setSheetsUrl] = useState("");
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [sheetsMsg, setSheetsMsg] = useState("");
@@ -1611,6 +1611,12 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             {!geo.running && props.some(p=>p.active!==false && (p.location||"").trim() && parseLatLng(p.maplink) && gMine(p)) && (
               <button onClick={reLocateAll} style={{ display:"flex", alignItems:"center", gap:7, background:"#fff", color:"#9B6B2A", border:"1.5px solid #C9A96E", padding:"10px 16px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
                 🔁 {gOwner ? "Re-locate all by name" : "Re-locate my listings"}
+              </button>
+            )}
+            {gOwner && props.filter(p=>p.approved==="0").length > 0 && (
+              <button onClick={()=>{ const n = props.filter(p=>p.approved==="0").length; if(window.confirm("Approve all " + n + " pending listing" + (n===1?"":"s") + "? They will go live on the website immediately.")) onApproveAllListings(); }}
+                style={{ display:"flex", alignItems:"center", gap:7, background:"linear-gradient(135deg,#16A34A,#15803D)", color:"#fff", border:"none", padding:"10px 18px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                ✓ Approve all pending ({props.filter(p=>p.approved==="0").length})
               </button>
             )}
             <button onClick={()=>setShowAI(!showAI)} style={{ display:"flex", alignItems:"center", gap:7, background: showAI?"#7C3AED":"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"#fff", border:"none", padding:"10px 20px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
@@ -3026,7 +3032,10 @@ export default function App() {
     const newItems = imported.filter(i => !props.find(p => p.title === i.title));
     const merged = [...newItems, ...props];
     setProps(merged);
-    if (SB_ON && newItems.length > 0) await sbBulk(newItems.map(({id,...d}) => d));
+    if (SB_ON && newItems.length > 0) {
+      const saved = await sbBulk(newItems.map(({id,...d}) => d));
+      if (!saved) { alert("\u26A0 Import could NOT be saved to the database!\n\nThe listings will disappear after refresh. Most likely a column is missing in Supabase \u2014 run the ALTER TABLE SQL (agent / approved / maplink), then import this file again."); return; }
+    }
     const pend = imported.filter(i => i.approved === "0").length;
     flash(pend > 0 ? ("✅ Imported " + imported.length + " listings — Annie will approve them before they go live.") : ("✅ Imported " + imported.length + " listings successfully!"));
   };
@@ -3044,6 +3053,7 @@ export default function App() {
       if (SB_ON) {
         const saved = await sbAdd({ ...d2, active: true });
         if (saved) setProps(prev => prev.map(p => p.id === tempId ? { ...p, id: saved.id } : p));
+        else alert("\u26A0 Could NOT save this listing to the database \u2014 it will disappear after refresh. Check your Supabase columns / internet connection and try again.");
       }
       flash(isOwner ? "✅ Property added & live!" : "✅ Submitted! Annie will review & approve it before it goes live.");
     }
@@ -3054,6 +3064,14 @@ export default function App() {
     setProps(props.map(p => p.id === id ? { ...p, approved:"1" } : p));
     if (SB_ON) await sbUpdate(id, { approved:"1" });
     flash("✅ Listing approved — now live on the website!");
+  };
+
+  const handleApproveAllListings = async () => {
+    const ids = props.filter(p => p.approved === "0").map(p => p.id);
+    if (!ids.length) return;
+    setProps(props.map(p => p.approved === "0" ? { ...p, approved:"1" } : p));
+    if (SB_ON) { for (const id of ids) { await sbUpdate(id, { approved:"1" }); } }
+    flash("✅ Approved " + ids.length + " listing" + (ids.length===1?"":"s") + " — now live on the website!");
   };
 
   const confirmDel = async () => {
@@ -3147,7 +3165,7 @@ export default function App() {
             onView={()=>{ setScreen("site"); setAdminView(true); }}
             onImportCSV={handleImportCSV} onImportSheets={handleImportCSV}
             onAIFill={handleAIFill} cityPhotos={cityPhotos} onCityPhoto={handleCityPhoto} visits={visits}
-            currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing} ownerCreds={ownerCreds} onSaveOwnerProfile={handleOwnerSelfUpdate} onAgentSelfUpdate={handleAgentSelfUpdate} onSetMaplink={handleSetMaplink}/>
+            currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing} onApproveAllListings={handleApproveAllListings} ownerCreds={ownerCreds} onSaveOwnerProfile={handleOwnerSelfUpdate} onAgentSelfUpdate={handleAgentSelfUpdate} onSetMaplink={handleSetMaplink}/>
         : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos} agentContacts={agentContacts}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
             onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
