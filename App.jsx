@@ -282,7 +282,7 @@ function LineModal({ msg, onClose, lineUrl }) {
       <div onClick={(e)=>e.stopPropagation()} style={{ background:"#fff", borderRadius:18, maxWidth:380, width:"100%", padding:"24px 22px", boxShadow:"0 24px 70px rgba(0,0,0,0.35)" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
           <div style={{ width:36, height:36, borderRadius:"50%", background:"#06C755", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n="line" s={19} c="#fff"/></div>
-          <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:22, fontWeight:700, color:"#1C1410" }}>Contact via LINE</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#1C1410" }}>Contact via LINE</div>
         </div>
         <p style={{ fontSize:13, color:"#7B6A5A", lineHeight:1.6, margin:"0 0 14px" }}>LINE can't fill the message for you. Tap <b>Copy &amp; Open LINE</b>, then <b>paste</b> it in the chat so Annie knows which property you like:</p>
         <div style={{ background:"#F7F3EE", border:"1px solid #ECE3D6", borderRadius:11, padding:"12px 14px", fontSize:12.5, color:"#4A3F36", whiteSpace:"pre-wrap", lineHeight:1.55, marginBottom:14 }}>{msg}</div>
@@ -444,7 +444,7 @@ const TRANSIT_LINES = {
 const ALL_TAGS   = Object.keys(TAG_COLORS);
 
 const S = {
-  inp: (extra) => ({ width:"100%", padding:"10px 12px", border:"1.5px solid #E5DDD3", borderRadius:10, fontSize:13, outline:"none", background:"#FDFAF6", color:"#1C1410", fontFamily:"'Outfit','Noto Sans Thai',sans-serif", transition:"border-color 0.2s", ...extra }),
+  inp: (extra) => ({ width:"100%", padding:"10px 12px", border:"1.5px solid #E5DDD3", borderRadius:10, fontSize:13, outline:"none", background:"#FDFAF6", color:"#1C1410", fontFamily:"'Outfit',sans-serif", transition:"border-color 0.2s", ...extra }),
   gold: { background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", borderRadius:11, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:"pointer" },
 };
 
@@ -555,9 +555,9 @@ function PropDetail({ p, onClose, agentContacts={} }) {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6, flexWrap:"wrap", gap:8 }}>
             <div>
               <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>{p.type} · {p.status}</div>
-              <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:24, fontWeight:700, color:"#1C1410", lineHeight:1.2 }}>{p.title}</h2>
+              <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, fontWeight:700, color:"#1C1410", lineHeight:1.2 }}>{p.title}</h2>
             </div>
-            <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:22, fontWeight:700, color:"#B8893A" }}>{priceDisplay(p)}</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#B8893A" }}>{priceDisplay(p)}</div>
           </div>
 
           {/* location + maps */}
@@ -715,7 +715,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
           <div style={{ position:"absolute", left:15, right:14, bottom:13, display:"flex", alignItems:"flex-end", justifyContent:"space-between", gap:10 }}>
             <div>
               <span style={{ display:"inline-block", background:"rgba(255,255,255,0.16)", backdropFilter:"blur(8px)", WebkitBackdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.3)", borderRadius:20, padding:"2px 10px", color:"#fff", fontSize:10.5, fontWeight:600, marginBottom:7 }}>{p.status}</span>
-              <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:22, fontWeight:700, color:"#fff", lineHeight:1, textShadow:"0 2px 12px rgba(0,0,0,0.45)" }}>{priceDisplay(p)}</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#fff", lineHeight:1, textShadow:"0 2px 12px rgba(0,0,0,0.45)" }}>{priceDisplay(p)}</div>
             </div>
             {imgs.length > 1 && (
               <span style={{ background:"rgba(0,0,0,0.5)", backdropFilter:"blur(4px)", WebkitBackdropFilter:"blur(4px)", color:"#fff", fontSize:10, fontWeight:600, padding:"3px 8px", borderRadius:10, whiteSpace:"nowrap", flexShrink:0 }}>
@@ -728,7 +728,7 @@ function Card({ p, idx, isAdmin, onEdit, onDel, agentContacts={}, onOpen }) {
         {/* body */}
         <div style={{ padding:"16px 18px 18px" }}>
           <div style={{ fontSize:10, color:"#A89580", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>{p.type}</div>
-          <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:20, fontWeight:700, color:"#1C1410", lineHeight:1.2, marginBottom:6 }}>{p.title}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", lineHeight:1.2, marginBottom:6 }}>{p.title}</div>
 
           <div style={{ fontSize:12.5, color:"#A89580", marginBottom:8, display:"flex", alignItems:"center", gap:5 }}><Icon n="pin" s={13} c="#A89580"/>{p.location}</div>
 
@@ -950,7 +950,7 @@ function PropForm({ init, onSave, onClose, currentUser, agents=[] }) {
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", backdropFilter:"blur(6px)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
       <div style={{ background:"#fff", borderRadius:22, padding:"28px 24px", width:"100%", maxWidth:560, maxHeight:"94vh", overflowY:"auto" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
-          <h3 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:22, fontWeight:700, color:"#1C1410" }}>{init?"✏️ Edit Listing":"➕ New Listing"}</h3>
+          <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#1C1410" }}>{init?"✏️ Edit Listing":"➕ New Listing"}</h3>
           <button onClick={onClose} style={{ background:"#F3EEE8", border:"none", borderRadius:8, padding:"6px 12px", cursor:"pointer", fontWeight:600, fontSize:13 }}>✕ Close</button>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
@@ -1064,10 +1064,10 @@ function AdminLogin({ onLogin, agents=[], pending=[], onApply, ownerCreds }) {
     setApplied(true); setErr("");
   };
   return (
-    <div style={{ minHeight:"100vh", background:"#0F0A04", display:"flex", alignItems:"center", justifyContent:"center", padding:20, fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }}>
+    <div style={{ minHeight:"100vh", background:"#0F0A04", display:"flex", alignItems:"center", justifyContent:"center", padding:20, fontFamily:"'Outfit',sans-serif" }}>
       <div style={{ background:"#1C1410", border:"1px solid rgba(201,169,110,0.3)", borderRadius:22, padding:"44px 36px", width:"100%", maxWidth:380, textAlign:"center" }}>
         <div style={{ fontSize:44, marginBottom:14 }}>🏡</div>
-        <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:28, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
+        <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:700, color:"#F5E9D0", marginBottom:4 }}>Bangkok <span style={{ color:"#C9A96E" }}>Property Finder</span></div>
         <div style={{ color:"#7B6A5A", fontSize:13, marginBottom:28 }}>{mode==="login" ? "Admin Panel \u2014 Real Estate By Annie" : "Apply to Join Our Agent Team"}</div>
         {applied ? (
           <div>
@@ -1155,6 +1155,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   const [aType, setAType] = useState("All");
   const [aBudget, setABudget] = useState("Any Price");
   const [aNoPin, setANoPin] = useState(false);
+  const [aMine, setAMine] = useState(false);
   const [aPage, setAPage] = useState(1);
   const PER = 20;
   const ADMIN_BUDGETS = [
@@ -1172,16 +1173,19 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     if (aBudget !== "Any Price") { const o = ADMIN_BUDGETS.find(b=>b.l===aBudget); if (o) { const pr = parsePrice(p.price); if (pr < o.min || pr > o.max) return false; } }
     if (aSearch) { const q = aSearch.toLowerCase(); const hay = [p.ref,p.title,p.location,p.type,p.price].filter(Boolean).join(" ").toLowerCase(); if (!hay.includes(q)) return false; }
     if (aNoPin) { if (p.active===false || parseLatLng(p.maplink)) return false; }
+    if (aMine && currentUser && p.agent !== currentUser.name) return false;
     return true;
   });
   const aPages = Math.max(1, Math.ceil(aFiltered.length / PER));
   const aPageSafe = Math.min(aPage, aPages);
   const aPaged = aFiltered.slice((aPageSafe-1)*PER, aPageSafe*PER);
   const [geo, setGeo] = useState({ running:false, done:0, total:0, failed:0, msg:"" });
-  const geoMissing = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink));
+  const gOwner = currentUser && currentUser.role === "owner";
+  const gMine = (p) => gOwner || (currentUser && p.agent === currentUser.name);
+  const geoMissing = props.filter(p => p.active!==false && (p.location||"").trim() && !parseLatLng(p.maplink) && gMine(p));
   const noPinList = props.filter(p => p.active!==false && !parseLatLng(p.maplink));
   const runGeocode = async (overwrite) => {
-    const list = props.filter(p => p.active!==false && (p.location||"").trim() && (overwrite || !parseLatLng(p.maplink)));
+    const list = props.filter(p => p.active!==false && (p.location||"").trim() && (overwrite || !parseLatLng(p.maplink)) && gMine(p));
     if (!list.length) { setGeo({ running:false, done:0, total:0, failed:0, msg:"All listings already have a map location \u2713" }); return; }
     setGeo({ running:true, done:0, total:list.length, failed:0, msg:"" });
     let ok=0, bad=0, saveFail=0;
@@ -1198,8 +1202,9 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     setGeo({ running:false, done:ok+bad, total:list.length, failed:bad, msg: finalMsg });
   };
   const reLocateAll = () => {
-    const n = props.filter(p => p.active!==false && (p.location||"").trim()).length;
-    if (window.confirm("Re-place ALL " + n + " listings on the map using their building name, then Soi / BTS / district as fallback?\n\nThis updates every pin (takes about " + Math.ceil(n*1.5/60) + "-" + Math.ceil(n*2.5/60) + " min) and overwrites pins set earlier.")) runGeocode(true);
+    const n = props.filter(p => p.active!==false && (p.location||"").trim() && gMine(p)).length;
+    if (!n) { setGeo({ running:false, done:0, total:0, failed:0, msg:"No listings with a location to re-locate." }); return; }
+    if (window.confirm("Re-place " + (gOwner ? ("ALL " + n + " listings") : ("your " + n + " listing" + (n===1?"":"s"))) + " on the map using their building name, then Soi / BTS / district as fallback?\n\nThis updates " + (gOwner ? "every pin" : "your pins") + " (takes about " + Math.ceil(n*1.5/60) + "-" + Math.ceil(n*2.5/60) + " min) and overwrites pins set earlier.")) runGeocode(true);
   };
   const [cityUploading, setCityUploading] = useState("");
   const CITY_LIST = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui"];
@@ -1269,6 +1274,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
     setAiLoading(false);
   };
 
+  const tagImports = (list) => list.map(p => ({ ...p, agent: gOwner ? (p.agent || "") : ((currentUser && currentUser.name) || ""), approved: gOwner ? "1" : "0" }));
   const handleCSV = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1297,6 +1303,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             imgs: (obj.img || obj.image || obj.photo || "").startsWith("http") ? [obj.img || obj.image || obj.photo] : [],
             ref: obj.ref || obj.code || obj.reference || "",
             tag: obj.tag || obj.badge || "New",
+            agent: obj.agent || "",
             bts: obj.bts || obj.transport || "",
             furnished: obj.furnished || "",
             parking: obj.parking || "",
@@ -1308,7 +1315,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             totalFloors: obj.totalfloors || obj.total_floors || "",
           };
         }).filter(p => p.title !== "Untitled" || p.location);
-        onImportCSV(imported);
+        onImportCSV(tagImports(imported));
       } catch(err) {
         alert("❌ Could not read file. Make sure it's a valid CSV.");
       }
@@ -1351,6 +1358,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           imgs: (obj.img || obj.image || obj.photo || "").startsWith("http") ? [obj.img || obj.image || obj.photo] : [],
           ref: obj.ref || obj.code || obj.reference || "",
           tag: obj.tag || "New",
+          agent: obj.agent || "",
           bts: obj.bts || obj.transport || "",
           furnished: obj.furnished || "",
           parking: obj.parking || "",
@@ -1362,8 +1370,8 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           totalFloors: obj.totalfloors || obj.total_floors || "",
         };
       }).filter(p => p.title !== "Untitled" || p.location);
-      onImportCSV(imported);
-      setSheetsMsg(`✅ Imported ${imported.length} listings from Google Sheets!`);
+      onImportCSV(tagImports(imported));
+      setSheetsMsg(`✅ Imported ${imported.length} listings${gOwner ? "" : " — pending approval"} from Google Sheets!`);
     } catch(err) {
       setSheetsMsg("❌ Failed to fetch sheet. Check the URL and make sure it's public.");
     }
@@ -1371,11 +1379,11 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
   };
 
   return (
-    <div style={{ minHeight:"100vh", background:"#F7F3EE", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }}>
+    <div style={{ minHeight:"100vh", background:"#F7F3EE", fontFamily:"'Outfit',sans-serif" }}>
       <input ref={csvRef} type="file" accept=".csv,.xlsx" onChange={handleCSV} style={{ display:"none" }}/>
       <div style={{ background:"#1C1410", padding:"0 clamp(16px,4vw,40px)", borderBottom:"1px solid rgba(201,169,110,0.2)", position:"sticky", top:0, zIndex:50 }}>
         <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", height:60 }}>
-          <span style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>
+          <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#F5E9D0" }}>
             <span style={{ display:"inline-flex", alignItems:"center", gap:10 }}>
               <img src={LOGO_IMG} alt="Bangkok Property Finder" style={{ height:40, width:"auto", objectFit:"contain" }}/>
               <span style={{ color:"#7B6A5A", fontSize:13, fontWeight:400 }}>Admin</span>
@@ -1394,7 +1402,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           {[{ic:"layers",n:props.length,l:"Total Listings",bg:"#1C1410",nc:"#C9A96E"},{ic:"tag",n:props.filter(p=>p.status==="For Sale").length,l:"For Sale",bg:"#EFF6FF",nc:"#2563EB"},{ic:"key",n:props.filter(p=>p.status==="For Rent").length,l:"For Rent",bg:"#F0FDF4",nc:"#16A34A"},{ic:"eye",n:visits,l:"Website Visits",bg:"#FFFBEB",nc:"#D97706"}].map((s,i)=>(
             <div key={i} style={{ background:s.bg, borderRadius:14, padding:"18px 16px", border:`1px solid ${s.nc}22` }}>
               <div style={{ marginBottom:8 }}><Icon n={s.ic} s={22} c={s.nc}/></div>
-              <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:32, fontWeight:700, color:s.nc, lineHeight:1 }}>{s.n}</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:32, fontWeight:700, color:s.nc, lineHeight:1 }}>{s.n}</div>
               <div style={{ fontSize:11, color:s.nc, marginTop:4, fontWeight:600, opacity:0.75 }}>{s.l}</div>
             </div>
           ))}
@@ -1406,10 +1414,10 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             <button type="button" onClick={onClick}
               onMouseEnter={e=>{ if(!active){ e.currentTarget.style.borderColor="#D8C7A8"; e.currentTarget.style.boxShadow="0 4px 16px rgba(201,169,110,0.15)"; e.currentTarget.style.transform="translateY(-1px)"; } }}
               onMouseLeave={e=>{ if(!active){ e.currentTarget.style.borderColor="#EFE8DF"; e.currentTarget.style.boxShadow="0 2px 10px rgba(0,0,0,0.03)"; e.currentTarget.style.transform="none"; } }}
-              style={{ display:"flex", alignItems:"center", gap:11, textAlign:"left", width:"100%", background: active?"linear-gradient(135deg,#FBF3E6,#F4E9D7)":"#fff", border:"1px solid "+(active?"#C9A96E":"#EFE8DF"), borderRadius:14, padding:"13px 15px", cursor:"pointer", boxShadow: active?"0 4px 16px rgba(201,169,110,0.2)":"0 2px 10px rgba(0,0,0,0.03)", transition:"all .15s", fontFamily:"'Outfit','Noto Sans Thai',sans-serif", position:"relative" }}>
+              style={{ display:"flex", alignItems:"center", gap:11, textAlign:"left", width:"100%", background: active?"linear-gradient(135deg,#FBF3E6,#F4E9D7)":"#fff", border:"1px solid "+(active?"#C9A96E":"#EFE8DF"), borderRadius:14, padding:"13px 15px", cursor:"pointer", boxShadow: active?"0 4px 16px rgba(201,169,110,0.2)":"0 2px 10px rgba(0,0,0,0.03)", transition:"all .15s", fontFamily:"'Outfit',sans-serif", position:"relative" }}>
               <span style={{ fontSize:23, flexShrink:0, lineHeight:1 }}>{emoji}</span>
               <span style={{ minWidth:0, flex:1 }}>
-                <span style={{ display:"block", fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:17, fontWeight:700, color:"#1C1410", lineHeight:1.15 }}>{title}</span>
+                <span style={{ display:"block", fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:700, color:"#1C1410", lineHeight:1.15 }}>{title}</span>
                 <span style={{ display:"block", fontSize:11, color:"#A89580", marginTop:1, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{sub}</span>
               </span>
               {badge ? <span style={{ position:"absolute", top:7, right:9, background:"#DC2626", color:"#fff", fontSize:10, fontWeight:800, minWidth:17, height:17, borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 4px" }}>{badge}</span> : null}
@@ -1430,7 +1438,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
         {showImport && (
           <div style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18 }}>
-              <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:19, fontWeight:700, color:"#1C1410" }}>📥 Import Listings</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410" }}>📥 Import Listings</div>
               <button onClick={()=>setShowImport(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:18 }}>
@@ -1438,7 +1446,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
               {/* CSV / Excel Upload */}
               <div style={{ background:"#F7F3EE", borderRadius:14, padding:"22px 20px" }}>
                 <div style={{ fontSize:26, marginBottom:10 }}>📊</div>
-                <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:18, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Excel / CSV File</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Excel / CSV File</div>
                 <p style={{ color:"#7B6A5A", fontSize:13, lineHeight:1.7, marginBottom:16 }}>
                   Save your listings in Excel or CSV format and upload here. All listings import instantly.
                 </p>
@@ -1460,7 +1468,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
               {/* Google Sheets */}
               <div style={{ background:"#F0FDF4", borderRadius:14, padding:"22px 20px" }}>
                 <div style={{ fontSize:26, marginBottom:10 }}>📋</div>
-                <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:18, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Google Sheets</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:700, color:"#1C1410", marginBottom:6 }}>Google Sheets</div>
                 <p style={{ color:"#7B6A5A", fontSize:13, lineHeight:1.7, marginBottom:14 }}>
                   Paste your Google Sheet link below. Make sure it's set to <b>"Anyone with link can view"</b>.
                 </p>
@@ -1487,7 +1495,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
         {showCityPhotos && (
           <div style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18 }}>
-              <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="pin" s={18} c="#C9A96E"/>City Photos</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="pin" s={18} c="#C9A96E"/>City Photos</div>
               <button onClick={()=>setShowCityPhotos(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))", gap:14 }}>
@@ -1515,7 +1523,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
         {currentUser && showMyAccount && (
           <div id="my-profile" style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)", scrollMarginTop:"72px" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-              <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👤 My Profile</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👤 My Profile</div>
               <button onClick={()=>setShowMyAccount(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
             </div>
             <div style={{ marginBottom:10 }}>
@@ -1541,7 +1549,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
         {currentUser && currentUser.role === "owner" && showTeam && (
           <div style={{ background:"#fff", borderRadius:16, padding:"20px 22px", marginBottom:22, border:"1px solid #EFE8DF", boxShadow:"0 3px 18px rgba(0,0,0,0.05)" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-              <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👥 Team Accounts</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}>👥 Team Accounts</div>
               <button onClick={()=>setShowTeam(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"6px 14px", borderRadius:9, fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ Close</button>
             </div>
             {(pending||[]).length > 0 && (
@@ -1591,18 +1599,18 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
 
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18, flexWrap:"wrap", gap:12 }}>
           <div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:26, fontWeight:700, color:"#1C1410" }}>All Listings</h2>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1C1410" }}>All Listings</h2>
             <p style={{ color:"#A89580", fontSize:13, marginTop:2 }}>{currentUser ? "Signed in as " + currentUser.name + (currentUser.role==="owner"?" (Owner)":"") + " · " : ""}Add, edit or remove your properties</p>
           </div>
           <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
             {geoMissing.length > 0 && (
               <button onClick={()=>runGeocode(false)} disabled={geo.running} style={{ display:"flex", alignItems:"center", gap:7, background: geo.running?"#9B6B2A":"linear-gradient(135deg,#2563EB,#1D4ED8)", color:"#fff", border:"none", padding:"10px 18px", borderRadius:11, fontSize:13, fontWeight:700, cursor: geo.running?"default":"pointer", opacity: geo.running?0.85:1 }}>
-                📍 {geo.running ? ("Locating " + geo.done + "/" + geo.total + "\u2026") : ("Auto-locate on map (" + geoMissing.length + ")")}
+                📍 {geo.running ? ("Locating " + geo.done + "/" + geo.total + "\u2026") : ((gOwner ? "Auto-locate on map (" : "Auto-locate my listings (") + geoMissing.length + ")")}
               </button>
             )}
-            {!geo.running && props.some(p=>p.active!==false && (p.location||"").trim() && parseLatLng(p.maplink)) && (
+            {!geo.running && props.some(p=>p.active!==false && (p.location||"").trim() && parseLatLng(p.maplink) && gMine(p)) && (
               <button onClick={reLocateAll} style={{ display:"flex", alignItems:"center", gap:7, background:"#fff", color:"#9B6B2A", border:"1.5px solid #C9A96E", padding:"10px 16px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
-                🔁 Re-locate all by name
+                🔁 {gOwner ? "Re-locate all by name" : "Re-locate my listings"}
               </button>
             )}
             <button onClick={()=>setShowAI(!showAI)} style={{ display:"flex", alignItems:"center", gap:7, background: showAI?"#7C3AED":"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"#fff", border:"none", padding:"10px 20px", borderRadius:11, fontSize:13, fontWeight:700, cursor:"pointer" }}>
@@ -1631,7 +1639,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
             <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
               <div style={{ fontSize:28 }}>🤖</div>
               <div>
-                <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:20, fontWeight:700, color:"#fff" }}>AI Listing Assistant</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#fff" }}>AI Listing Assistant</div>
                 <div style={{ color:"rgba(255,255,255,0.6)", fontSize:12, marginTop:2 }}>Type property details in Thai or English — AI fills everything automatically</div>
               </div>
             </div>
@@ -1641,7 +1649,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                 onChange={e=>setAiInput(e.target.value)}
                 placeholder="Example: 2 bed 2 bath condo Sukhumvit 24, 65sqm floor 15, price 8.5M baht, pool gym, 5 min Phrom Phong BTS, fully furnished"
                 rows={4}
-                style={{ flex:1, minWidth:200, padding:"12px 14px", border:"1.5px solid rgba(124,58,237,0.4)", borderRadius:12, fontSize:13, background:"rgba(255,255,255,0.08)", color:"#fff", fontFamily:"'Outfit','Noto Sans Thai',sans-serif", resize:"vertical" }}
+                style={{ flex:1, minWidth:200, padding:"12px 14px", border:"1.5px solid rgba(124,58,237,0.4)", borderRadius:12, fontSize:13, background:"rgba(255,255,255,0.08)", color:"#fff", fontFamily:"'Outfit',sans-serif", resize:"vertical" }}
                 onFocus={e=>{ e.target.style.borderColor="#A78BFA"; }}
                 onBlur={e=>{ e.target.style.borderColor="rgba(124,58,237,0.4)"; }}
               />
@@ -1659,7 +1667,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
 
         <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:14, alignItems:"center" }}>
           <input value={aSearch} onChange={e=>{ setASearch(e.target.value); setAPage(1); }} placeholder="Search code, location, name..."
-            style={{ flex:1, minWidth:200, padding:"10px 14px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, fontFamily:"'Outfit','Noto Sans Thai',sans-serif", background:"#fff", color:"#1C1410" }}/>
+            style={{ flex:1, minWidth:200, padding:"10px 14px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, fontFamily:"'Outfit',sans-serif", background:"#fff", color:"#1C1410" }}/>
           <select value={aType} onChange={e=>{ setAType(e.target.value); setAPage(1); }} style={{ padding:"10px 12px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, background:"#fff", color:"#1C1410", cursor:"pointer" }}>
             {["All","Condo","House","Apartment","Villa","Townhouse"].map(t=><option key={t}>{t}</option>)}
           </select>
@@ -1668,8 +1676,12 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
           </select>
           <button onClick={()=>{ setANoPin(!aNoPin); setAPage(1); }} title="Show only listings missing a map pin"
             style={{ padding:"10px 14px", border:"1.5px solid " + (aNoPin?"#F59E0B":"#E8DECF"), borderRadius:11, fontSize:13, background: aNoPin?"#FEF3C7":"#fff", color: aNoPin?"#92400E":"#6B5E52", cursor:"pointer", fontWeight:700, whiteSpace:"nowrap" }}>⚠ No map pin ({noPinList.length})</button>
-          {(aSearch||aType!=="All"||aBudget!=="Any Price"||aNoPin) && (
-            <button onClick={()=>{ setASearch(""); setAType("All"); setABudget("Any Price"); setANoPin(false); setAPage(1); }}
+          {currentUser && currentUser.role!=="owner" && (
+            <button onClick={()=>{ setAMine(!aMine); setAPage(1); }} title="Show only your listings"
+              style={{ padding:"10px 14px", border:"1.5px solid " + (aMine?"#0E7490":"#E8DECF"), borderRadius:11, fontSize:13, background: aMine?"#ECFEFF":"#fff", color: aMine?"#0E7490":"#6B5E52", cursor:"pointer", fontWeight:700, whiteSpace:"nowrap" }}>👤 My listings ({props.filter(p=>p.agent===currentUser.name).length})</button>
+          )}
+          {(aSearch||aType!=="All"||aBudget!=="Any Price"||aNoPin||aMine) && (
+            <button onClick={()=>{ setASearch(""); setAType("All"); setABudget("Any Price"); setANoPin(false); setAMine(false); setAPage(1); }}
               style={{ padding:"10px 14px", border:"1.5px solid #E8DECF", borderRadius:11, fontSize:13, background:"#F3EEE8", color:"#6B5E52", cursor:"pointer", fontWeight:600 }}>Clear</button>
           )}
         </div>
@@ -1677,7 +1689,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
 
         <div style={{ background:"#fff", borderRadius:18, overflow:"hidden", boxShadow:"0 3px 18px rgba(0,0,0,0.06)", border:"1px solid #EDE8E0" }}>
           <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }}>
+            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"'Outfit',sans-serif" }}>
               <thead>
                 <tr style={{ background:"#1C1410" }}>
                   {["Photo + Title","Location","Type","Status","Price","Actions"].map(h=>(
@@ -1686,7 +1698,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                 </tr>
               </thead>
               <tbody>
-                {aFiltered.length===0 && <tr><td colSpan={6} style={{ padding:"50px", textAlign:"center", color:"#A89580" }}><div style={{ fontSize:36, marginBottom:10 }}>{props.length===0?"📭":"🔍"}</div><div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:20 }}>{props.length===0?"No listings yet":"No listings match your filters"}</div></td></tr>}
+                {aFiltered.length===0 && <tr><td colSpan={6} style={{ padding:"50px", textAlign:"center", color:"#A89580" }}><div style={{ fontSize:36, marginBottom:10 }}>{props.length===0?"📭":"🔍"}</div><div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20 }}>{props.length===0?"No listings yet":"No listings match your filters"}</div></td></tr>}
                 {aPaged.map((p,i)=>{
                   let imgs = p.imgs;
                   if (typeof imgs === "string") { try { imgs = JSON.parse(imgs); } catch { imgs = []; } }
@@ -2060,7 +2072,7 @@ function MapView({ items, onOpen, lang }){
             {POI_ORDER.map(cat=>{
               const on = !!show[cat]; const c = BKK_POI[cat].color;
               return (
-                <button key={cat} type="button" onClick={()=>toggle(cat)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", border:"1px solid "+(on?c+"66":"#EFE8DF"), background:on?c+"14":"transparent", borderRadius:11, padding:"7px 9px", cursor:"pointer", textAlign:"left", transition:"all .15s", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }}>
+                <button key={cat} type="button" onClick={()=>toggle(cat)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", border:"1px solid "+(on?c+"66":"#EFE8DF"), background:on?c+"14":"transparent", borderRadius:11, padding:"7px 9px", cursor:"pointer", textAlign:"left", transition:"all .15s", fontFamily:"'Outfit',sans-serif" }}>
                   <span style={{ width:24, height:24, borderRadius:7, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", background:on?c+"24":"#F1ECE5", color:on?c:"#B8AEA2", transition:"all .15s" }} dangerouslySetInnerHTML={{ __html: POI_ICONS[cat]||"" }} />
                   <span style={{ flex:1, minWidth:0, fontSize:12, fontWeight:600, color:on?"#1C1410":"#A89580", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{P[cat]}</span>
                   <span style={{ fontSize:10, fontWeight:700, color:on?c:"#C9BEB0", flexShrink:0 }}>{(BKK_POI[cat].items||[]).length}</span>
@@ -2101,7 +2113,7 @@ function FloatField({ label, value, onChange, type="text", as="input", options, 
   const [foc, setFoc] = useState(false);
   const filled = value!=null && String(value).length>0;
   const up = foc || filled || as!=="input";
-  const base = { width:"100%", boxSizing:"border-box", border:"1px solid "+(foc?"#C9A96E":"#E3DACD"), background:"#fff", borderRadius:12, padding:"20px 14px 8px", fontSize:14, color:"#1C1410", fontFamily:"'Outfit','Noto Sans Thai',sans-serif", outline:"none", transition:"border-color .18s, box-shadow .18s", boxShadow: foc?"0 0 0 3px rgba(201,169,110,0.12)":"none" };
+  const base = { width:"100%", boxSizing:"border-box", border:"1px solid "+(foc?"#C9A96E":"#E3DACD"), background:"#fff", borderRadius:12, padding:"20px 14px 8px", fontSize:14, color:"#1C1410", fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color .18s, box-shadow .18s", boxShadow: foc?"0 0 0 3px rgba(201,169,110,0.12)":"none" };
   const lbl = { position:"absolute", left:14, pointerEvents:"none", transition:"all .16s ease", top: up?"7px":"50%", transform: up?"none":"translateY(-50%)", fontSize: up?10:14, fontWeight: up?700:500, letterSpacing: up?"0.06em":"normal", textTransform: up?"uppercase":"none", color: foc?"#9B6B2A":"#A89580" };
   const onF=()=>setFoc(true), onB=()=>setFoc(false);
   return (
@@ -2164,8 +2176,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const [navOpen, setNavOpen] = useState(false);
   const [legal, setLegal] = useState(null);
   const [guideOpen, setGuideOpen] = useState(false);
-  const navLink = { color:"#6B5E52", fontSize:13, fontWeight:500, letterSpacing:"0.04em", background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit','Noto Sans Thai',sans-serif", padding:0, whiteSpace:"nowrap" };
-  const mItem = { display:"flex", alignItems:"center", gap:9, width:"100%", textAlign:"left", background:"none", border:"none", borderBottom:"1px solid #EFE7DA", padding:"13px 4px", fontSize:15, fontWeight:600, color:"#3A2E22", cursor:"pointer", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" };
+  const navLink = { color:"#6B5E52", fontSize:13, fontWeight:500, letterSpacing:"0.04em", background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", padding:0, whiteSpace:"nowrap" };
+  const mItem = { display:"flex", alignItems:"center", gap:9, width:"100%", textAlign:"left", background:"none", border:"none", borderBottom:"1px solid #EFE7DA", padding:"13px 4px", fontSize:15, fontWeight:600, color:"#3A2E22", cursor:"pointer", fontFamily:"'Outfit',sans-serif" };
   const navGo = (id) => { setNavOpen(false); if(id==="__top"){ window.scrollTo({ top:0, behavior:"smooth" }); return; } const d = navOpen?200:0; setTimeout(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({ behavior:"smooth" }); }, d); };
   const navSearch = (st) => { setNavOpen(false); setStatus(st); const d = navOpen?200:0; setTimeout(()=>{ const el=document.getElementById("buy"); if(el) el.scrollIntoView({ behavior:"smooth" }); }, d); };
   const goGuide = (i) => { setNavOpen(false); setGuideOpen(false); setOpenGuide(i); setTimeout(()=>{ const el=document.getElementById("guides"); if(el) el.scrollIntoView({ behavior:"smooth" }); }, 200); };
@@ -2235,13 +2247,13 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const fadeUp = (d=0) => ({ opacity:heroOn?1:0, transform:heroOn?"translateY(0)":"translateY(24px)", transition:`opacity 0.75s ease ${d}s, transform 0.75s ease ${d}s` });
 
   return (
-    <div style={{ fontFamily:"'Outfit','Noto Sans Thai',sans-serif", background:"#FDFAF6", color:"#1C1410", minHeight:"100vh" }}>
+    <div style={{ fontFamily:"'Outfit',sans-serif", background:"#FDFAF6", color:"#1C1410", minHeight:"100vh" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth;scroll-padding-top:84px}
         ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#C9A96E;border-radius:4px}
-        input,select,textarea,button{font-family:'Outfit','Noto Sans Thai',sans-serif}
+        input,select,textarea,button{font-family:'Outfit',sans-serif}
         body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overflow-x:hidden}
         *{-webkit-tap-highlight-color:transparent}
         img{max-width:100%}
@@ -2284,7 +2296,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 <div style={{ position:"absolute", top:"100%", left:"50%", transform:"translateX(-50%)", paddingTop:12, opacity: guideOpen?1:0, visibility: guideOpen?"visible":"hidden", pointerEvents: guideOpen?"auto":"none", transition:"opacity .18s" }}>
                   <div style={{ background:"#FFFDF9", border:"1px solid rgba(201,169,110,0.3)", borderRadius:13, boxShadow:"0 14px 34px rgba(28,20,4,0.16)", padding:6, width:246 }}>
                     {guides.map((g,i)=>(
-                      <button key={i} onClick={()=>goGuide(i)} style={{ display:"flex", alignItems:"center", gap:10, width:"100%", textAlign:"left", border:"none", background:"transparent", borderRadius:9, padding:"8px 10px", cursor:"pointer", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.background="#F7F0E5"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                      <button key={i} onClick={()=>goGuide(i)} style={{ display:"flex", alignItems:"center", gap:10, width:"100%", textAlign:"left", border:"none", background:"transparent", borderRadius:9, padding:"8px 10px", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.background="#F7F0E5"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                         <span style={{ width:27, height:27, borderRadius:8, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={GUIDE_ICONS[i]} s={13} c="#fff"/></span>
                         <span style={{ fontSize:12.5, color:"#5A4A3A", lineHeight:1.25 }}>{g.title}</span>
                       </button>
@@ -2294,7 +2306,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               </div>
               <button onClick={()=>navGo("contact")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.nav[3]}</button>
               <button onClick={()=>navGo("rent")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.navAbout}</button>
-              <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" title="Display currency" style={{ border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#5A4A3A", borderRadius:14, padding:"6px 8px", fontSize:11.5, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }}>
+              <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" title="Display currency" style={{ border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#5A4A3A", borderRadius:14, padding:"6px 8px", fontSize:11.5, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
                 {FX_ORDER.map(c=> <option key={c} value={c}>{CUR[c].sym} {c}</option>)}
               </select>
               <div style={{ display:"flex", gap:2, background:"#F3EEE8", borderRadius:20, padding:3 }}>
@@ -2319,7 +2331,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div onClick={()=>setNavOpen(false)} style={{ position:"fixed", inset:0, zIndex:300, background:"rgba(15,10,4,0.5)", backdropFilter:"blur(2px)" }}>
           <div onClick={e=>e.stopPropagation()} style={{ position:"absolute", top:0, right:0, bottom:0, width:"min(82%,330px)", background:"#FDFAF6", boxShadow:"-12px 0 44px rgba(0,0,0,0.28)", padding:"18px 18px 26px", overflowY:"auto", display:"flex", flexDirection:"column" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
-              <span style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:21, fontWeight:700, color:"#1C1410" }}>Menu</span>
+              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#1C1410" }}>Menu</span>
               <button onClick={()=>setNavOpen(false)} aria-label="Close" style={{ width:34, height:34, borderRadius:"50%", border:"none", background:"#F3EEE8", color:"#6B5E52", fontSize:17, cursor:"pointer" }}>✕</button>
             </div>
             <button onClick={()=>navGo("__top")} style={mItem}>{t.navHome}</button>
@@ -2329,7 +2341,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <button onClick={()=>navGo("guides")} style={{ ...mItem, borderBottom:"none", paddingBottom:6 }}>{t.navGuide}</button>
             <div style={{ borderLeft:"2px solid #EADFCB", marginLeft:10, paddingLeft:8, marginBottom:6 }}>
               {guides.map((g,i)=>(
-                <button key={i} onClick={()=>goGuide(i)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", textAlign:"left", background:"none", border:"none", padding:"9px 4px", fontSize:13, fontWeight:500, color:"#6B5E52", cursor:"pointer", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }}>
+                <button key={i} onClick={()=>goGuide(i)} style={{ display:"flex", alignItems:"center", gap:9, width:"100%", textAlign:"left", background:"none", border:"none", padding:"9px 4px", fontSize:13, fontWeight:500, color:"#6B5E52", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
                   <span style={{ width:24, height:24, borderRadius:7, background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon n={GUIDE_ICONS[i]} s={12} c="#fff"/></span>
                   <span style={{ lineHeight:1.25 }}>{g.title}</span>
                 </button>
@@ -2338,7 +2350,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <button onClick={()=>navGo("contact")} style={mItem}>{t.nav[3]}</button>
             <button onClick={()=>navGo("rent")} style={mItem}>{t.navAbout}</button>
             <div style={{ marginTop:"auto", paddingTop:18 }}>
-              <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" style={{ width:"100%", border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#3A2E22", borderRadius:12, padding:"11px 12px", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit','Noto Sans Thai',sans-serif", marginBottom:10 }}>
+              <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" style={{ width:"100%", border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#3A2E22", borderRadius:12, padding:"11px 12px", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginBottom:10 }}>
                 {FX_ORDER.map(c=> <option key={c} value={c}>{CUR[c].sym} {c} — {CUR[c].name}</option>)}
               </select>
               <div style={{ display:"flex", gap:3, background:"#F3EEE8", borderRadius:14, padding:4, marginBottom:12 }}>
@@ -2364,7 +2376,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <span style={{ color:"#F59E0B", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase" }}>{t.heroBadge}</span>
           </div>
           <div style={fadeUp(0.2)}>
-            <h1 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize: lang==="th" ? "clamp(32px,5vw,58px)" : "clamp(44px,7vw,88px)", fontWeight: lang==="th" ? 600 : 700, color:"#F7EDD8", lineHeight: lang==="th" ? 1.35 : 1.06, marginBottom:20, textShadow:"0 4px 34px rgba(0,0,0,0.55)" }}>
+            <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(44px,7vw,88px)", fontWeight:700, color:"#F7EDD8", lineHeight:1.06, marginBottom:20, textShadow:"0 4px 34px rgba(0,0,0,0.55)" }}>
               {t.heroH1a}<br/><em style={{ color:"#F59E0B" }}>{t.heroH1b}</em>
             </h1>
             <p style={{ color:"#CBBCA8", fontSize:"clamp(15px,1.9vw,18px)", lineHeight:1.75, maxWidth:560, margin:"0 auto 36px" }}>
@@ -2437,7 +2449,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:28, flexWrap:"wrap", gap:14 }}>
           <div>
             <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:8 }}>{t.live}</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.propsIn} {city}</h2>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.propsIn} {city}</h2>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:12, flexWrap:"wrap" }}>
             <div style={{ fontSize:13, color:"#7B6A5A", fontWeight:600 }}>{t.flt.showing} <strong style={{ color:"#1C1410" }}>{shown.length}</strong> {t.flt.of} {totalActive}</div>
@@ -2453,7 +2465,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div className="bpf-filterwrap" data-open={showFilters} onClick={()=>setShowFilters(false)}>
           <div className="bpf-filterpanel" onClick={e=>e.stopPropagation()} style={{ background:"#fff", border:"1px solid #EFE8DF", borderRadius:18, padding:"20px 22px", marginBottom:22, boxShadow:"0 4px 20px rgba(0,0,0,0.05)" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-              <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="search" s={18} c="#C9A96E"/>{t.flt.filters}</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:700, color:"#1C1410", display:"flex", alignItems:"center", gap:8 }}><Icon n="search" s={18} c="#C9A96E"/>{t.flt.filters}</div>
               <button onClick={()=>setShowFilters(false)} className="bpf-fclose" style={{ display:"none", background:"#F3EEE8", border:"none", borderRadius:8, width:30, height:30, fontSize:18, cursor:"pointer", color:"#6B5E52" }}>×</button>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:18 }}>
@@ -2533,7 +2545,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         ) : shown.length===0 ? (
           <div style={{ textAlign:"center", padding:"60px 20px", color:"#A89580" }}>
             <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><Icon n="search" s={42} c="#D9CFC2"/></div>
-            <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:24, marginBottom:6 }}>{t.emptyTitle}</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, marginBottom:6 }}>{t.emptyTitle}</div>
             <div style={{ fontSize:13 }}>{t.emptySub}</div>
           </div>
         ) : (
@@ -2549,7 +2561,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ maxWidth:1200, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:48, alignItems:"center" }}>
           <div>
             <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>{t.meet}</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#F5E9D0", marginBottom:16 }}>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#F5E9D0", marginBottom:16 }}>
               {t.aboutH2a}<br/><em style={{ color:"#C9A96E" }}>{t.aboutH2b}</em>
             </h2>
             <p style={{ color:"#8E7E6E", lineHeight:1.85, fontSize:14, marginBottom:22 }}>
@@ -2586,7 +2598,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 onMouseEnter={e=>{ e.currentTarget.style.background="rgba(201,169,110,0.08)"; e.currentTarget.style.borderColor="rgba(201,169,110,0.38)"; }}
                 onMouseLeave={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor="rgba(201,169,110,0.14)"; }}>
                 <div style={{ marginBottom:11 }}><Icon n={["shield","globe","zap","star"][i]} s={24} c="#C9A96E"/></div>
-                <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:16, fontWeight:700, color:"#F5E9D0", marginBottom:5 }}>{c.t}</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:16, fontWeight:700, color:"#F5E9D0", marginBottom:5 }}>{c.t}</div>
                 <div style={{ color:"#8E7E6E", fontSize:12, lineHeight:1.6 }}>{c.d}</div>
               </div>
             ))}
@@ -2599,7 +2611,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ maxWidth:1160, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:44 }}>
             <div style={{ color:"#9B6B2A", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:12 }}>{t.whyEyebrow}</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#1C1410", margin:0, lineHeight:1.1 }}>{t.whyTitle}</h2>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#1C1410", margin:0, lineHeight:1.1 }}>{t.whyTitle}</h2>
             <p style={{ color:"#8A7A68", fontSize:15, marginTop:14, maxWidth:600, marginLeft:"auto", marginRight:"auto", lineHeight:1.7 }}>{t.whySub}</p>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))", gap:16 }}>
@@ -2612,7 +2624,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                   <div style={{ width:46, height:46, borderRadius:13, background:"linear-gradient(135deg,#FBF3E6,#F0E1C8)", border:"1px solid #EAD9BB", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:15 }}>
                     <Icon n={ic} s={22} c="#9B6B2A"/>
                   </div>
-                  <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:19, fontWeight:700, color:"#1C1410", marginBottom:6, lineHeight:1.2 }}>{c.t}</div>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:700, color:"#1C1410", marginBottom:6, lineHeight:1.2 }}>{c.t}</div>
                   <div style={{ color:"#7B6A5A", fontSize:13, lineHeight:1.65 }}>{c.d}</div>
                 </div>
               );
@@ -2625,7 +2637,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
       <section style={{ padding:"72px clamp(20px,5vw,60px)", maxWidth:1200, margin:"0 auto" }}>
         <div style={{ textAlign:"center", marginBottom:36 }}>
           <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>{t.explore}</div>
-          <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.browse}</h2>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.browse}</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))", gap:18 }}>
           {[{c:"Bangkok",img:"https://images.unsplash.com/photo-1755251042986-91270ffd76f5?w=700&q=85"},{c:"Phuket",img:"https://images.unsplash.com/photo-1534008897995-27a23e859048?w=700&q=85"},{c:"Chiang Mai",img:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700&q=85"},{c:"Pattaya",img:"https://images.unsplash.com/photo-1563245372-f21724e3856d?w=700&q=85"},{c:"Hua Hin",img:"https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=700&q=85"},{c:"Koh Samui",img:"https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=700&q=85"}].map((x,i)=>(
@@ -2637,7 +2649,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(20,12,6,0.92) 0%, rgba(40,24,12,0.32) 48%, rgba(201,169,110,0.18) 100%)" }}/>
               <div style={{ position:"absolute", bottom:16, left:16, right:16 }}>
                 <div style={{ width:28, height:2, background:"#C9A96E", marginBottom:8, borderRadius:2 }}/>
-                <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:21, fontWeight:700, color:"#fff", letterSpacing:"0.02em", lineHeight:1.1 }}>{x.c}</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#fff", letterSpacing:"0.02em", lineHeight:1.1 }}>{x.c}</div>
                 <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.approved!=="0" && p.location.toLowerCase().includes(x.c.toLowerCase())).length; return n + " " + (n===1?t.listingOne:t.listingMany); })()}</div>
                 <div className="explore" style={{ color:"#fff", fontSize:11, fontWeight:600, marginTop:8, opacity:0, transition:"opacity 0.3s", letterSpacing:"0.08em", textTransform:"uppercase" }}>{t.exploreMore}</div>
               </div>
@@ -2651,7 +2663,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:44 }}>
             <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>{t.offer}</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#fff", margin:0 }}>{t.ourServices}</h2>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,46px)", fontWeight:700, color:"#fff", margin:0 }}>{t.ourServices}</h2>
             <p style={{ color:"rgba(255,255,255,0.6)", fontSize:15, marginTop:12, maxWidth:560, marginLeft:"auto", marginRight:"auto", lineHeight:1.6 }}>{t.servicesSub}</p>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))", gap:20 }}>
@@ -2660,13 +2672,13 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 onMouseEnter={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.08)"; e.currentTarget.style.transform="translateY(-4px)"; }}
                 onMouseLeave={e=>{ e.currentTarget.style.background="rgba(255,255,255,0.05)"; e.currentTarget.style.transform="translateY(0)"; }}>
                 <div style={{ marginBottom:16, width:52, height:52, borderRadius:14, background:"rgba(201,169,110,0.12)", display:"flex", alignItems:"center", justifyContent:"center" }}><Icon n={s.icon} s={26} c="#C9A96E"/></div>
-                <h3 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:23, fontWeight:700, color:"#C9A96E", margin:"0 0 10px" }}>{t.serviceCards[i].title}</h3>
+                <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#C9A96E", margin:"0 0 10px" }}>{t.serviceCards[i].title}</h3>
                 <p style={{ color:"rgba(255,255,255,0.7)", fontSize:14, lineHeight:1.6, margin:0 }}>{t.serviceCards[i].desc}</p>
               </div>
             ))}
           </div>
           <div style={{ textAlign:"center", marginTop:40 }}>
-            <p style={{ color:"#fff", fontSize:18, fontFamily:"'Cormorant Garamond','Prompt',serif", fontWeight:600, marginBottom:18 }}>{t.cantFind}</p>
+            <p style={{ color:"#fff", fontSize:18, fontFamily:"'Cormorant Garamond',serif", fontWeight:600, marginBottom:18 }}>{t.cantFind}</p>
             <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
               <a href={OWNER.lineUrl} target="_blank" rel="noreferrer"
                 style={{ display:"inline-flex", alignItems:"center", gap:9, textDecoration:"none", background:"#06C755", color:"#fff", padding:"14px 30px", borderRadius:12, fontSize:15, fontWeight:700 }}>
@@ -2686,7 +2698,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:44 }}>
             <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:12 }}>{t.guidesTag}</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:"clamp(28px,4vw,44px)", fontWeight:700, color:"#1C1410", marginBottom:12 }}>{t.guidesH2a} <em style={{ color:"#C9A96E" }}>{t.guidesH2b}</em></h2>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,4vw,44px)", fontWeight:700, color:"#1C1410", marginBottom:12 }}>{t.guidesH2a} <em style={{ color:"#C9A96E" }}>{t.guidesH2b}</em></h2>
             <p style={{ color:"#8E7E6E", fontSize:15, maxWidth:560, margin:"0 auto", lineHeight:1.7 }}>{t.guidesSub}</p>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:20, alignItems:"start" }}>
@@ -2709,7 +2721,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                   </div>
                   {/* body */}
                   <div style={{ padding:"20px 22px 22px" }}>
-                    <h3 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:8, lineHeight:1.22 }}>{g.title}</h3>
+                    <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:8, lineHeight:1.22 }}>{g.title}</h3>
                     <p style={{ color:"#8E7E6E", fontSize:13.5, lineHeight:1.65, marginBottom: open?18:14 }}>{g.intro}</p>
                     {open && (
                       <div style={{ display:"flex", flexDirection:"column", gap:14, borderTop:"1px solid #EFE8DF", paddingTop:16, marginBottom:4 }}>
@@ -2739,7 +2751,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ maxWidth:860, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:36 }}>
             <div style={{ color:"#F59E0B", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10 }}>{t.getInTouch}</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.contactAnnie}</h2>
+            <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,4vw,44px)", fontWeight:700, color:"#1C1410" }}>{t.contactAnnie}</h2>
             <p style={{ color:"#7B6A5A", fontSize:14, marginTop:8 }}>{t.replies}</p>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))", gap:26, alignItems:"start" }}>
@@ -2782,13 +2794,13 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               {sent ? (
                 <div style={{ textAlign:"center", padding:"30px 10px" }}>
                   <div style={{ fontSize:44, marginBottom:12 }}>✅</div>
-                  <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:22, fontWeight:700, marginBottom:6 }}>{t.sentTitle}</div>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, marginBottom:6 }}>{t.sentTitle}</div>
                   <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:16 }}>{t.sentSub}</p>
                   <button onClick={()=>setSent(false)} style={{ background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"8px 18px", borderRadius:10, fontSize:13, fontWeight:600, cursor:"pointer" }}>{t.sendAnother}</button>
                 </div>
               ) : (
                 <>
-                  <h3 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:6 }}>{t.formTitle}</h3>
+                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:23, fontWeight:700, color:"#1C1410", marginBottom:6 }}>{t.formTitle}</h3>
                   <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:18 }}>{t.formSub}</p>
                   <div style={{ display:"flex", flexDirection:"column", gap:13 }}>
                     <FloatField label={t.fName} value={contact.name} onChange={e=>setContact({...contact,name:e.target.value})}/>
@@ -2848,7 +2860,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             <div style={{ color:"#C9A96E", fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:10, display:"inline-flex", alignItems:"center", gap:8 }}>{t.newsletter}<span style={{ background:"rgba(201,169,110,0.16)", color:"#C9A96E", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, letterSpacing:"0.06em" }}>{t.newsletterSoon}</span></div>
             <p style={{ color:"#7B6A5A", fontSize:12.5, lineHeight:1.6, maxWidth:280, margin:"0 0 11px" }}>{t.newsletterText}</p>
             <div style={{ display:"flex", gap:8, maxWidth:290 }}>
-              <input disabled placeholder="you@email.com" style={{ flex:1, minWidth:0, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(201,169,110,0.2)", borderRadius:10, padding:"9px 12px", color:"#8E7E6E", fontSize:12.5, fontFamily:"'Outfit','Noto Sans Thai',sans-serif", outline:"none", cursor:"not-allowed" }}/>
+              <input disabled placeholder="you@email.com" style={{ flex:1, minWidth:0, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(201,169,110,0.2)", borderRadius:10, padding:"9px 12px", color:"#8E7E6E", fontSize:12.5, fontFamily:"'Outfit',sans-serif", outline:"none", cursor:"not-allowed" }}/>
               <button disabled style={{ background:"rgba(201,169,110,0.22)", color:"#C9A96E", border:"none", borderRadius:10, padding:"9px 15px", fontSize:13, fontWeight:800, cursor:"not-allowed", whiteSpace:"nowrap" }}>→</button>
             </div>
           </div>
@@ -2864,7 +2876,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 { l:t.nav[3], fn:()=>navGo("contact") },
                 { l:t.navAbout, fn:()=>navGo("rent") }
               ].map((m,i)=>(
-                <button key={i} onClick={m.fn} style={{ background:"none", border:"none", padding:0, textAlign:"left", cursor:"pointer", color:"#D8C8B4", fontSize:13.5, fontFamily:"'Outfit','Noto Sans Thai',sans-serif", transition:"color .15s", width:"fit-content" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#D8C8B4"}>{m.l}</button>
+                <button key={i} onClick={m.fn} style={{ background:"none", border:"none", padding:0, textAlign:"left", cursor:"pointer", color:"#D8C8B4", fontSize:13.5, fontFamily:"'Outfit',sans-serif", transition:"color .15s", width:"fit-content" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#D8C8B4"}>{m.l}</button>
               ))}
             </div>
           </div>
@@ -2897,8 +2909,8 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div style={{ maxWidth:1080, margin:"40px auto 0", paddingTop:22, borderTop:"1px solid rgba(201,169,110,0.1)", display:"flex", flexWrap:"wrap", justifyContent:"space-between", alignItems:"center", gap:12 }}>
           <div style={{ color:"#4A3A2A", fontSize:12 }}>© 2026 Bangkok Property Finder · Real Estate By Annie · Bangkok, Thailand</div>
           <div style={{ display:"flex", gap:18 }}>
-            <button onClick={()=>setLegal("privacy")} style={{ background:"none", border:"none", padding:0, cursor:"pointer", color:"#6B5A46", fontSize:12, fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5A46"}>{t.privacyLabel}</button>
-            <button onClick={()=>setLegal("terms")} style={{ background:"none", border:"none", padding:0, cursor:"pointer", color:"#6B5A46", fontSize:12, fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5A46"}>{t.termsLabel}</button>
+            <button onClick={()=>setLegal("privacy")} style={{ background:"none", border:"none", padding:0, cursor:"pointer", color:"#6B5A46", fontSize:12, fontFamily:"'Outfit',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5A46"}>{t.privacyLabel}</button>
+            <button onClick={()=>setLegal("terms")} style={{ background:"none", border:"none", padding:0, cursor:"pointer", color:"#6B5A46", fontSize:12, fontFamily:"'Outfit',sans-serif" }} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5A46"}>{t.termsLabel}</button>
           </div>
         </div>
       </footer>
@@ -2907,7 +2919,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
         <div onClick={()=>setLegal(null)} style={{ position:"fixed", inset:0, zIndex:700, background:"rgba(15,10,4,0.6)", backdropFilter:"blur(3px)", WebkitBackdropFilter:"blur(3px)", display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
           <div onClick={e=>e.stopPropagation()} style={{ background:"#FDFAF6", borderRadius:18, maxWidth:640, width:"100%", maxHeight:"84vh", overflowY:"auto", boxShadow:"0 30px 80px rgba(0,0,0,0.4)", padding:"28px clamp(20px,4vw,36px)" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-              <h3 style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:26, fontWeight:700, color:"#1C1410", margin:0 }}>{legal==="privacy"?t.privacyLabel:t.termsLabel}</h3>
+              <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1C1410", margin:0 }}>{legal==="privacy"?t.privacyLabel:t.termsLabel}</h3>
               <button onClick={()=>setLegal(null)} aria-label={t.closeLabel} style={{ width:36, height:36, borderRadius:"50%", border:"none", background:"#F3EEE8", color:"#6B5E52", fontSize:18, cursor:"pointer", flexShrink:0 }}>✕</button>
             </div>
             <div style={{ color:"#5A4A3A", fontSize:14, lineHeight:1.75 }}>
@@ -3015,7 +3027,8 @@ export default function App() {
     const merged = [...newItems, ...props];
     setProps(merged);
     if (SB_ON && newItems.length > 0) await sbBulk(newItems.map(({id,...d}) => d));
-    flash("✅ Imported " + imported.length + " listings successfully!");
+    const pend = imported.filter(i => i.approved === "0").length;
+    flash(pend > 0 ? ("✅ Imported " + imported.length + " listings — Annie will approve them before they go live.") : ("✅ Imported " + imported.length + " listings successfully!"));
   };
 
   const handleSave = async (data) => {
@@ -3119,7 +3132,7 @@ export default function App() {
   if (dbLoading) return (
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#FDFAF6", flexDirection:"column", gap:16 }}>
       <div style={{ fontSize:40 }}>🏠</div>
-      <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:22, color:"#1C1410" }}>Loading listings...</div>
+      <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, color:"#1C1410" }}>Loading listings...</div>
       <div style={{ width:40, height:40, border:"3px solid #E5DDD3", borderTop:"3px solid #C9A96E", borderRadius:"50%", animation:"spin 1s linear infinite" }}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
@@ -3142,9 +3155,9 @@ export default function App() {
       {form !== null && <PropForm init={form&&form.id?form:null} onSave={handleSave} onClose={()=>setForm(null)} currentUser={currentUser} agents={agents}/>}
       {delId !== null && (
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.65)", zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
-          <div style={{ background:"#fff", borderRadius:20, padding:"32px 26px", maxWidth:340, width:"100%", textAlign:"center", fontFamily:"'Outfit','Noto Sans Thai',sans-serif" }}>
+          <div style={{ background:"#fff", borderRadius:20, padding:"32px 26px", maxWidth:340, width:"100%", textAlign:"center", fontFamily:"'Outfit',sans-serif" }}>
             <div style={{ fontSize:42, marginBottom:12 }}>🗑️</div>
-            <div style={{ fontFamily:"'Cormorant Garamond','Prompt',serif", fontSize:22, fontWeight:700, color:"#1C1410", marginBottom:8 }}>Delete this listing?</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:700, color:"#1C1410", marginBottom:8 }}>Delete this listing?</div>
             <p style={{ color:"#7B6A5A", fontSize:13, marginBottom:22 }}>This cannot be undone.</p>
             <div style={{ display:"flex", gap:10 }}>
               <button onClick={()=>setDelId(null)} style={{ flex:1, background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"11px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
