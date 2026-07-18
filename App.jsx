@@ -59,6 +59,7 @@ function sbClean(d) {
   }
   if (!out.maplink) delete out.maplink;
   if (!out.agent) delete out.agent;
+  if (!out.contact) delete out.contact;
   if (!out.pricesale) delete out.pricesale;
   return out;
 }
@@ -177,7 +178,8 @@ const GUIDES_I18N = {
 
 const UI = {
   en: {
-    nav:["Buy","Rent","Services","Contact"], admin:"🔐 Admin", navHome:"Home", navGuide:"Guide", navAbout:"About Me",
+    nav:["Buy","Rent","Services","Contact"],
+    post:{ btn:"+ List Property", title:"List Your Property", sub:"Free — Annie reviews every listing before it goes live.", secYou:"Your contact", name:"Your name", phone:"Phone / WhatsApp", lineId:"LINE ID (optional)", secProp:"Property details", offer:"I want to", sale:"Sell", rent:"Rent out", type:"Property type", ttl:"Listing title", ttlPh:"e.g. 2-bed condo near BTS Asok", city:"City", loc:"Area / project / street", locPh:"e.g. Sukhumvit Soi 24, Park Origin", price:"Price (THB)", priceRentPh:"e.g. 25000 per month", priceSalePh:"e.g. 5500000", beds:"Beds", baths:"Baths", sqm:"Size (sqm)", photos:"Photos", addPhotos:"+ Add photos", details:"Extra details", detailsPh:"Floor, furniture, facilities, anything else…", submit:"Submit listing", sending:"Submitting…", okT:"Thank you!", okD:"Your listing was submitted. Annie will review it and contact you before it goes live.", close:"Close", need:"Please fill in your name, phone, title, price and location." }, admin:"🔐 Admin", navHome:"Home", navGuide:"Guide", navAbout:"About Me",
     heroBadge:"Thailand Property Specialist", heroH1a:"Find Your Perfect", heroH1b:"Home in Bangkok",
     heroSub1:"Luxury condos, family homes, and rental properties carefully matched to your lifestyle with honest local guidance.", heroSub2:"",
     sBuyRent:"Buy & Rent", sSale:"For Sale", sRent:"For Rent", searchPh:"Search by name or location...", searchBtn:"Search",
@@ -209,7 +211,8 @@ const UI = {
     flt:{ filters:"Filters", type:"Type", status:"Status", price:"Price", beds:"Bedrooms", size:"Size (m\u00B2)", zone:"Zone / BTS\u2013MRT", kw:"Keyword", kwPh:"Code, name or location\u2026", clear:"Clear filters", showing:"Showing", of:"of", min:"Min", max:"Max", all:"All", studio:"Studio", statusBoth:"For Rent & Sale", apply:"Show results", listView:"List", mapView:"Map" },
   },
   th: {
-    nav:["ซื้อ","เช่า","บริการ","ติดต่อ"], admin:"🔐 แอดมิน", navHome:"หน้าแรก", navGuide:"คู่มือ", navAbout:"เกี่ยวกับเรา",
+    nav:["ซื้อ","เช่า","บริการ","ติดต่อ"],
+    post:{ btn:"ลงประกาศฟรี", title:"ลงประกาศอสังหาฯ ของคุณ", sub:"ฟรี — Annie ตรวจสอบทุกประกาศก่อนขึ้นเว็บไซต์", secYou:"ข้อมูลติดต่อของคุณ", name:"ชื่อของคุณ", phone:"เบอร์โทร / WhatsApp", lineId:"LINE ID (ถ้ามี)", secProp:"รายละเอียดอสังหาฯ", offer:"ต้องการ", sale:"ขาย", rent:"ปล่อยเช่า", type:"ประเภท", ttl:"ชื่อประกาศ", ttlPh:"เช่น คอนโด 2 ห้องนอน ใกล้ BTS อโศก", city:"เมือง", loc:"ย่าน / โครงการ / ถนน", locPh:"เช่น สุขุมวิท ซอย 24, Park Origin", price:"ราคา (บาท)", priceRentPh:"เช่น 25000 ต่อเดือน", priceSalePh:"เช่น 5500000", beds:"ห้องนอน", baths:"ห้องน้ำ", sqm:"ขนาด (ตร.ม.)", photos:"รูปภาพ", addPhotos:"+ เพิ่มรูป", details:"รายละเอียดเพิ่มเติม", detailsPh:"ชั้น เฟอร์นิเจอร์ ส่วนกลาง ฯลฯ", submit:"ส่งประกาศ", sending:"กำลังส่ง…", okT:"ขอบคุณค่ะ!", okD:"ส่งประกาศเรียบร้อยแล้ว Annie จะตรวจสอบและติดต่อกลับก่อนประกาศขึ้นเว็บไซต์", close:"ปิด", need:"กรุณากรอกชื่อ เบอร์โทร ชื่อประกาศ ราคา และทำเล" }, admin:"🔐 แอดมิน", navHome:"หน้าแรก", navGuide:"คู่มือ", navAbout:"เกี่ยวกับเรา",
     heroBadge:"ผู้เชี่ยวชาญอสังหาฯ ประเทศไทย", heroH1a:"ค้นหาบ้านในฝัน", heroH1b:"ของคุณในกรุงเทพฯ",
     heroSub1:"คอนโดหรู บ้านสำหรับครอบครัว และห้องเช่า คัดสรรให้เข้ากับไลฟ์สไตล์ของคุณอย่างพิถีพิถัน พร้อมคำแนะนำที่จริงใจจากคนท้องถิ่น", heroSub2:"",
     sBuyRent:"ซื้อ & เช่า", sSale:"ขาย", sRent:"เช่า", searchPh:"ค้นหาด้วยชื่อหรือทำเล...", searchBtn:"ค้นหา",
@@ -241,7 +244,8 @@ const UI = {
     flt:{ filters:"ตัวกรอง", type:"ประเภท", status:"สถานะ", price:"ราคา", beds:"ห้องนอน", size:"ขนาด (ตร.ม.)", zone:"โซน / BTS\u2013MRT", kw:"ค้นหา", kwPh:"รหัส ชื่อ หรือทำเล…", clear:"ล้างตัวกรอง", showing:"แสดง", of:"จาก", min:"ต่ำสุด", max:"สูงสุด", all:"ทั้งหมด", studio:"สตูดิโอ", statusBoth:"เช่า & ขาย", apply:"ดูผลลัพธ์", listView:"รายการ", mapView:"แผนที่" },
   },
   zh: {
-    nav:["买房","租房","服务","联系"], admin:"🔐 管理", navHome:"首页", navGuide:"指南", navAbout:"关于",
+    nav:["买房","租房","服务","联系"],
+    post:{ btn:"+ 免费刊登", title:"刊登您的房源", sub:"免费 — 每条房源上线前由 Annie 审核。", secYou:"您的联系方式", name:"您的姓名", phone:"电话 / WhatsApp", lineId:"LINE ID（可选）", secProp:"房源信息", offer:"我想", sale:"出售", rent:"出租", type:"类型", ttl:"标题", ttlPh:"例如：Asok BTS 附近两房公寓", city:"城市", loc:"区域 / 项目 / 街道", locPh:"例如：Sukhumvit Soi 24", price:"价格（泰铢）", priceRentPh:"例如 25000 / 月", priceSalePh:"例如 5500000", beds:"卧室", baths:"浴室", sqm:"面积（平方米）", photos:"照片", addPhotos:"+ 添加照片", details:"补充说明", detailsPh:"楼层、家具、设施等…", submit:"提交房源", sending:"提交中…", okT:"谢谢！", okD:"房源已提交。上线前 Annie 会审核并与您联系。", close:"关闭", need:"请填写姓名、电话、标题、价格和位置。" }, admin:"🔐 管理", navHome:"首页", navGuide:"指南", navAbout:"关于",
     heroBadge:"泰国房产专家", heroH1a:"在曼谷找到", heroH1b:"您的理想之家",
     heroSub1:"高级公寓、家庭住宅与租赁房源，用心匹配您的生活方式，并提供诚实的本地指导。", heroSub2:"",
     sBuyRent:"买 & 租", sSale:"出售", sRent:"出租", searchPh:"按名称或地点搜索...", searchBtn:"搜索",
@@ -425,6 +429,12 @@ function matchSearch(p, q) {
 
 const ALL_TYPES  = ["All","Condo","House","Apartment"];
 const ALL_CITIES = ["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui","Chiang Rai","Krabi","Koh Phangan","Koh Chang","Rayong","Udon Thani","Khon Kaen","Nakhon Ratchasima","Cha Am","Phetchaburi","Ayutthaya","Kanchanaburi","Nonthaburi","Pathum Thani","Samut Prakan","Samut Sakhon","Nakhon Pathom","Suphan Buri","Lopburi","Saraburi","Chachoengsao","Chon Buri","Trat","Chanthaburi","Nakhon Sawan","Kamphaeng Phet","Phitsanulok","Sukhothai","Tak","Mae Sot","Lampang","Lamphun","Phrae","Nan","Phayao","Mae Hong Son","Uttaradit","Phetchabun","Roi Et","Maha Sarakham","Kalasin","Yasothon","Mukdahan","Sakon Nakhon","Nakhon Phanom","Nong Khai","Loei","Nong Bua Lamphu","Chaiyaphum","Buriram","Surin","Si Sa Ket","Ubon Ratchathani","Surat Thani","Ranong","Chumphon","Nakhon Si Thammarat","Phatthalung","Songkhla","Satun","Trang","Pattani","Yala","Narathiwat","Hat Yai","Koh Lanta","Koh Tao","Koh Phi Phi","Koh Lipe","Pai","Khao Yai","Bang Saen","Sri Racha","Prachuap Khiri Khan","Amnat Charoen"];
+const CITY_TH = { "Bangkok":["กรุงเทพ","กทม","บางกอก"], "Phuket":["ภูเก็ต"], "Chiang Mai":["เชียงใหม่"], "Pattaya":["พัทยา"], "Hua Hin":["หัวหิน"], "Koh Samui":["เกาะสมุย","สมุย"], "Chiang Rai":["เชียงราย"], "Krabi":["กระบี่"], "Koh Phangan":["เกาะพะงัน","พะงัน"], "Koh Chang":["เกาะช้าง"], "Rayong":["ระยอง"], "Udon Thani":["อุดรธานี","อุดรฯ"], "Khon Kaen":["ขอนแก่น"], "Nakhon Ratchasima":["นครราชสีมา","โคราช"], "Cha Am":["ชะอำ"], "Phetchaburi":["เพชรบุรี"], "Ayutthaya":["อยุธยา"], "Kanchanaburi":["กาญจนบุรี"], "Nonthaburi":["นนทบุรี"], "Pathum Thani":["ปทุมธานี"], "Samut Prakan":["สมุทรปราการ"], "Samut Sakhon":["สมุทรสาคร"], "Nakhon Pathom":["นครปฐม"], "Suphan Buri":["สุพรรณบุรี"], "Lopburi":["ลพบุรี"], "Saraburi":["สระบุรี"], "Chachoengsao":["ฉะเชิงเทรา"], "Chon Buri":["ชลบุรี"], "Trat":["ตราด"], "Chanthaburi":["จันทบุรี"], "Nakhon Sawan":["นครสวรรค์"], "Kamphaeng Phet":["กำแพงเพชร"], "Phitsanulok":["พิษณุโลก"], "Sukhothai":["สุโขทัย"], "Tak":["จ.ตาก","จังหวัดตาก","เมืองตาก"], "Mae Sot":["แม่สอด"], "Lampang":["ลำปาง"], "Lamphun":["ลำพูน"], "Phrae":["แพร่"], "Nan":["น่าน"], "Phayao":["พะเยา"], "Mae Hong Son":["แม่ฮ่องสอน"], "Uttaradit":["อุตรดิตถ์"], "Phetchabun":["เพชรบูรณ์"], "Roi Et":["ร้อยเอ็ด"], "Maha Sarakham":["มหาสารคาม"], "Kalasin":["กาฬสินธุ์"], "Yasothon":["ยโสธร"], "Mukdahan":["มุกดาหาร"], "Sakon Nakhon":["สกลนคร"], "Nakhon Phanom":["นครพนม"], "Nong Khai":["หนองคาย"], "Loei":["จ.เลย","จังหวัดเลย","เมืองเลย"], "Nong Bua Lamphu":["หนองบัวลำภู"], "Chaiyaphum":["ชัยภูมิ"], "Buriram":["บุรีรัมย์"], "Surin":["สุรินทร์"], "Si Sa Ket":["ศรีสะเกษ"], "Ubon Ratchathani":["อุบลราชธานี"], "Surat Thani":["สุราษฎร์ธานี","สุราษฎร์"], "Ranong":["ระนอง"], "Chumphon":["ชุมพร"], "Nakhon Si Thammarat":["นครศรีธรรมราช"], "Phatthalung":["พัทลุง"], "Songkhla":["สงขลา"], "Satun":["สตูล"], "Trang":["ตรัง"], "Pattani":["ปัตตานี"], "Yala":["ยะลา"], "Narathiwat":["นราธิวาส"], "Hat Yai":["หาดใหญ่"], "Koh Lanta":["เกาะลันตา","ลันตา"], "Koh Tao":["เกาะเต่า"], "Koh Phi Phi":["เกาะพีพี","พีพี"], "Koh Lipe":["เกาะหลีเป๊ะ","หลีเป๊ะ"], "Pai":["อ.ปาย","อำเภอปาย","เมืองปาย"], "Khao Yai":["เขาใหญ่"], "Bang Saen":["บางแสน"], "Sri Racha":["ศรีราชา"], "Prachuap Khiri Khan":["ประจวบคีรีขันธ์","ประจวบ"], "Amnat Charoen":["อำนาจเจริญ"] };
+const cityMatch = (loc, city) => {
+  const l = (loc || "").toLowerCase();
+  if (l.includes(city.toLowerCase())) return true;
+  return (CITY_TH[city] || []).some(n => l.includes(n));
+};
 const CITY_AREAS = {
   "Bangkok": ["Sukhumvit","Silom / Sathorn","Thonglor / Ekkamai","Asoke / Phrom Phong","Ari / Phaya Thai","Ratchada / Rama 9","Riverside / Charoen Krung","Ladprao / Chatuchak","Rama 3 / Yannawa","On Nut / Bang Na","Victory Monument","Phra Khanong","Ratchathewi","Bang Sue"],
   "Phuket": ["Patong","Kata / Karon","Rawai / Nai Harn","Kamala","Bang Tao / Laguna","Surin","Phuket Town","Chalong","Cherng Talay","Mai Khao","Nai Yang"],
@@ -1034,6 +1044,133 @@ function PropForm({ init, onSave, onClose, currentUser, agents=[] }) {
           <button onClick={onClose} style={{ flex:1, background:"#F3EEE8", color:"#6B5E52", border:"none", padding:"11px", borderRadius:11, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
           <button onClick={()=>onSave({...f, img:f.imgs&&f.imgs[0]?f.imgs[0]:f.img})} style={{...S.gold,flex:2}}>{init?"Save Changes ✓":"Add Property ✓"}</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function PublicListForm({ t, onClose, onSubmit }) {
+  const P = t.post;
+  const [f, setF] = useState({ name:"", phone:"", lineId:"", status:"For Rent", type:"Condo", title:"", city:"Bangkok", loc:"", price:"", beds:1, baths:1, sqm:"", imgs:[], details:"" });
+  const [uploading, setUploading] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState("");
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState("");
+  const fileRef = useRef(null);
+  const set = (k,v) => setF(x=>({...x,[k]:v}));
+  const inp = (extra={}) => ({ width:"100%", padding:"11px 12px", borderRadius:10, border:"1px solid #E5DDD3", fontSize:14, background:"#FDFAF6", color:"#1C1410", fontFamily:"'Outfit','Prompt','Noto Sans Thai',sans-serif", ...extra });
+  const LBL = ({t:x}) => <label style={{ fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.07em", textTransform:"uppercase", display:"block", marginBottom:5 }}>{x}</label>;
+
+  const handlePhotoUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setUploading(true); setUploadMsg("Uploading...");
+    const newImgs = [...(f.imgs||[])];
+    let ok = 0;
+    for (const file of files) {
+      if (SB_ON) {
+        try {
+          const path = "properties/" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.]/g,"_");
+          const r = await fetch(SUPABASE_URL + "/storage/v1/object/property-images/" + path, { method:"POST", headers:{ "apikey":SUPABASE_ANON_KEY, "Authorization":"Bearer "+SUPABASE_ANON_KEY, "Content-Type":file.type, "x-upsert":"true" }, body:file });
+          if (r.ok) { newImgs.push(SUPABASE_URL + "/storage/v1/object/public/property-images/" + path); ok++; }
+          else { const e2 = await r.json().catch(()=>({})); setUploadMsg("\u274c " + (e2.message || r.status)); }
+        } catch(e3) { setUploadMsg("\u274c " + e3.message); }
+      } else {
+        await new Promise(res => { const rd = new FileReader(); rd.onload = ev => { newImgs.push(ev.target.result); ok++; res(); }; rd.readAsDataURL(file); });
+      }
+    }
+    set("imgs", newImgs);
+    setUploading(false);
+    if (ok > 0) setUploadMsg("\u2705 " + ok);
+    setTimeout(()=>setUploadMsg(""), 4000);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const submit = async () => {
+    if (!f.name.trim() || !f.phone.trim() || !f.title.trim() || !String(f.price).trim() || !(f.loc.trim() || f.city)) { setErr(P.need); return; }
+    setErr(""); setSending(true);
+    const location = f.loc.trim() ? (f.loc.trim().toLowerCase().includes(f.city.toLowerCase()) ? f.loc.trim() : f.loc.trim() + ", " + f.city) : f.city;
+    const data = { ref:"", title:f.title.trim(), location, type:f.type, status:f.status, price:String(f.price).trim(), pricesale:"", beds:f.beds, baths:f.baths, sqm:f.sqm||0, imgs:f.imgs, img:(f.imgs[0]||""), tag:"New", floor:"", totalFloors:"", furnished:"Fully Furnished", available:"Now", maintenance:"", parking:"", pets:"Not allowed", facilities:f.details.trim(), bts:"", maplink:"", agent:f.name.trim(), contact:(f.phone.trim() + (f.lineId.trim() ? " / LINE: " + f.lineId.trim() : "")) };
+    const ok = await onSubmit(data);
+    setSending(false);
+    if (ok) setDone(true);
+    else setErr("\u26a0 Could not save \u2014 please try again.");
+  };
+
+  return (
+    <div onClick={onClose} style={{ position:"fixed", inset:0, background:"rgba(15,10,4,0.62)", zIndex:520, display:"flex", alignItems:"center", justifyContent:"center", padding:14, backdropFilter:"blur(3px)" }}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:"#FFFDF9", borderRadius:22, width:"100%", maxWidth:560, maxHeight:"92vh", overflowY:"auto", padding:"26px 22px 24px", fontFamily:"'Outfit','Prompt','Noto Sans Thai',sans-serif", boxShadow:"0 24px 70px rgba(0,0,0,0.35)" }}>
+        {done ? (
+          <div style={{ textAlign:"center", padding:"28px 8px" }}>
+            <div style={{ fontSize:52, marginBottom:14 }}>🎉</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:27, fontWeight:700, color:"#1C1410", marginBottom:10 }}>{P.okT}</div>
+            <div style={{ fontSize:14.5, color:"#6B5E52", lineHeight:1.65, marginBottom:22 }}>{P.okD}</div>
+            <button onClick={onClose} style={{ background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"12px 34px", borderRadius:12, fontSize:14, fontWeight:700, cursor:"pointer" }}>{P.close}</button>
+          </div>
+        ) : (<>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1C1410" }}>{P.title}</div>
+            <button onClick={onClose} aria-label="Close" style={{ width:34, height:34, borderRadius:"50%", border:"none", background:"#F3EEE8", color:"#6B5E52", fontSize:16, cursor:"pointer", flexShrink:0 }}>✕</button>
+          </div>
+          <div style={{ fontSize:13, color:"#7B6A5A", marginBottom:18 }}>{P.sub}</div>
+
+          <div style={{ fontSize:12, fontWeight:800, color:"#9B6B2A", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:10 }}>{P.secYou}</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
+            <div><LBL t={P.name + " *"}/><input value={f.name} onChange={e=>set("name",e.target.value)} style={inp()}/></div>
+            <div><LBL t={P.phone + " *"}/><input value={f.phone} onChange={e=>set("phone",e.target.value)} style={inp()}/></div>
+          </div>
+          <div style={{ marginBottom:18 }}><LBL t={P.lineId}/><input value={f.lineId} onChange={e=>set("lineId",e.target.value)} style={inp()}/></div>
+
+          <div style={{ fontSize:12, fontWeight:800, color:"#9B6B2A", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:10 }}>{P.secProp}</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
+            <div>
+              <LBL t={P.offer}/>
+              <div style={{ display:"flex", gap:6 }}>
+                {[["For Sale",P.sale],["For Rent",P.rent]].map(([v,l])=>(
+                  <button key={v} onClick={()=>set("status",v)} style={{ flex:1, padding:"10px 4px", borderRadius:10, border:"1.5px solid", borderColor:f.status===v?"#C9A96E":"#E5DDD3", background:f.status===v?"#C9A96E":"transparent", color:f.status===v?"#fff":"#7B6A5A", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>{l}</button>
+                ))}
+              </div>
+            </div>
+            <div><LBL t={P.type}/>
+              <select value={f.type} onChange={e=>set("type",e.target.value)} style={inp({ cursor:"pointer" })}>
+                {["Condo","House","Apartment","Villa","Townhouse"].map(x=><option key={x} value={x}>{x}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{ marginBottom:12 }}><LBL t={P.ttl + " *"}/><input value={f.title} onChange={e=>set("title",e.target.value)} placeholder={P.ttlPh} style={inp()}/></div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1.6fr", gap:12, marginBottom:12 }}>
+            <div><LBL t={P.city}/>
+              <select value={f.city} onChange={e=>set("city",e.target.value)} style={inp({ cursor:"pointer" })}>
+                {["Bangkok","Phuket","Chiang Mai","Pattaya","Hua Hin","Koh Samui","Other"].map(x=><option key={x} value={x}>{x}</option>)}
+              </select>
+            </div>
+            <div><LBL t={P.loc + " *"}/><input value={f.loc} onChange={e=>set("loc",e.target.value)} placeholder={P.locPh} style={inp()}/></div>
+          </div>
+          <div style={{ marginBottom:12 }}><LBL t={P.price + " *"}/><input value={f.price} onChange={e=>set("price",e.target.value)} placeholder={f.status==="For Rent"?P.priceRentPh:P.priceSalePh} inputMode="numeric" style={inp()}/></div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12, marginBottom:12 }}>
+            <div><LBL t={P.beds}/><input type="number" min="0" value={f.beds} onChange={e=>set("beds",e.target.value)} style={inp()}/></div>
+            <div><LBL t={P.baths}/><input type="number" min="0" value={f.baths} onChange={e=>set("baths",e.target.value)} style={inp()}/></div>
+            <div><LBL t={P.sqm}/><input type="number" min="0" value={f.sqm} onChange={e=>set("sqm",e.target.value)} style={inp()}/></div>
+          </div>
+          <div style={{ marginBottom:12 }}>
+            <LBL t={P.photos}/>
+            <input ref={fileRef} type="file" accept="image/*" multiple onChange={handlePhotoUpload} style={{ display:"none" }}/>
+            <div style={{ display:"flex", gap:8, flexWrap:"wrap", alignItems:"center" }}>
+              {(f.imgs||[]).map((u,i)=>(
+                <div key={i} style={{ position:"relative", width:64, height:64, borderRadius:10, overflow:"hidden", border:"1px solid #E5DDD3" }}>
+                  <img src={u} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                  <button onClick={()=>set("imgs", f.imgs.filter((_,j)=>j!==i))} aria-label="Remove" style={{ position:"absolute", top:2, right:2, width:18, height:18, borderRadius:"50%", border:"none", background:"rgba(0,0,0,0.6)", color:"#fff", fontSize:10, cursor:"pointer", lineHeight:"18px", padding:0 }}>✕</button>
+                </div>
+              ))}
+              <button onClick={()=>fileRef.current && fileRef.current.click()} disabled={uploading} style={{ width:64, height:64, borderRadius:10, border:"1.5px dashed #C9A96E", background:"transparent", color:"#9B6B2A", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>{uploading?"\u23f3":P.addPhotos}</button>
+              {uploadMsg && <span style={{ fontSize:12, color:"#7B6A5A" }}>{uploadMsg}</span>}
+            </div>
+          </div>
+          <div style={{ marginBottom:16 }}><LBL t={P.details}/><textarea value={f.details} onChange={e=>set("details",e.target.value)} placeholder={P.detailsPh} rows={3} style={inp({ resize:"vertical" })}/></div>
+          {err && <div style={{ background:"#FEF2F2", color:"#B91C1C", border:"1px solid #FECACA", borderRadius:10, padding:"9px 12px", fontSize:13, fontWeight:600, marginBottom:12 }}>{err}</div>}
+          <button onClick={submit} disabled={sending || uploading} style={{ width:"100%", background:"linear-gradient(135deg,#C9A96E,#9B6B2A)", color:"#fff", border:"none", padding:"14px", borderRadius:13, fontSize:15, fontWeight:800, cursor:sending?"wait":"pointer", opacity:(sending||uploading)?0.7:1, letterSpacing:"0.02em" }}>{sending?P.sending:P.submit}</button>
+        </>)}
       </div>
     </div>
   );
@@ -1741,6 +1878,7 @@ function AdminDash({ props, onAdd, onEdit, onDel, onToggle, onLogout, onView, on
                       <div style={{ display:"flex", gap:7, flexWrap:"wrap", alignItems:"center" }}>
                         <button onClick={()=>{ const url = window.location.origin + window.location.pathname + "?p=" + p.id; try { navigator.clipboard && navigator.clipboard.writeText(url); } catch(_) {} setCopiedId(p.id); setTimeout(()=>setCopiedId(null), 2000); }} title="Copy this listing's link" style={{ background: copiedId===p.id?"#16A34A":"#EEF2FF", color: copiedId===p.id?"#fff":"#4F46E5", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>{copiedId===p.id ? "✓ Copied!" : "🔗 Link"}</button>
                         {p.approved==="0" && <span style={{ background:"#FEF3C7", color:"#92400E", border:"1px solid #F59E0B", borderRadius:8, padding:"5px 9px", fontSize:11, fontWeight:700, whiteSpace:"nowrap" }}>⏳ Pending</span>}
+                        {p.contact && <span title="Submitter contact" style={{ background:"#EFF6FF", color:"#1D4ED8", border:"1px solid #BFDBFE", borderRadius:8, padding:"5px 9px", fontSize:11, fontWeight:700, whiteSpace:"nowrap" }}>📞 {p.contact}</span>}
                         {currentUser && currentUser.role==="owner" && p.approved==="0" && <button onClick={()=>onApproveListing(p.id)} style={{ background:"#16A34A", color:"#fff", border:"none", padding:"6px 12px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>✓ Approve</button>}
                         {(currentUser && (currentUser.role==="owner" || p.agent===currentUser.name)) ? (<>
                         <button onClick={()=>onEdit(p)} style={{ background:"#EFF6FF", color:"#2563EB", border:"none", padding:"6px 11px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", display:"inline-flex", alignItems:"center", gap:5 }}><Icon n="edit" s={13} c="#2563EB"/>Edit</button>
@@ -2134,8 +2272,8 @@ function FloatField({ label, value, onChange, type="text", as="input", options, 
   );
 }
 
-function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGoAdmin, agentContacts={} }) {
-  const [city, setCity]       = useState("Bangkok");
+function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGoAdmin, agentContacts={}, onPublicSubmit }) {
+  const [city, setCity]       = useState("All Thailand");
   const [area, setArea]       = useState("All Areas");
   const [line, setLine]       = useState("All Lines");
   const [station, setStation] = useState("All Stations");
@@ -2150,13 +2288,14 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   const [showFilters, setShowFilters] = useState(false);
   const [view, setView] = useState("list");
   const toggleIn = (setter) => (v) => setter(prev => prev.includes(v) ? prev.filter(x=>x!==v) : [...prev, v]);
-  const clearFilters = () => { setTypes([]); setBeds([]); setStatus("All"); setPriceMin(""); setPriceMax(""); setSizeMin(""); setSizeMax(""); setLine("All Lines"); setStation("All Stations"); setArea("All Areas"); setQ(""); };
+  const clearFilters = () => { setCity("All Thailand"); setTypes([]); setBeds([]); setStatus("All"); setPriceMin(""); setPriceMax(""); setSizeMin(""); setSizeMax(""); setLine("All Lines"); setStation("All Stations"); setArea("All Areas"); setQ(""); };
   const fLabel = { fontSize:11, fontWeight:700, color:"#7B6A5A", letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8, display:"block" };
   const fChip = (on) => ({ padding:"6px 13px", borderRadius:20, border:"1.5px solid", borderColor: on?"#C9A96E":"#E5DDD3", background: on?"#C9A96E":"transparent", color: on?"#fff":"#7B6A5A", fontSize:12, fontWeight:600, cursor:"pointer", transition:"all 0.15s" });
   const fNum = { width:"100%", padding:"9px 10px", borderRadius:9, border:"1px solid #E5DDD3", fontSize:13, background:"#FDFAF6", color:"#1C1410" };
   const [heroOn, setHeroOn]   = useState(false);
   const [contact, setContact] = useState({ name:"", email:"", phone:"", budget:"", location:"", beds:"Any", movein:"", msg:"" });
   const [sent, setSent]       = useState(false);
+  const [showPost, setShowPost] = useState(false);
 
   const [selectedId, setSelectedId] = useState(null);
   const [openGuide, setOpenGuide] = useState(null);
@@ -2214,7 +2353,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
     if (p.approved === "0") return false;
     if (types.length && !types.includes(p.type)) return false;
     if (!matchStatus(p.status || "")) return false;
-    if (!p.location.toLowerCase().includes(city.toLowerCase())) return false;
+    if (city !== "All Thailand" && !cityMatch(p.location, city)) return false;
     if (area !== "All Areas") {
       const keys = area.split("/").map(a => a.trim().toLowerCase());
       const loc = (p.location + " " + (p.bts||"")).toLowerCase();
@@ -2246,6 +2385,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
   if (station !== "All Stations") activeChips.push({ k:"station", label:station, on:()=>setStation("All Stations") });
   if (priceMin || priceMax) activeChips.push({ k:"price", label:t.flt.price+": "+(priceMin||"0")+"\u2013"+(priceMax||"\u221E"), on:()=>{ setPriceMin(""); setPriceMax(""); } });
   if (sizeMin || sizeMax) activeChips.push({ k:"size", label:t.flt.size+": "+(sizeMin||"0")+"\u2013"+(sizeMax||"\u221E"), on:()=>{ setSizeMin(""); setSizeMax(""); } });
+  if (city !== "All Thailand") activeChips.push({ k:"city", label:city, on:()=>setCity("All Thailand") });
   if (q) activeChips.push({ k:"q", label:"\u201C"+q+"\u201D", on:()=>setQ("") });
   const areaOptions = CITY_AREAS[city] ? ["All Areas", ...CITY_AREAS[city]] : null;
   const lineOptions = ["All Lines", ...Object.keys(TRANSIT_LINES)];
@@ -2312,6 +2452,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               </div>
               <button onClick={()=>navGo("contact")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.nav[3]}</button>
               <button onClick={()=>navGo("rent")} style={navLink} onMouseEnter={e=>e.currentTarget.style.color="#C9A96E"} onMouseLeave={e=>e.currentTarget.style.color="#6B5E52"}>{t.navAbout}</button>
+              <button onClick={()=>setShowPost(true)} style={{ border:"1.5px solid #C9A96E", background:"transparent", color:"#9B6B2A", padding:"6px 14px", borderRadius:20, fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", fontFamily:"'Outfit',sans-serif", letterSpacing:"0.02em" }}>{t.post.btn}</button>
               <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" title="Display currency" style={{ border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#5A4A3A", borderRadius:14, padding:"6px 8px", fontSize:11.5, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
                 {FX_ORDER.map(c=> <option key={c} value={c}>{CUR[c].sym} {c}</option>)}
               </select>
@@ -2355,6 +2496,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             </div>
             <button onClick={()=>navGo("contact")} style={mItem}>{t.nav[3]}</button>
             <button onClick={()=>navGo("rent")} style={mItem}>{t.navAbout}</button>
+            <button onClick={()=>{ setNavOpen(false); setShowPost(true); }} style={{ ...mItem, color:"#9B6B2A", fontWeight:700 }}>{t.post.btn}</button>
             <div style={{ marginTop:"auto", paddingTop:18 }}>
               <select value={currency} onChange={e=>setCurrency(e.target.value)} aria-label="Currency" style={{ width:"100%", border:"1px solid rgba(201,169,110,0.4)", background:"#fff", color:"#3A2E22", borderRadius:12, padding:"11px 12px", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginBottom:10 }}>
                 {FX_ORDER.map(c=> <option key={c} value={c}>{CUR[c].sym} {c} — {CUR[c].name}</option>)}
@@ -2399,7 +2541,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
                 ))}
               </div>
               <select value={city} onChange={e=>{ setCity(e.target.value); setArea("All Areas"); setLine("All Lines"); setStation("All Stations"); }} style={S.inp({ minWidth:120, flex:1, cursor:"pointer", padding:"9px 10px" })}>
-                {ALL_CITIES.map(c=><option key={c}>{c}</option>)}
+                {["All Thailand", ...ALL_CITIES].map(c=><option key={c}>{c}</option>)}
               </select>
               {areaOptions && (
                 <select value={area} onChange={e=>{ setArea(e.target.value); setStation("All Stations"); }} style={S.inp({ minWidth:130, flex:1, cursor:"pointer", padding:"9px 10px" })}>
@@ -2559,6 +2701,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
             {shown.map((p,i)=><Card key={p.id} p={p} idx={i} isAdmin={isAdmin} onEdit={onEditProp} onDel={onDelProp} agentContacts={agentContacts} onOpen={openDetail}/>)}
           </div>
         )}
+        {showPost && <PublicListForm t={t} onClose={()=>setShowPost(false)} onSubmit={onPublicSubmit}/>}
         {selectedId && (()=>{ const sp = props.find(p => String(p.id)===String(selectedId) && p.active!==false && p.approved!=="0"); return sp ? <PropDetail p={sp} onClose={closeDetail} agentContacts={agentContacts}/> : null; })()}
       </section>
 
@@ -2656,7 +2799,7 @@ function PublicSite({ props, isAdmin, cityPhotos={}, onEditProp, onDelProp, onGo
               <div style={{ position:"absolute", bottom:16, left:16, right:16 }}>
                 <div style={{ width:28, height:2, background:"#C9A96E", marginBottom:8, borderRadius:2 }}/>
                 <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:700, color:"#fff", letterSpacing:"0.02em", lineHeight:1.1 }}>{x.c}</div>
-                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.approved!=="0" && p.location.toLowerCase().includes(x.c.toLowerCase())).length; return n + " " + (n===1?t.listingOne:t.listingMany); })()}</div>
+                <div style={{ color:"#D9BC8A", fontSize:11, fontWeight:600, marginTop:3, letterSpacing:"0.05em" }}>{(()=>{ const n = props.filter(p=>p.active!==false && p.approved!=="0" && cityMatch(p.location, x.c)).length; return n + " " + (n===1?t.listingOne:t.listingMany); })()}</div>
                 <div className="explore" style={{ color:"#fff", fontSize:11, fontWeight:600, marginTop:8, opacity:0, transition:"opacity 0.3s", letterSpacing:"0.08em", textTransform:"uppercase" }}>{t.exploreMore}</div>
               </div>
             </div>
@@ -3060,6 +3203,19 @@ export default function App() {
     setForm(null);
   };
 
+  const handlePublicSubmit = async (data) => {
+    const d2 = { ...data, approved:"0", active:true };
+    const tempId = Date.now();
+    setProps(prev => [{ ...d2, id: tempId }, ...prev]);
+    if (SB_ON) {
+      const saved = await sbAdd(d2);
+      if (saved) { setProps(prev => prev.map(p => p.id === tempId ? { ...p, id: saved.id } : p)); return true; }
+      setProps(prev => prev.filter(p => p.id !== tempId));
+      return false;
+    }
+    return true;
+  };
+
   const handleApproveListing = async (id) => {
     setProps(props.map(p => p.id === id ? { ...p, approved:"1" } : p));
     if (SB_ON) await sbUpdate(id, { approved:"1" });
@@ -3168,7 +3324,7 @@ export default function App() {
             currentUser={currentUser} agents={agents} onAgentsChange={handleAgents} pending={pending} onApprove={handleApprove} onReject={handleReject} onApproveListing={handleApproveListing} onApproveAllListings={handleApproveAllListings} ownerCreds={ownerCreds} onSaveOwnerProfile={handleOwnerSelfUpdate} onAgentSelfUpdate={handleAgentSelfUpdate} onSetMaplink={handleSetMaplink}/>
         : <PublicSite props={props} isAdmin={adminView} cityPhotos={cityPhotos} agentContacts={agentContacts}
             onEditProp={p=>setForm(p)} onDelProp={id=>setDelId(id)}
-            onGoAdmin={()=>setScreen(adminView?"admin":"login")}/>
+            onGoAdmin={()=>setScreen(adminView?"admin":"login")} onPublicSubmit={handlePublicSubmit}/>
       }
       {form !== null && <PropForm init={form&&form.id?form:null} onSave={handleSave} onClose={()=>setForm(null)} currentUser={currentUser} agents={agents}/>}
       {delId !== null && (
